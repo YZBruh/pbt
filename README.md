@@ -32,8 +32,11 @@ Kullanımı (argümanlar):
 Hataları bildirin: <xda-@YZBruh>
 ```
 
+Mesela `boot_a` bölümünü yedeklemek istersek: `pbt -p boot_a` (eğer farklı adda ise komutu düzenleyin).
+
 #### Bazı notlar
 - İstediğiniz soruları sormaktan çekinmeyin.
+- Paketler yayınlarda mevcuttur.
 - `-p` | `--partition` argümanını kullanmak zorunludur. Sonuçta yedeklenecek bir bölüm adı gerekli.
 - Eğer mantıksal bölüm bayrağı kullanılmaz ise varsayılan olarak klasik bir bölûm yedeklenmeye çalışılır.
 - Önerilerinizi bildirin!
