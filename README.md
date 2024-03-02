@@ -32,7 +32,7 @@ Example 2:
 Report bugs to <xda-@YZBruh>
 ```
 
-For example, if we want to back up the `boot_a` section: `pbt -p boot_a' (edit the command if it has a different name).
+For example, if we want to back up the `boot_a` partition: `pbt -p boot_a' (edit the command if it has a different name).
 
 #### Some notes
 
@@ -41,3 +41,28 @@ For example, if we want to back up the `boot_a` section: `pbt -p boot_a' (edit t
 - it is mandatory to use the `-p` | `--partition` argument. After all, a partition name is required to be backed up.
 - If the logical partition flag is not used, a classic partition is tried to be backed up by default.
 - Let me know your suggestions!
+
+### How is it built?
+Even termux is enough to build the pbt. Or you can compile it with linux if you want. NOTE: Use a custom gcc according to the architecture you want to compile.
+
+If you want to change something, take a look at the configuration. You can change him.
+it is located in the `mka` folder. His name is `config.mk`. I gave the information in the file. You can ask more.
+
+To build;
+```
+make
+```
+
+Special `make` commands (pbt offers :) ;
+```
+--------- Partition Backupper help ---------
+
+ Commands;
+    make                 ==> Build Partition Backupper
+    make clean           ==> Clear files (Builded binaries are not deleted)
+    make clean-all       ==> Clear files (Builded binaries are deleted)
+    make install-termux  ==> If you are using termux, it installs the compiled pbt into termux. So it allows you to use it like a normal command.
+    make help            ==> Display help message
+```
+
+I compiled it with termux :D. Why should I bother... I compiled it with `GCC 17.0.6`. You can look at the version with the viewing option :)
