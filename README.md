@@ -1,4 +1,4 @@
-## Partition Backups (pbt)
+## Partition Backupper (pbt)
 
 This binary static C library is for backing up partitions of android devices.
 It offers a lot of options. I will place these below. But first let me talk about the operation...
