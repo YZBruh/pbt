@@ -16,7 +16,7 @@
 #define PACK_VER      "1.4.0"
 #define PACK_VER_CODE "140"
 #define PACK_NAME     "Partition Backupper"
-#define PACK_LANG     "en"
+#define PACK_LANG     "tr"
 
 #include "include/pbt.h"
 #include "include/documentation.h"
@@ -39,20 +39,20 @@
  * limitations under the License.
  */
 
-/* classic main function (C binary here xd) */
+/* klasik main fonksiyonu (C kitaplığı işte xd) */
 int main(int argc, char *argv[]) {
 #   ifdef __aarch64__
-        /* empty */
+        /* boş... */
 #   elif __armv8l__
-        /* empty */
+        /* boş... */
 #   elif __aarch32__
-        /* empty */
+        /* boş... */
 #   elif __armv7l__
-        /* empty */
+        /* boş... */
 #   else
-       error("Incompatible architecture was detected. This binary works with only arm (32-bit or 64-bit).\n");
+       error("Uyumsuz mimari tespit edildi. Bu kitaplık sadece arm (32-bit yada 64-bit) mimarilerde kullanılabilir.\n");
 #   endif
-    /* a structure for long arguments... */
+    /* uzun kullanımlı argümanlar için bir struct... */
     struct option long_options[] = {
         {"partition", required_argument, 0, 'p'},
         {"logical", no_argument, 0, 'l'},
@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
     bool use_argx_p = false;
     bool use_logical = false;
     int opt;
-    /* control for each argument */
+    /* tüm argümanları kontrol et */
     while ((opt = getopt_long(argc, argv, "p:lo:d:c:DvhL", long_options, NULL)) != -1) {
-        /* process arguments */
+        /* argümanları işlemeye al */
         switch (opt) {
             case 'p':
                 argx_target_p = strdup(optarg);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
                 if (pbt_logical) {
                     use_logical = true;
                 } else {
-                    error("This device does not have logical partitions!\n");
+                    error("Bu cihaz mantıksal bölümlere sahip değil!\n");
                 }
                 break;
             case 'o':
@@ -95,13 +95,13 @@ int main(int argc, char *argv[]) {
                 outdir = strdup(optarg);
                 struct stat out_info;
                 if (stat(outdir, &out_info) != 0) {
-                    fprintf(stderr, "%s: %s: no such file or directory.\n", argv[0], outdir);
+                    fprintf(stderr, "%s: %s: dosya veya dizin yok.\n", argv[0], outdir);
                     exit(EXIT_FAILURE);
                 } else {
                     if (S_ISDIR(out_info.st_mode)) {
                         my_out = outdir;
                     } else {
-                        fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], outdir);
+                        fprintf(stderr, "%s: %s: dizin değil.\n", argv[0], outdir);
                         exit(EXIT_FAILURE);
                     }
                 }
@@ -115,11 +115,11 @@ int main(int argc, char *argv[]) {
                 exit(EXIT_SUCCESS);
                 break;
             case 'v':
-                printf("Version: %s (code %s)\n", PACK_VER, PACK_VER_CODE);
+                printf("Sürüm: %s (kod %s)\n", PACK_VER, PACK_VER_CODE);
 #               ifdef __clang__
-                printf("Compiled by clang version %s\n", __clang_version__);
+                printf("clang %ssürümü ile derlendi.\n", __clang_version__);
 #               endif
-                printf("See licenses with -L argument.\n");
+                printf("Lisansı görmek için -L seçeneğini kullanın.\n");
                 exit(EXIT_SUCCESS);
                 break;
             case 'h':
@@ -131,31 +131,31 @@ int main(int argc, char *argv[]) {
                 exit(EXIT_SUCCESS);
                 break;
             case '?':
-                printf("Try `%s --help' for more information.\n", argv[0]);
+                printf("Bilgi için `%s --help' komutunu deneyin.\n", argv[0]);
                 exit(EXIT_FAILURE);
                 break;
             default:
-                printf("Usage: %s -p, --partition PARTITION [-l, --logical] [-o, --out] [-d, --outdir] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
+                printf("Kullanım: %s -p, --partition PARTITION [-l, --logical] [-o, --out] [-d, --outdir] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
         }
     }
     verify_root();
     check_psf();
-    /* custom context checker */
+    /* özel bağlam kontrolcüsü */
     if (use_cust_cxt) {
         struct stat cxtinfo;
-        printf("Checking custom context path...\n");
+        printf("Özel bağlam kontrol ediliyor...\n");
         if (stat(cust_cxt, &cxtinfo) == 0) {
             if (S_ISDIR(cxtinfo.st_mode)) {
-                /* empty */
+                /* boş... */
             } else {
-                fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], cust_cxt);
+                fprintf(stderr, "%s: %s: dizin değil.\n", argv[0], cust_cxt);
                 exit(EXIT_FAILURE);
             }
         } else {
-            error("The specified context was not found!\n");
+            error("Belirtilen bağlam bulunamadı!\n");
         }
         if (strstr(cust_cxt, "/dev") != 0) {
-            printf("%sThis custom context is strange...%s", ANSI_YELLOW, ANSI_RESET);
+            printf("%sBu özel bağlam bir tuhaf...%s", ANSI_YELLOW, ANSI_RESET);
         }
     }
     if (use_argx_p) {
@@ -165,9 +165,9 @@ int main(int argc, char *argv[]) {
             backup(argx_target_p, "classic");
         }
     } else {
-        fprintf(stderr, "%s: required partition name.\nTry `%s --help' for more information.\n", argv[0], argv[0]);
+        fprintf(stderr, "%s: bölüm adı gerekiyor.\nBilgi için `%s --help' komutunu deneyin.\n", argv[0], argv[0]);
         exit(EXIT_FAILURE);
     }
 }
 
-/* end of code */
+/* kodun sonu */
