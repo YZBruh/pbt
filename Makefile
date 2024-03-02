@@ -16,35 +16,35 @@ include mka/config.mk
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# speficy
+# özel belirteçler (sürüm vb işte)
 VERSION := 1.4.0
 VERSION_CODE := 140
 SOURCE_DIR := binary
 TARGET := pbt
 ARCH := $(shell uname -m)
 
-# code list
+# kaynak listesi
 OBJS= $(SOURCE_DIR)/pbt.o
 SRCS := $(SOURCE_DIR)/pbt.c
 
-# gcc flags
+# gcc bayrakları (hepsi değil)
 LDFLAGS :=
 LDLIBS := -lm
 
-# display
+# ekran
 all: 
-	@printf "  --- Building Partition Backupper ---  \n"; \
-	printf "Version: $(VERSION)\n"; \
-	printf "Version code: $(VERSION_CODE)\n"; \
+	@printf "  --- Partition Backupper İnşa Senaryosu ---  \n"; \
+	printf "Sürüm: $(VERSION)\n"; \
+	printf "Sürüm kodu: $(VERSION_CODE)\n"; \
 	printf " \n"; \
 	printf " ------------------------------------- \n"; \
 	printf " \n"; \
-	printf "Starting build... Please waith.\n"; \
+	printf "İnşa başlatılıyor... Lütfen bekleyin.\n"; \
 	sleep 2; \
-	printf "Make running with silent mode...\n"; \
+	printf "Make sessiz modda çalıştırılıyor...\n"; \
 	make -s pbt; 
 
-# build progress
+# inşa işlemi
 .PHONY: $(TARGET)
 $(TARGET): $(OBJS)
 	$(LD) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
@@ -52,39 +52,39 @@ $(TARGET): $(OBJS)
 	mkdir -p out/binary; \
 	mkdir -p out/package; \
 	mv pbt out/binary; \
-	printf "Generating gzip package...\n"; \
+	printf "gzip paketi oluşturuluyor...\n"; \
 	cp out/binary/pbt out/package; \
 	gzip -f out/package/pbt; \
 	mv out/package/pbt.gz out/package/pbt_$(ARCH).gz; \
 	printf " \n"; \
 	printf " ------------------------------------- \n";
 
-# cleaner functions
+# temizleyici özellikler
 .PHONY: clean
 clean:
-	@printf "Cleaning (builded files [.o extended])...\n"; \
+	@printf "Temizleniyor (inşa edilmişler [.o uzantılı])...\n"; \
 	sleep 2; \
 	rm -rf $(OBJS); \
-	printf "Success\n";
+	printf "Başarılı\n";
 
 .PHONY: clean-all
 clean-all:
-	@printf "Cleaning (builded files [.o extended] and binary)...\n"; \
+	@printf "Temizleniyor (inşa edilmişler [.o uzantılı] ve kitaplık)...\n"; \
 	sleep 2; \
 	rm -rf $(OBJS) out; \
-	printf "Success\n";
+	printf "Başarılı\n";
 
-# helper function
+# yardım önemli
 .PHONY: help
 help:
-	@printf " --------- Partition Backupper help ---------\n"; \
+	@printf " --------- Partition Backupper yardım ---------\n"; \
 	printf " \n"; \
-	printf " Commands;\n"; \
-	printf "    make                 ==> Build Partition Backupper\n"; \
-	printf "    make clean           ==> Clear files (Builded binaries are not deleted)\n"; \
-	printf "    make clean-all       ==> Clear files (Builded binaries are deleted)\n"; \
-	printf "    make install-termux  ==> If you are using termux, it installs the compiled pbt into termux. So it allows you to use it like a normal command.\n"; \
-	printf "    make help            ==> Display help message\n"; \
+	printf " Komutlar;\n"; \
+	printf "    make                 ==> Partition Backupper inşasını başlatın.\n"; \
+	printf "    make clean           ==> Dosyaları temizle (İnşa edilmiş kitaplık silinmez)\n"; \
+	printf "    make clean-all       ==> Dosyaları temizle (İnşa edilmiş kitaplık silinir)\n"; \
+	printf "    make install-termux  ==> Eğer termux kullanıyor ve mimariniz uygun ise ptb'yi termux'a kurar.\n"; \
+	printf "    make help            ==> Bu yardım mesajını göster.\n"; \
 	printf " \n";
 
 .PHONY: install-termux
@@ -92,22 +92,22 @@ install-termux:
 	@arch=$$(uname -m); \
 	if [ "$$arch" = "aarch64" ]; then \
 		printf " ------------------------------------- \n"; \
-		printf "            pbt installer            \n"; \
+		printf "            pbt kuruluyor            \n"; \
 		printf " ------------------------------------- \n"; \
 		cp out/binary/pbt /data/data/com.termux/files/usr/bin/pbt; \
 		chmod 777 /data/data/com.termux/files/usr/bin/pbt; \
 		printf " \n"; \
-		printf "Success.\n"; \
+		printf "Başarılı.\n"; \
 		printf " \n"; \
 	elif [ "$$arch" = "armv7l" ]; then \
 		printf " ------------------------------------- \n"; \
-		printf "           ptb installer           \n"; \
+		printf "           pbt kuruluyor           \n"; \
 		printf " ------------------------------------- \n"; \
-		cp out/pbt /data/data/com.termux/files/usr/bin/pbt; \
+		cp out/binary/pbt /data/data/com.termux/files/usr/bin/pbt; \
 		chmod 777 /data/data/com.termux/files/usr/bin/pbt; \
 		printf " \n"; \
-		printf "Success.\n"; \
+		printf "Başarılı.\n"; \
 		printf " \n"; \
 	else \
-		printf "This function is only available on Termux Android devices using aarch64 (64-bit) and armv7l (32-bit)\n"; \
+		printf "Bu özellik sadece termux kullanan aarch64 (64-bit) ve armv7l (32-bit) mimarili cihazlarda kullanılabilir.\n"; \
 	fi
