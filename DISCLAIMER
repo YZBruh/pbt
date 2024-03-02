@@ -1,6 +1,7 @@
-WARNING: 
- Disclaimer of Liability Regarding the Use of the C Library
- - This library is intended for the user to backup the C android partitions. However, we do not accept responsibility for any problems or losses that may arise during its use.
- - Users should carefully test the library functions and, if necessary, implement their own error management mechanisms.
- - The authors reserve the right to make any changes or updates related to the library.
- - This library is intended for backing up android partitions and its suitability for any specific project or application is not guaranteed. It is important for users to evaluate the suitability of their own projects.
+UYARI: 
+ C Kitaplığı Kullanımı İle İlgili Sorumluluk Reddi
+
+ - Bu kitaplık, kullanıcının C android bölümlerini yedeklemesi amaçlıdır. Ancak, kullanımı sırasında ortaya çıkabilecek herhangi bir sorundan veya kayıptan dolayı sorumluluk kabul edilmemektedir.
+ - Kullanıcılar, kitaplık fonksiyonlarını dikkatlice test etmelidir ve gerekirse kendi hata yönetim mekanizmalarını uygulamalıdır.
+ - Yazarlar, kitaplıkla ilgili herhangi bir değişiklik veya güncelleme yapma hakkını saklı tutarlar.
+ - Bu kitaplık, android bölümlerini yedeklemek amaçlıdır ve herhangi bir spesifik proje veya uygulama için uygunluğu garanti edilmemektedir. Kullanıcıların kendi projelerine uygunluğunu değerlendirmeleri önemlidir.
