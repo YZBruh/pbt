@@ -40,3 +40,29 @@ Mesela `boot_a` bölümünü yedeklemek istersek: `pbt -p boot_a` (eğer farklı
 - `-p` | `--partition` argümanını kullanmak zorunludur. Sonuçta yedeklenecek bir bölüm adı gerekli.
 - Eğer mantıksal bölüm bayrağı kullanılmaz ise varsayılan olarak klasik bir bölûm yedeklenmeye çalışılır.
 - Önerilerinizi bildirin!
+
+### Nasıl inşa edilir?
+
+pbt'yi inşa etmek için termux bile yeterlidir. Veya isterseniz linux ile derleyebilirsiniz. NOT: Derlemek istediğiniz mimariye göre özel bir gcc kullanın.
+
+Eğer bir şeyleri değiştirmek istiyorsanız konfigrasyona göz atın. Onu değiştirebilirsiniz.
+`mka` klasörü içinde bulunur. Adı `config.mk`. Dosya içinde bilgileri verdim. Daha fazlasını sorabilirsiniz.
+
+İnşa etmek için;
+```
+make
+```
+
+Özel `make` komutları (pbt sunar :) ;
+```
+--------- Partition Backupper yardım ---------
+
+ Komutlar;
+    make                 ==> Partition Backupper inşasını başlatın.
+    make clean           ==> Dosyaları temizle (İnşa edilmiş kitaplık silinmez)
+    make clean-all       ==> Dosyaları temizle (İnşa edilmiş kitaplık silinir)
+    make install-termux  ==> Eğer termux kullanıyor ve mimariniz uygun ise ptb'yi termux'a kurar.
+    make help            ==> Bu yardım mesajını göster.
+```
+
+Ben termux ile derledim :D. Neden uğraşayımki... `GCC 17.0.6` ile derledim. Sürüm görme seçeneği ile bakabilirsiniz :)
