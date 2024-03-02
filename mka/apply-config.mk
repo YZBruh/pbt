@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# gcc setting
+# gcc ayarları
 ifeq ($(USE_CUST_GCC), true)
 	CC := $(CUST_GCC)
 	LD := $(CUST_GCC)
@@ -23,7 +23,7 @@ else
 	LD := gcc
 endif
 
-# gcc flag settings
+# gcc bayrakları
 CFLAGS := -O3 -g -Wno-unused-parameter -Wall -Wextra -static $(EXTRA_GCC_FLAGS)
 
-# end of code
+# kodun sonu
