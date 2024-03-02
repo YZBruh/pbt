@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-/* add pre-function important */
+/* fonksiyonları eklemeden önce gerekli değişkenleri belirt */
 char *out;
 char *outdir;
 char *my_out;
@@ -28,13 +28,13 @@ bool use_cust_cxt = false;
 bool pbt_ab = false;
 bool pbt_logical = false;
 
-/* shorter error messages will be functional xd */
+/* hızlı ve basit hata mesajları önemli xd */
 void error(const char *err_msg) {
     fprintf(stderr, ANSI_RED "%s" ANSI_RESET, err_msg);
     exit(EXIT_FAILURE);
 }
 
-/* check if the device is ab partitioned */
+/* cihazın ab ve mantıksal bölümlere sahip olup olmadığını kontrol et */
 void check_psf() {
     /* true = ab | false = a */
     if (use_cust_cxt) {
@@ -53,7 +53,7 @@ void check_psf() {
         }
     }
     
-    /* true = logical | false = classic */
+    /* true = mantıksal | false = klasik */
     if (use_cust_cxt) {
         char cust_cxt_cklpath[150];
         sprintf(cust_cxt_cklpath, "%s/super", cust_cxt);
@@ -71,37 +71,37 @@ void check_psf() {
     }
 }
 
-/* list existing partitions */
+/* bölüm listeleme özelliği */
 void listpart() {
     if (use_cust_cxt) {
-        printf("List of classic partitions (%s): \n", cust_cxt);
+        printf("Klasik bölümlerin listesi (%s): \n", cust_cxt);
         char cust_cxt_path[150];
         sprintf(cust_cxt_path, "ls %s", cust_cxt);
         if (system(cust_cxt_path) != 0) {
-            error("An error occurred when the partition list appears!\n");
+            error("Klasik bölümlerin listesi görüntülenirken bir hata oluştu!\n");
         }
     } else {
-        printf("List of classic partitions (/dev/block/by-name): \n");
+        printf("Klasik bölümlerin listesi (/dev/block/by-name): \n");
         if (system("ls /dev/block/by-name") != 0) {
-            error("An error occurred when the classic partition list appears!\n");
+            error("Klasik bölümlerin listesi görüntülenirken bir hata oluştu!\n");
         }
     }
     
     if (pbt_logical) {
-        printf("List of logical partitions (/dev/block/mapper): \n");
+        printf("Mantıksal bölümlerin listesi (/dev/block/mapper): \n");
         if (system("ls /dev/block/mapper") != 0) {
-            error("An error occurred when the logical partition list appears!\n");
+            error("Mantıksal bölümlerin listesi görüntülenirken bir hata oluştu!\n");
         }
     }
     if (pbt_ab) {
-        printf("%sWarning: device using A/B partition style.%s\n", ANSI_YELLOW, ANSI_RESET);
+        printf("%sUyarı: cihaz A/B bölüm stili kullanıyor.%s\n", ANSI_YELLOW, ANSI_RESET);
     }
     if (pbt_logical) {
-        printf("%sWarning: device using logical partition type.%s\n", ANSI_YELLOW, ANSI_RESET);
+        printf("%sUyarı: cihaz mantıksal bölüm tipine sahip.%s\n", ANSI_YELLOW, ANSI_RESET);
     }
 }
 
-/* additional function to perform backup */
+/* düzgün ve sorunsuz yedek için özentili bir fonksiyon ;) */
 void backup(char *target_pt, char *pst) {
     char path[200];
     if (strstr(pst, "classic") != NULL) {
@@ -113,12 +113,12 @@ void backup(char *target_pt, char *pst) {
     } else if (strstr(pst, "logical") != NULL) {
         sprintf(path, "/dev/block/mapper/%s", target_pt);
     } else {
-        error("İnvalid partition type!\n");
+        error("Bilinmeyen bölüm stili (mantıksal veya klasik değil)!\n");
     }
     if (access(path, F_OK) == -1) {
-        error("Partition not found!\n");
+        error("Bölüm bulunamadı!\n");
     } else {
-        printf("Target partition: %s\nBackupping...\n", target_pt);
+        printf("Hedef bölüm: %s\nYedekleniyor...\n", target_pt);
     }
     char cmd[256];
     if (my_out != NULL) {
@@ -139,28 +139,28 @@ void backup(char *target_pt, char *pst) {
     } else {
         if (my_out != NULL) {
             if (out != NULL) {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, my_out, out, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: %s/%s.img%s\n", ANSI_GREEN, my_out, out, ANSI_RESET);
             } else {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, my_out, target_pt, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: %s/%s.img%s\n", ANSI_GREEN, my_out, target_pt, ANSI_RESET);
             }
         } else {
             if (out != NULL) {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
             } else {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_pt, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_pt, ANSI_RESET);
             }
         }
     }
 }
 
-/* root checker function */
+/* root erişimini doğrulamazsak olmaz */
 void verify_root() {
-    // a quick, easy method to verify root :D
+    // sadece disklere erişmeyi denemek yeter bence :D
     if (chdir("/dev/block") != 0) {
         error("Root privileges could not be detected! Please run this binary with root.\n");
     }
 }
 
-/* end of code */
+/* kod sonu */
 
 #endif
