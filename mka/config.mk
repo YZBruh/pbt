@@ -14,16 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# use custom gcc | true or false
+# özel gcc kullan | true yada false
 USE_CUST_GCC := false
 
-# custom gcc ext (if used)
+# özel gcc adı (eğer kullanıyorsanız. mesela aarch64-linux-no-gnueabi-)
 CUST_GCC := 
 
-# addionital gcc flags
+# özel gcc bayrakları (isterseniz ekleyin)
 EXTRA_GCC_FLAGS := 
 
-# apply configration
+# konfigrasyonu uygula
 include mka/apply-config.mk
 
-# end of config
+# konfigrasyonun sonu
