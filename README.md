@@ -32,7 +32,7 @@ Example 2:
 Report bugs to <xda-@YZBruh>
 ```
 
-For example, if we want to back up the `boot_a` partition: `pbt -p boot_a' (edit the command if it has a different name).
+For example, if we want to back up the `boot_a` partition: `pbt -p boot_a` (edit the command if it has a different name).
 
 #### Some notes
 
