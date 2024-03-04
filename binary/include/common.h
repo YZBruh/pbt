@@ -37,7 +37,7 @@ void check_psf();
 void check_root();
 void listpart();
 void backup(char *target_pt, char *pst);
-void flash();
+void flash(char *target_flash_part, char *target_flash_fpart);
 
 /* macros */
 #define ANSI_RED      "\033[31m"
@@ -56,6 +56,7 @@ extern char *out;
 extern char *outdir;
 extern char *my_out;
 extern char *cust_cxt;
+extern char target_flash_f[300];
 extern char cust_cxt_path[150];
 extern char cust_cxt_ckpath[150];
 extern char cust_cxt_cklpath[150];
