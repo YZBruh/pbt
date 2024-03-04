@@ -17,8 +17,8 @@ include mka/config.mk
 # limitations under the License.
 
 # speficy
-VERSION := 1.4.0
-VERSION_CODE := 140
+VERSION := 1.5.0
+VERSION_CODE := 150
 SOURCE_DIR := binary
 TARGET := pbt
 ARCH := $(shell uname -m)
@@ -55,7 +55,7 @@ $(TARGET): $(OBJS)
 	printf "Generating gzip package...\n"; \
 	cp out/binary/pbt out/package; \
 	gzip -f out/package/pbt; \
-	mv out/package/pbt.gz out/package/pbt_$(ARCH).gz; \
+	mv out/package/pbt.gz out/package/pbt-$(ARCH)-en.gz; \
 	printf " \n"; \
 	printf " ------------------------------------- \n";
 
