@@ -4,6 +4,18 @@
 /* By YZBruh */
 
 /*
+ *         _      _   
+ *        | |    | |  
+ *  _ __  | |__  | |_ 
+ * | '_ \ | '_ \ | __|
+ * | |_) || |_) || |_ 
+ * | .__/ |_.__/  \__|
+ * | |                
+ * |_|                
+ *
+ */
+
+/*
  * Copyright 2024 YZBruh - Partition Packupper
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,13 +41,15 @@ bool pbt_ab = false;
 bool pbt_logical = false;
 
 /* shorter error messages will be functional xd */
-void error(const char *err_msg) {
+void error(const char *err_msg)
+{
     fprintf(stderr, ANSI_RED "%s" ANSI_RESET, err_msg);
     exit(EXIT_FAILURE);
 }
 
 /* check if the device is ab partitioned */
-void check_psf() {
+void check_psf()
+{
     /* true = ab | false = a */
     if (use_cust_cxt) {
         char cust_cxt_ckpath[150];
@@ -72,7 +86,8 @@ void check_psf() {
 }
 
 /* list existing partitions */
-void listpart() {
+void listpart()
+{
     if (use_cust_cxt) {
         printf("List of classic partitions (%s): \n", cust_cxt);
         char cust_cxt_path[150];
@@ -102,7 +117,8 @@ void listpart() {
 }
 
 /* additional function to perform backup */
-void backup(char *target_pt, char *pst) {
+void backup(char *target_pt, char *pst)
+{
     char path[200];
     if (strstr(pst, "classic") != NULL) {
         if (use_cust_cxt) {
@@ -154,8 +170,9 @@ void backup(char *target_pt, char *pst) {
 }
 
 /* root checker function */
-void verify_root() {
-    // a quick, easy method to verify root :D
+void verify_root()
+{
+    /* a quick, easy method to verify root :D */
     if (chdir("/dev/block") != 0) {
         error("Root privileges could not be detected! Please run this binary with root.\n");
     }
