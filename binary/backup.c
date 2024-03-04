@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "include/common.h"
+#include "include/tools.h"
 
 /* By YZBruh */
 
@@ -74,14 +75,18 @@ void backup(char *target_pt, char *pst)
         if (my_out != NULL) {
             if (out != NULL) {
                 printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, my_out, out, ANSI_RESET);
+                exit(EXIT_SUCCESS);
             } else {
                 printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, my_out, target_pt, ANSI_RESET);
+                exit(EXIT_SUCCESS);
             }
         } else {
             if (out != NULL) {
                 printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
+                exit(EXIT_SUCCESS);
             } else {
                 printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_pt, ANSI_RESET);
+                exit(EXIT_SUCCESS);
             }
         }
     }
