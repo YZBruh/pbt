@@ -13,8 +13,8 @@
 #define ANSI_GREEN    "\033[32m"
 #define ANSI_RESET    "\033[0m"
 
-#define PACK_VER      "1.4.0"
-#define PACK_VER_CODE "140"
+#define PACK_VER      "1.5.0"
+#define PACK_VER_CODE "150"
 #define PACK_NAME     "Partition Backupper"
 #define PACK_LANG     "en"
 
@@ -52,6 +52,10 @@ int main(int argc, char *argv[]) {
 #   else
        error("Incompatible architecture was detected. This binary works with only arm (32-bit or 64-bit).\n");
 #   endif
+    if (argc < 2) {
+        printf("Usage: %s -p, --partition PARTITION [-l, --logical] [-o, --out] [-d, --outdir] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
     /* a structure for long arguments... */
     struct option long_options[] = {
         {"partition", required_argument, 0, 'p'},
