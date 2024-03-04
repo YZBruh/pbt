@@ -62,7 +62,6 @@ extern char cust_cxt_ckpath[150];
 extern char cust_cxt_cklpath[150];
 extern char path[300];
 extern char cmd[256];
-extern bool use_argx_p;
 extern bool use_logical;
 extern bool use_cust_cxt;
 extern bool pbt_ab;
