@@ -18,7 +18,8 @@
 #define PACK_NAME     "Partition Backupper"
 #define PACK_LANG     "en"
 
-#include "include/pbt.h"
+#include "include/common.h"
+#include "include/tools.h"
 #include "include/documentation.h"
 
 /* By YZBruh */
@@ -72,6 +73,7 @@ int main(int argc, char *argv[]) {
     struct option long_options[] = {
         {"partition", required_argument, 0, 'p'},
         {"logical", no_argument, 0, 'l'},
+        {"flash", required_argument, 0, 'f'},
         {"out", required_argument, 0, 'o'},
         {"outdir", required_argument, 0, 'd'},
         {"context", required_argument, 0, 'c'},
@@ -81,9 +83,8 @@ int main(int argc, char *argv[]) {
         {"license", no_argument, 0, 'L'},
         {0, 0, 0, 0}
     };
-    char *argx_target_p;
-    bool use_argx_p = false;
-    bool use_logical = false;
+    use_argx_p = false;
+    use_logical = false;
     int opt;
     /* control for each argument */
     while ((opt = getopt_long(argc, argv, "p:lo:d:c:DvhL", long_options, NULL)) != -1) {
@@ -91,7 +92,6 @@ int main(int argc, char *argv[]) {
         switch (opt) {
             case 'p':
                 argx_target_p = strdup(optarg);
-                use_argx_p = true;
                 break;
             case 'l':
                 verify_root();
@@ -101,6 +101,10 @@ int main(int argc, char *argv[]) {
                 } else {
                     error("This device does not have logical partitions!\n");
                 }
+                break;
+            case 'f':
+                target_flash_f = strdup(optarg);
+                pbt_flash_mode = true;
                 break;
             case 'o':
                 out = strdup(optarg);
@@ -156,6 +160,27 @@ int main(int argc, char *argv[]) {
     }
     verify_root();
     check_psf();
+    /* check flash stats */
+    if (pbt_flash_mode) {
+        if (argx_target_p == NULL) {
+            fprintf(stderr, "To use the flash function, you need to specify a partition.\n");
+            exit(EXIT_FAILURE);
+        }
+        struct stat flashf_info;
+        if (stat(target_flash_f, &flashf_info) != 0) {
+            fprintf(stderr, "%s: %s: no such file or directory.\n", argv[0], target_flash_f);
+            exit(EXIT_FAILURE);
+        } else {
+            if (S_ISREG(flashf_info.st_mode)) {
+                /* empty */
+            } else {
+                fprintf(stderr, "%s: %s: is a not file.\n", argv[0], target_flash_f);
+                exit(EXIT_FAILURE);
+            }
+        }
+        flash(argx_target_p, target_flash_f);
+        exit(EXIT_SUCCESS);
+    }
     /* custom context checker */
     if (use_cust_cxt) {
         struct stat cxtinfo;
@@ -174,11 +199,13 @@ int main(int argc, char *argv[]) {
             printf("%sThis custom context is strange...%s", ANSI_YELLOW, ANSI_RESET);
         }
     }
-    if (use_argx_p) {
+    if (argx_target_p != NULL) {
         if (use_logical) {
             backup(argx_target_p, "logical");
+            exit(EXIT_SUCCESS);
         } else {
             backup(argx_target_p, "classic");
+            exit(EXIT_SUCCESS);
         }
     } else {
         fprintf(stderr, "%s: required partition name.\nTry `%s --help' for more information.\n", argv[0], argv[0]);
