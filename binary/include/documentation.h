@@ -4,6 +4,18 @@
 /* By YZBruh */
 
 /*
+ *         _      _   
+ *        | |    | |  
+ *  _ __  | |__  | |_ 
+ * | '_ \ | '_ \ | __|
+ * | |_) || |_) || |_ 
+ * | .__/ |_.__/  \__|
+ * | |                
+ * |_|                
+ *
+ */
+
+/*
  * Copyright 2024 YZBruh - Partition Backupper
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +31,8 @@
  * limitations under the License.
  */
 
-void licenses() {
+void licenses()
+{
     printf("Copyright 2024 YZBruh - Partition Backupper\n");
     printf("Licensed under the Apache License, Version 2.0 (the \"License\");\n");
     printf("you may not use this file except in compliance with the License.\n");
@@ -31,7 +44,8 @@ void licenses() {
     printf("See the License for the specific language governing permissions and limitations under the License.\n");
 }
 
-void help() {
+void help()
+{
     printf("Usage (arguments): \n");
     printf("   -p, --partition   name of the partition to be backed up\n");
     printf("   -l, --logical     know that the partition that will be backed up is logical\n");
