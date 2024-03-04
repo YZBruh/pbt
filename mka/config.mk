@@ -1,5 +1,15 @@
 # By YZBruh
 
+#         _      _   
+#        | |    | |  
+#  _ __  | |__  | |_ 
+# | '_ \ | '_ \ | __|
+# | |_) || |_) || |_ 
+# | .__/ |_.__/  \__|
+# | |                
+# |_|                
+#
+
 # Copyright 2024 YZBruh - Partition Backupper
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
