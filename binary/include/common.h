@@ -66,6 +66,7 @@ extern bool use_logical;
 extern bool use_cust_cxt;
 extern bool pbt_ab;
 extern bool pbt_logical;
+extern bool pbt_flash_mode;
 
 /* end of code */
 
