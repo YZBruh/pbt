@@ -1,6 +1,6 @@
-## Partition Backupper (pbt)
+## Partition Manager (pbt)
 
-This binary static C library is for backing up partitions of android devices.
+This binary static C library is for manage partitions of android devices.
 It offers a lot of options. I will place these below. But first let me talk about the operation...
 
 ```
@@ -13,10 +13,12 @@ It offers a lot of options. I will place these below. But first let me talk abou
 
 ```
 Usage (arguments):
+   -b, --backup      backup mode
+   -f, --flash       flash mode
    -p, --partition   name of the partition to be backed up
    -l, --logical     know that the partition that will be backed up is logical
-   -o, --out         the output name of the backed-up partition (default: partition name)
-   -d, --outdir      directory where the backup partition will be saved (default: /storage/emulated/0)
+   -o, --out         (only backups) the output name of the backed-up partition (default: partition name)
+   -d, --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)
    -c, --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)
    -D, --list        list partitions
    -v, --version     see version
@@ -24,26 +26,28 @@ Usage (arguments):
    -L, --license     see license
 
 Example 1:
-   -p boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name
+   -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name
 
 Example 2:
+   --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name
+
+Example 3:
    -c /dev/block/platform/bootdevice/by-name --list
 
 Report bugs to <xda-@YZBruh>
 ```
 
-For example, if we want to back up the `boot_a` partition: `pbt -p boot_a` (edit the command if it has a different name).
-
 #### Some notes
 
 - Feel free to ask any questions you want.
 - Packages are available in publications.
-- it is mandatory to use the `-p` | `--partition` argument. After all, a partition name is required to be backed up.
-- If the logical partition flag is not used, a classic partition is tried to be backed up by default.
+- İt is mandatory to use the `-b` | `--backup` or `-f` | `--flash` and `-p` | `--partition` argument. After all, a partition name and progress type is required to be progress.
+- If the logical partition flag is not used, a classic partition is tried to be processing by default.
+- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.5.0-en-developing/CHANGELOG.md)
 - Let me know your suggestions!
 
 ### How is it built?
-Even termux is enough to build the pbt. Or you can compile it with linux if you want. NOTE: Use a custom gcc according to the architecture you want to compile.
+Even termux is enough to build the pmt. Or you can compile it with linux if you want. NOTE: Use a custom gcc according to the architecture you want to compile.
 
 If you want to change something, take a look at the configuration. You can change him.
 it is located in the `mka` folder. His name is `config.mk`. I gave the information in the file. You can ask more.
@@ -55,7 +59,7 @@ make
 
 Special `make` commands (pbt offers :) ;
 ```
---------- Partition Backupper help ---------
+--------- Partition Manager help ---------
 
  Commands;
     make                 ==> Build Partition Backupper
