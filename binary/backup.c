@@ -1,29 +1,17 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <stddef.h>
-#include <stdbool.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 #include "include/common.h"
-#include "include/tools.h"
 
 /* By YZBruh */
 
 /*
- *         _      _   
- *        | |    | |  
- *  _ __  | |__  | |_ 
- * | '_ \ | '_ \ | __|
- * | |_) || |_) || |_ 
- * | .__/ |_.__/  \__|
- * | |                
- * |_|                
- *
- */
-
-/*
- * Copyright 2024 YZBruh - Partition Backupper
+ * Copyright 2024 YZBruh - Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,56 +26,67 @@
  * limitations under the License.
  */
 
-void backup(char *target_pt, char *pst)
+extern char *out;
+extern char *outdir;
+extern char *cust_cxt;
+extern bool use_logical;
+extern bool use_cust_cxt;
+
+/* backupper func */
+void backup(char *target_backup_partition, char *backup_partition_style)
 {
-    if (strstr(pst, "classic") != NULL) {
+    static char backupper_path[200];
+    if (strstr(backup_partition_style, "classic") != NULL) {
         if (use_cust_cxt) {
-            sprintf(path, "%s/%s", cust_cxt, target_pt);
+            sprintf(backupper_path, "%s/%s", cust_cxt, target_backup_partition);
         } else {
-            sprintf(path, "/dev/block/by-name/%s", target_pt);
+            sprintf(backupper_path, "/dev/block/by-name/%s", target_backup_partition);
         }
-    } else if (strstr(pst, "logical") != NULL) {
-        sprintf(path, "/dev/block/mapper/%s", target_pt);
+    } else if (strstr(backup_partition_style, "logical") != NULL) {
+        sprintf(backupper_path, "/dev/block/mapper/%s", target_backup_partition);
     } else {
         error("İnvalid partition type!\n");
     }
-    if (access(path, F_OK) == -1) {
+
+    if (access(backupper_path, F_OK) == -1) {
         error("Partition not found!\n");
     } else {
-        printf("Target partition: %s\nBackupping...\n", target_pt);
+        printf("Target partition: %s\nBackupping...\n", target_backup_partition);
     }
-    if (my_out != NULL) {
+
+    static char backupper_cmd[256];
+    if (outdir != NULL) {
         if (out != NULL) {
-            sprintf(cmd, "dd if=%s of=%s/%s.img status=none", path, my_out, out);
+            sprintf(backupper_cmd, "dd if=%s of=%s/%s.img status=none", backupper_path, outdir, out);
         } else {
-            sprintf(cmd, "dd if=%s of=%s/%s.img status=none", path, my_out, target_pt);
+            sprintf(backupper_cmd, "dd if=%s of=%s/%s.img status=none", backupper_path, outdir, target_backup_partition);
         }
     } else {
         if (out != NULL) {
-            sprintf(cmd, "dd if=%s of=/storage/emulated/0/%s.img status=none", path, out);
+            sprintf(backupper_cmd, "dd if=%s of=/storage/emulated/0/%s.img status=none", backupper_path, out);
         } else {
-            sprintf(cmd, "dd if=%s of=/storage/emulated/0/%s.img status=none", path, target_pt);
+            sprintf(backupper_cmd, "dd if=%s of=/storage/emulated/0/%s.img status=none", backupper_path, target_backup_partition);
         }
     }
-    if (system(cmd) != 0) {
+
+    if (system(backupper_cmd) != 0) {
         error("Failed!\n");
     } else {
-        if (my_out != NULL) {
+        if (outdir != NULL) {
             if (out != NULL) {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, my_out, out, ANSI_RESET);
-                exit(EXIT_SUCCESS);
+                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, out, ANSI_RESET);
             } else {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, my_out, target_pt, ANSI_RESET);
-                exit(EXIT_SUCCESS);
+                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, target_backup_partition, ANSI_RESET);
             }
         } else {
             if (out != NULL) {
                 printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
-                exit(EXIT_SUCCESS);
             } else {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_pt, ANSI_RESET);
-                exit(EXIT_SUCCESS);
+                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_backup_partition, ANSI_RESET);
             }
         }
+        
     }
 }
+
+/* end of code */
