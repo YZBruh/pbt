@@ -1,16 +1,6 @@
 # By YZBruh
 
-#         _      _   
-#        | |    | |  
-#  _ __  | |__  | |_ 
-# | '_ \ | '_ \ | __|
-# | |_) || |_) || |_ 
-# | .__/ |_.__/  \__|
-# | |                
-# |_|                
-#
-
-# Copyright 2024 YZBruh - Partition Backupper
+# Copyright 2024 YZBruh - Partition Manager
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,9 +18,11 @@
 ifeq ($(USE_CUST_GCC), true)
 	CC := $(CUST_GCC)
 	LD := $(CUST_GCC)
-else
+else ifeq ($(USE_CUST_GCC), false)
 	CC := gcc
 	LD := gcc
+else
+	$(error İnvalid custom gcc config flag: $(USE_CUST_GCC))
 endif
 
 # gcc flag settings
