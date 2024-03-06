@@ -20,12 +20,23 @@ include mka/config.mk
 VERSION := 1.5.0
 VERSION_CODE := 150
 SOURCE_DIR := binary
-TARGET := pbt
+TARGET := pmt
 ARCH := $(shell uname -m)
 
 # code list
-OBJS= $(SOURCE_DIR)/pbt.o
-SRCS := $(SOURCE_DIR)/pbt.c
+SRCS := $(SOURCE_DIR)/$(TARGET).c
+SRCS += $(SOURCE_DIR)/error.c
+SRCS += $(SOURCE_DIR)/checkers.c
+SRCS += $(SOURCE_DIR)/lister.c
+SRCS += $(SOURCE_DIR)/flash.c
+SRCS += $(SOURCE_DIR)/backup.c
+
+OBJS := $(SOURCE_DIR)/$(TARGET).o
+OBJS += $(SOURCE_DIR)/error.o
+OBJS += $(SOURCE_DIR)/checkers.o
+OBJS += $(SOURCE_DIR)/lister.o
+OBJS += $(SOURCE_DIR)/flash.o
+OBJS += $(SOURCE_DIR)/backup.o
 
 # gcc flags
 LDFLAGS :=
@@ -33,7 +44,7 @@ LDLIBS := -lm
 
 # display
 all: 
-	@printf "  --- Building Partition Backupper ---  \n"; \
+	@printf "  --- Building Partition Manager ---  \n"; \
 	printf "Version: $(VERSION)\n"; \
 	printf "Version code: $(VERSION_CODE)\n"; \
 	printf " \n"; \
@@ -42,7 +53,7 @@ all:
 	printf "Starting build... Please waith.\n"; \
 	sleep 2; \
 	printf "Make running with silent mode...\n"; \
-	make -s pbt; 
+	make -s pmt; 
 
 # build progress
 .PHONY: $(TARGET)
@@ -51,11 +62,11 @@ $(TARGET): $(OBJS)
 	@mkdir -p out; \
 	mkdir -p out/binary; \
 	mkdir -p out/package; \
-	mv pbt out/binary; \
+	mv pmt out/binary; \
 	printf "Generating gzip package...\n"; \
-	cp out/binary/pbt out/package; \
-	gzip -f out/package/pbt; \
-	mv out/package/pbt.gz out/package/pbt-$(ARCH)-en.gz; \
+	cp out/binary/pmt out/package; \
+	gzip -f out/package/pmt; \
+	mv out/package/pmt.gz out/package/pmt-$(ARCH)-en.gz; \
 	printf " \n"; \
 	printf " ------------------------------------- \n";
 
@@ -77,13 +88,13 @@ clean-all:
 # helper function
 .PHONY: help
 help:
-	@printf " --------- Partition Backupper help ---------\n"; \
+	@printf " --------- Partition Manager help ---------\n"; \
 	printf " \n"; \
 	printf " Commands;\n"; \
 	printf "    make                 ==> Build Partition Backupper\n"; \
 	printf "    make clean           ==> Clear files (Builded binaries are not deleted)\n"; \
 	printf "    make clean-all       ==> Clear files (Builded binaries are deleted)\n"; \
-	printf "    make install-termux  ==> If you are using termux, it installs the compiled pbt into termux. So it allows you to use it like a normal command.\n"; \
+	printf "    make install-termux  ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.\n"; \
 	printf "    make help            ==> Display help message\n"; \
 	printf " \n";
 
@@ -92,19 +103,19 @@ install-termux:
 	@arch=$$(uname -m); \
 	if [ "$$arch" = "aarch64" ]; then \
 		printf " ------------------------------------- \n"; \
-		printf "            pbt installer            \n"; \
+		printf "            pmt installer            \n"; \
 		printf " ------------------------------------- \n"; \
-		cp out/binary/pbt /data/data/com.termux/files/usr/bin/pbt; \
-		chmod 777 /data/data/com.termux/files/usr/bin/pbt; \
+		cp out/binary/pmt /data/data/com.termux/files/usr/bin/pmt; \
+		chmod 777 /data/data/com.termux/files/usr/bin/pmt; \
 		printf " \n"; \
 		printf "Success.\n"; \
 		printf " \n"; \
 	elif [ "$$arch" = "armv7l" ]; then \
 		printf " ------------------------------------- \n"; \
-		printf "           ptb installer           \n"; \
+		printf "           pmt installer           \n"; \
 		printf " ------------------------------------- \n"; \
-		cp out/pbt /data/data/com.termux/files/usr/bin/pbt; \
-		chmod 777 /data/data/com.termux/files/usr/bin/pbt; \
+		cp out/binary/pmt /data/data/com.termux/files/usr/bin/pmt; \
+		chmod 777 /data/data/com.termux/files/usr/bin/pmt; \
 		printf " \n"; \
 		printf "Success.\n"; \
 		printf " \n"; \
