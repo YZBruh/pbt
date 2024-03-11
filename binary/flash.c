@@ -29,12 +29,12 @@
 extern char *cust_cxt;
 extern bool use_cust_cxt;
 
-/* flasher func */
+/* flaşlayıcı fonksiyon.. */
 void flash(char *target_flash_partition, char *target_file, char *flash_partition_style)
 {
     static char flasher_path[200];
-    /* determine device block */
-    /* for classic */
+    /* bloku bul */
+    /* klasik bölümler için */
     if (strstr(flash_partition_style, "classic") != NULL) {
         if (use_cust_cxt) {
             sprintf(flasher_path, "%s/%s", cust_cxt, target_flash_partition);
@@ -45,14 +45,14 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
     } else if (strstr(flash_partition_style, "logical") != NULL) {
         sprintf(flasher_path, "/dev/block/mapper/%s", target_flash_partition);
     } else {
-        error("İnvalid partition type!\n");
+        error("Bilinmeyen bölüm tipi!\n");
     }
 
     /* check partition */
     if (access(flasher_path, F_OK) == -1) {
-        error("Partition not found!\n");
+        error("Bölüm bulunamadı!\n");
     } else {
-        printf("Target partition: %s\nFlashing...\n", target_flash_partition);
+        printf("Hedef bölüm: %s\nFlaşlanıyor...\n", target_flash_partition);
     }
 
     /* setting up */
@@ -61,10 +61,10 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
 
     /* start flash */
     if (system(flasher_cmd) != 0) {
-        error("Failed!\n");
+        error("Başarısız!\n");
     } else {
-        printf("%sSuccess.%s\n", ANSI_GREEN, ANSI_RESET);
+        printf("%sBaşarılı.%s\n", ANSI_GREEN, ANSI_RESET);
     }
 }
 
-/* end of code */
+/* kodun sonu */
