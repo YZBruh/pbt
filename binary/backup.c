@@ -32,7 +32,7 @@ extern char *cust_cxt;
 extern bool use_logical;
 extern bool use_cust_cxt;
 
-/* backupper func */
+/* yedekleyici fonksiyon.. */
 void backup(char *target_backup_partition, char *backup_partition_style)
 {
     static char backupper_path[200];
@@ -45,13 +45,13 @@ void backup(char *target_backup_partition, char *backup_partition_style)
     } else if (strstr(backup_partition_style, "logical") != NULL) {
         sprintf(backupper_path, "/dev/block/mapper/%s", target_backup_partition);
     } else {
-        error("İnvalid partition type!\n");
+        error("Bilinmeyen bölüm tipi!\n");
     }
 
     if (access(backupper_path, F_OK) == -1) {
-        error("Partition not found!\n");
+        error("Bölüm bulunamadı!\n");
     } else {
-        printf("Target partition: %s\nBackupping...\n", target_backup_partition);
+        printf("Hedef bölüm: %s\nYedekleniyor...\n", target_backup_partition);
     }
 
     static char backupper_cmd[256];
@@ -74,15 +74,15 @@ void backup(char *target_backup_partition, char *backup_partition_style)
     } else {
         if (outdir != NULL) {
             if (out != NULL) {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, out, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: %s/%s.img%s\n", ANSI_GREEN, outdir, out, ANSI_RESET);
             } else {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, target_backup_partition, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: %s/%s.img%s\n", ANSI_GREEN, outdir, target_backup_partition, ANSI_RESET);
             }
         } else {
             if (out != NULL) {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
             } else {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_backup_partition, ANSI_RESET);
+                printf("%sBaşarılı. Çıktı: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_backup_partition, ANSI_RESET);
             }
         }
         
