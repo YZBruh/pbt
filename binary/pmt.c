@@ -41,16 +41,16 @@ bool pmt_logical = false;
 bool pmt_flash = false;
 bool pmt_backup = false;
 
-/* classic main function (C binary here xd) */
+/* klasik main fonksiyonu (C kitaplığı işte xd) */
 int main(int argc, char *argv[])
 {
-    /* check argument total */
+    /* toplam argüman sayısını kontrol et */
     if (argc < 2) {
-        printf("Usage: %s [-b, --backup] [-f, --flash] [-p, --partition] [-l, --logical] [-f, --flash] [-o, --out] [-d, --outdir] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
+        printf("Kullanımı: %s [-b, --backup] [-f, --flash FILE] [-p, --partition PARTITION] [-l, --logical] [-o, --out OUTNAME] [-d, --outdir OUTDIR] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    /* a structure for long arguments... */
+    /* uzun kullanımlı argümanlar için bir struct... */
     struct option long_options[] = {
         {"backup", no_argument, 0, 'b'},
         {"flash", required_argument, 0, 'f'},
@@ -68,11 +68,11 @@ int main(int argc, char *argv[])
 
     static char *opt_symbol = "-";
     static char *common_symbol_rule;
-    common_symbol_rule = "When entering the attached argument of an option, an argument of another option type cannot be used. In short, the rule is: there can be no '-' at the beginning of the attached argument.\n";
+    common_symbol_rule = "Bir seçeneğin ekleşik argümanını girerken başka bir seçenek tipinde argüman kullanılamaz. Kısacası kural: ekleşik argüman başında '-' olamaz.\n";
     int opt;
-    /* control for each argument */
+    /* tüm argümanları kontrol et */
     while ((opt = getopt_long(argc, argv, "bf:p:lo:d:c:DvhL", long_options, NULL)) != -1) {
-        /* process arguments */
+        /* argümanları işlemeye al */
         switch (opt) {
             case 'b':
                 pmt_backup = true;
@@ -87,11 +87,11 @@ int main(int argc, char *argv[])
                 check_psf();
                 struct stat flashf_info;
                 if (stat(target_flash_file, &flashf_info) != 0) {
-                    fprintf(stderr, "%s: %s: no such file or directory.\n", argv[0], target_flash_file);
+                    fprintf(stderr, "%s: %s: dosya veya dizin yok.\n", argv[0], target_flash_file);
                     exit(EXIT_FAILURE);
                 } else {
                     if (!S_ISREG(flashf_info.st_mode)) {
-                        fprintf(stderr, "%s: %s: is a not file.\n", argv[0], target_flash_file);
+                        fprintf(stderr, "%s: %s: bu bir dosya değil.\n", argv[0], target_flash_file);
                         exit(EXIT_FAILURE);
                     }
                 }
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
                 if (pmt_logical) {
                     use_logical = true;
                 } else {
-                    error("This device does not have logical partitions!\n");
+                    error("Bu cihaz mantıksal bölümlere sahip değil!\n");
                 }
                 break;
             case 'o':
@@ -126,11 +126,11 @@ int main(int argc, char *argv[])
                 check_psf();
                 struct stat out_info;
                 if (stat(outdir, &out_info) != 0) {
-                    fprintf(stderr, "%s: %s: no such file or directory.\n", argv[0], outdir);
+                    fprintf(stderr, "%s: %s: dosya veya dizin yok.\n", argv[0], outdir);
                     exit(EXIT_FAILURE);
                 } else {
                     if (!S_ISDIR(out_info.st_mode)) {
-                        fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], outdir);
+                        fprintf(stderr, "%s: %s: bu bir dizin değil.\n", argv[0], outdir);
                         exit(EXIT_FAILURE);
                     }
                 }
@@ -148,16 +148,16 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case 'v':
-                printf("Version: %s (code %s)\n", PACK_VER, PACK_VER_CODE);
+                printf("Versiyon: %s (kod %s)\n", PACK_VER, PACK_VER_CODE);
 #               ifdef __clang__
-                    printf("Compiler: clang %s", __clang_version__);
+                    printf("Derleyici: clang %s", __clang_version__);
 #               endif
 #               ifdef __GNUC__
                     printf("(GNUC %d.%d.%d)\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #               else
                     printf("\n");
 #               endif
-                printf("See licenses with -L argument.\n");
+                printf("-L argümanını kullanarak lisansları görüntüleyebilirsiniz.\n");
                 exit(EXIT_SUCCESS);
                 break;
             case 'h':
@@ -169,48 +169,48 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
                 break;
             case '?':
-                printf("Try `%s --help' for more information.\n", argv[0]);
+                printf("`%s --help' komutu ile daha fazla bilgi edinebilirsiniz.\n", argv[0]);
                 exit(EXIT_FAILURE);
                 break;
             default:
-                printf("Usage: %s [-b, --backup] [-f, --flash] [-p, --partition] [-l, --logical] [-f, --flash] [-o, --out] [-d, --outdir] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
+                printf("Kullanımı: %s [-b, --backup] [-f, --flash FILE] [-p, --partition PARTITION] [-l, --logical] [-o, --out OUTNAME] [-d, --outdir OUTDIR] [-D, --list] [-v, --version] [-h, --help] [-L, --license]\n", argv[0]);
         }
     }
 
-    /* minor checks */
+    /* ufak bir denetleme */
     if (!pmt_backup && !pmt_flash) {
-        fprintf(stderr, "%s: no target (backup or flash).\nTry `%s --help` for more information.\n", argv[0], argv[0]);
+        fprintf(stderr, "%s: hedef yok (yedek veya flaş).\n`%s --help` komutu ile daha fazla bilgi edinebilisiniz.\n", argv[0], argv[0]);
         exit(EXIT_FAILURE);
     }
 
     if (pmt_backup && pmt_flash) {
-        error("Backup and flash functions cannot be used in the same command\n");
+        error("Yedek ve flaş işlemleri aynı anda kullanılamaz\n");
     }
 
-    /* checks */
+    /* kontroller */
     check_root();
     check_psf();
 
-    /* custom context checker */
+    /* özel bağlam kontrolcüsü */
     if (use_cust_cxt) {
         struct stat cxtinfo;
         if (stat(cust_cxt, &cxtinfo) == 0) {
             if (S_ISDIR(cxtinfo.st_mode)) {
-                /* empty */
+                /* boş.. */
             } else {
-                fprintf(stderr, "%s: custom context: %s: is a not directory.\n", argv[0], cust_cxt);
+                fprintf(stderr, "%s: özel bağlam: %s: bu bir dizin değil.\n", argv[0], cust_cxt);
                 exit(EXIT_FAILURE);
             }
         } else {
-            error("The specified context was not found!\n");
+            error("Belirtilen özel bağlam bulunamadı!\n");
         }
         if (strstr(cust_cxt, "/dev") == NULL) {
-            printf("%sThis custom context is strange...%s\n", ANSI_YELLOW, ANSI_RESET);
+            printf("%sBu özel bağlam biraz tuhaf...%s\n", ANSI_YELLOW, ANSI_RESET);
         }
     }
 
     if (target_partition == NULL) {
-        fprintf(stderr, "%s: required partition name.\nTry `%s --help' for more information.\n", argv[0], argv[0]);
+        fprintf(stderr, "%s: bölüm adı gerekiyor.\n`%s --help` komutu ile daha fazla bilgi edinebilisiniz.\n", argv[0], argv[0]);
         exit(EXIT_FAILURE);
     } else {
         if (pmt_backup) {
@@ -230,10 +230,10 @@ int main(int argc, char *argv[])
                 exit(EXIT_SUCCESS);
             }
         } else {
-            fprintf(stderr, "%s: no target (backup or flash).\nTry `%s --help` for more information.\n", argv[0], argv[0]);
+            fprintf(stderr, "%s: hedef yok (yedek veya flaş).\n`%s --help` komutu ile daha fazla bilgi edinebilisiniz.\n", argv[0], argv[0]);
             exit(EXIT_FAILURE);
         }
     }
 }
 
-/* end of code */
+/* kodun sonu */
