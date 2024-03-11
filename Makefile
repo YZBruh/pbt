@@ -2,7 +2,7 @@ include mka/config.mk
 
 # By YZBruh
 
-# Copyright 2024 YZBruh - Partition Backupper
+# Copyright 2024 YZBruh - Partition Manager
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@ include mka/config.mk
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# speficy
+# özel sürüm bilgisi
 VERSION := 1.5.0
 VERSION_CODE := 150
 SOURCE_DIR := binary
 TARGET := pmt
+LANG := tr
 ARCH := $(shell uname -m)
+CUR_DIR := $(shell pwd)
 
-# code list
+# kaynak listesi
 SRCS := $(SOURCE_DIR)/$(TARGET).c
 SRCS += $(SOURCE_DIR)/error.c
 SRCS += $(SOURCE_DIR)/checkers.c
@@ -38,84 +40,74 @@ OBJS += $(SOURCE_DIR)/lister.o
 OBJS += $(SOURCE_DIR)/flash.o
 OBJS += $(SOURCE_DIR)/backup.o
 
-# gcc flags
-LDFLAGS :=
-LDLIBS := -lm
+OUT_DIR := $(CUR_DIR)/out
+BINARY_DIR := $(OUT_DIR)/binary
+PACKAGE_DIR := $(OUT_DIR)/package
 
-# display
+# başlat
 all: 
-	@printf "  --- Building Partition Manager ---  \n"; \
-	printf "Version: $(VERSION)\n"; \
-	printf "Version code: $(VERSION_CODE)\n"; \
+	@printf "  --- Partition Manager İnşa Senaryosu ---  \n"; \
+	printf "Sürüm: $(VERSION)\n"; \
+	printf "Sürüm kodu: $(VERSION_CODE)\n"; \
 	printf " \n"; \
 	printf " ------------------------------------- \n"; \
 	printf " \n"; \
-	printf "Starting build... Please waith.\n"; \
+	printf "İnşa başlatılıyor... Lütfen bekleyin.\n"; \
 	sleep 2; \
-	printf "Make running with silent mode...\n"; \
+	printf "Make sessiz modda çalıştırılıyor...\n"; \
 	make -s pmt; 
 
-# build progress
+# ana inşa işlemi
 .PHONY: $(TARGET)
 $(TARGET): $(OBJS)
-	$(LD) -o $@ $(LDFLAGS) $(OBJS) $(LIBS)
-	@mkdir -p out; \
-	mkdir -p out/binary; \
-	mkdir -p out/package; \
-	mv pmt out/binary; \
-	printf "Generating gzip package...\n"; \
-	cp out/binary/pmt out/package; \
-	gzip -f out/package/pmt; \
-	mv out/package/pmt.gz out/package/pmt-$(ARCH)-en.gz; \
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	@mkdir -p $(OUT_DIR); \
+	mkdir -p $(BINARY_DIR); \
+	mkdir -p $(PACKAGE_DIR); \
+	mv pmt $(BINARY_DIR)/pmt; \
+	printf "gzip paketleri oluşturuluyor...\n"; \
+	cp $(BINARY_DIR)/pmt $(PACKAGE_DIR); \
+	gzip -f $(PACKAGE_DIR)/pmt; \
+	mv $(PACKAGE_DIR)/pmt.gz $(PACKAGE_DIR)/pmt-$(ARCH)-$(LANG).gz; \
 	printf " \n"; \
 	printf " ------------------------------------- \n";
 
-# cleaner functions
+# temizleyici özellikler
 .PHONY: clean
 clean:
-	@printf "Cleaning (builded files [.o extended])...\n"; \
+	@printf "Temizleniyor (inşa edilmiş dosyalar [.o uzantılı])...\n"; \
 	sleep 2; \
 	rm -rf $(OBJS); \
-	printf "Success\n";
+	printf "Başarılı\n";
 
 .PHONY: clean-all
 clean-all:
-	@printf "Cleaning (builded files [.o extended] and binary)...\n"; \
+	@printf "Temizleniyor (inşa edilmiş dosyalar [.o uzantılı] ve yapı)...\n"; \
 	sleep 2; \
-	rm -rf $(OBJS) out; \
-	printf "Success\n";
+	rm -rf $(OBJS) $(OUT_DIR); \
+	printf "Başarılı\n";
 
 # helper function
 .PHONY: help
 help:
-	@printf " --------- Partition Manager help ---------\n"; \
+	@printf " --------- Partition Manager yardımı ---------\n"; \
 	printf " \n"; \
-	printf " Commands;\n"; \
-	printf "    make                 ==> Build Partition Backupper\n"; \
-	printf "    make clean           ==> Clear files (Builded binaries are not deleted)\n"; \
-	printf "    make clean-all       ==> Clear files (Builded binaries are deleted)\n"; \
-	printf "    make install-termux  ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.\n"; \
-	printf "    make help            ==> Display help message\n"; \
+	printf " Komutlar;\n"; \
+	printf "    make                 ==> Partition Manager'i inşa edin\n"; \
+	printf "    make clean           ==> Dosyaları temizleyin (İnşa edilmiş yapılar silinmez)\n"; \
+	printf "    make clean-all       ==> Dosyaları temizleyin (İnşa edilmiş yapılar silinir)\n"; \
+	printf "    make install-termux  ==> Eğer termux kullanıyorsanız, pmt'nin derlenmiş paketi kurulabilir.\n"; \
+	printf "    make help            ==> Yardım mesajını görüntüle\n"; \
 	printf " \n";
 
 .PHONY: install-termux
 install-termux:
-	@arch=$$(uname -m); \
-	if [ "$$arch" = "aarch64" ]; then \
+	@if [ -f /data/data/com.termux/files/usr/bin/termux-open ]; then \
 		printf " ------------------------------------- \n"; \
-		printf "            pmt installer            \n"; \
+		printf "            pmt kuruluyor            \n"; \
 		printf " ------------------------------------- \n"; \
-		cp out/binary/pmt /data/data/com.termux/files/usr/bin/pmt; \
-		chmod 777 /data/data/com.termux/files/usr/bin/pmt; \
-		printf " \n"; \
-		printf "Success.\n"; \
-		printf " \n"; \
-	elif [ "$$arch" = "armv7l" ]; then \
-		printf " ------------------------------------- \n"; \
-		printf "           pmt installer           \n"; \
-		printf " ------------------------------------- \n"; \
-		cp out/binary/pmt /data/data/com.termux/files/usr/bin/pmt; \
-		chmod 777 /data/data/com.termux/files/usr/bin/pmt; \
+		cp $(BINARY_DIR)/pmt /data/data/com.termux/files/usr/bin/pmt || exit 1; \
+		chmod 777 /data/data/com.termux/files/usr/bin/pmt || exit 1; \
 		printf " \n"; \
 		printf "Success.\n"; \
 		printf " \n"; \
