@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include <sys/stat.h>
 #include <stdbool.h>
 
 #include "include/common.h"
@@ -23,7 +24,7 @@
  * limitations under the License.
  */
 
-/* shorter error messages will be functional xd */
+/* hızlı ve basit hata mesajları önemlidir xd */
 void error(const char *err_msg)
 {
     fprintf(stderr, ANSI_RED "%s" ANSI_RESET, err_msg);
