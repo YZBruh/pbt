@@ -34,24 +34,24 @@ void licenses()
 void help()
 {
     printf("Usage (arguments): \n");
-    printf("   -b, --backup      backup mode\n");
-    printf("   -f, --flash       flash mode\n");
-    printf("   -p, --partition   name of the partition to be backed up\n");
-    printf("   -l, --logical     know that the partition that will be backed up is logical\n");
-    printf("   -o, --out         (only backups) the output name of the backed-up partition (default: partition name)\n");
-    printf("   -d, --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)\n");
-    printf("   -c, --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)\n");
-    printf("   -D, --list        list partitions\n");
-    printf("   -v, --version     see version\n");
-    printf("   -h, --help        see help message\n");
-    printf("   -L, --license     see license\n\n");
-    printf("Example 1:\n");
+    printf("   -b, --backup      yedek modu\n");
+    printf("   -f, --flash       flaş modu\n");
+    printf("   -p, --partition   yedeklenecek olan bölümün adı\n");
+    printf("   -l, --logical     yedeklenecek olan bölüm eğer mantıksal ise bu bayrağı kullanın\n");
+    printf("   -o, --out         yedeklenen bölümün dosya adını belirtin (varsayılan: bölüm adı)\n");
+    printf("   -d, --outdir      yedeklenecek olan bölümün kaydedileceği dizin (varsayılan: /storage/emulated/0)\n");
+    printf("   -c, --context     eğer özel bir /dev bağlamı kullanmak isterseniz bu argümanı kullanın. Sadece klasik bölümlerde kullanılabilir (varsayılan: /dev/block/by-name)\n");
+    printf("   -D, --list        bölümleri listeler\n");
+    printf("   -v, --version     versiyonu görüntüle\n");
+    printf("   -h, --help        yardım mesajını görüntüle\n");
+    printf("   -L, --license     lisanları görüntüle\n\n");
+    printf("Örnek 1:\n");
     printf("   -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name\n\n");
-    printf("Example 2:\n");
+    printf("Örnek 2:\n");
     printf("   --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name\n\n");
-    printf("Example 3:\n");
+    printf("Örnek 3:\n");
     printf("   -c /dev/block/platform/bootdevice/by-name --list\n\n");
-    printf("Report bugs to <xda-@YZBruh>\n");
+    printf("Hataları bildirin: <xda-@YZBruh>\n");
 }
 
 /* end of code */
