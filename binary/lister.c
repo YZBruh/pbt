@@ -28,35 +28,35 @@ extern bool use_cust_cxt;
 extern bool pmt_ab;
 extern bool pmt_logical;
 
-/* list existing partitions */
+/* mevcut bölümleri yazdır */
 void listpart() {
     if (use_cust_cxt) {
-        printf("List of classic partitions (%s): \n", cust_cxt);
+        printf("Klasik bölümlerin listesi (%s): \n", cust_cxt);
         static char cust_cxt_path[150];
         sprintf(cust_cxt_path, "ls %s", cust_cxt);
         if (system(cust_cxt_path) != 0) {
-            error("An error occurred when the partition list appears!\n");
+            error("Bölümler listelenirken bir hata oluştu!\n");
         }
     } else {
-        printf("List of classic partitions (/dev/block/by-name): \n");
+        printf("Klasik bölümlerin listesi (/dev/block/by-name): \n");
         if (system("ls /dev/block/by-name") != 0) {
-            error("An error occurred when the classic partition list appears!\n");
+            error("Bölümler listelenirken bir hata oluştu!\n");
         }
     }
 
     if (pmt_logical) {
-        printf("List of logical partitions (/dev/block/mapper): \n");
+        printf("Mantıksal bölümlerin listesi (/dev/block/mapper): \n");
         if (system("ls /dev/block/mapper") != 0) {
-            error("An error occurred when the logical partition list appears!\n");
+            error("Bölümler listelenirken bir hata oluştu!\n");
         }
     }
 
     if (pmt_ab) {
-        printf("%sWarning: device using A/B partition style.%s\n", ANSI_YELLOW, ANSI_RESET);
+        printf("%sUyarı: cihaz A/B bölüm stilini kullanıyor.%s\n", ANSI_YELLOW, ANSI_RESET);
     }
 
     if (pmt_logical) {
-        printf("%sWarning: device using logical partition type.%s\n", ANSI_YELLOW, ANSI_RESET);
+        printf("%sUyarı: cihaz mantıksal bölüm tipini kullanıyor.%s\n", ANSI_YELLOW, ANSI_RESET);
     }
 }
 
