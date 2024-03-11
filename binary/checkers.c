@@ -31,7 +31,7 @@ extern bool pmt_ab;
 extern bool pmt_logical;
 extern char *cust_cxt;
 
-/* check parts */
+/* bölümleri kontrol et */
 void check_psf()
 {
     /* true = ab | false = a */
@@ -51,7 +51,7 @@ void check_psf()
         }
     }
     
-    /* true = logical | false = classic */
+    /* true = mantıksal | false = klasik */
     if (use_cust_cxt) {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
@@ -69,13 +69,13 @@ void check_psf()
     }
 }
 
-/* root checker function */
+/* root kontrolcüsü  */
 void check_root()
 {
-    /* a quick, easy method to verify root :D */
+    /* hızlı ve kolay bir yöntem :D */
     if (chdir("/dev/block") != 0) {
-        error("Root privileges could not be detected! Please run this binary with root.\n");
+        error("Root ayrıcalıkları tespit edilemedi! Lütfen root ile yürütün.\n");
     }
 }
 
-/* end of code */
+/* kodun sonu */
