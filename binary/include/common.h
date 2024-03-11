@@ -18,19 +18,19 @@
  * limitations under the License.
  */
 
-/* color definations */
+/* renk makroları */
 #define ANSI_RED      "\033[31m"
 #define ANSI_YELLOW   "\033[33m"
 #define ANSI_GREEN    "\033[32m"
 #define ANSI_RESET    "\033[0m"
 
-/* info */
+/* bilgi */
 #define PACK_VER      "1.5.0"
 #define PACK_VER_CODE "150"
 #define PACK_NAME     "Partition Manager"
-#define PACK_LANG     "en"
+#define PACK_LANG     "tr"
 
-/* variable definations */
+/* değişkenlerin ön eklenimi */
 extern char *out;
 extern char *outdir;
 extern char *cust_cxt;
@@ -43,7 +43,7 @@ extern bool pmt_logical;
 extern bool pmt_flash;
 extern bool pmt_backup;
 
-/* function definations */
+/* fonksiyonların ön eklenimi */
 void listpart();
 void error(const char *err_msg);
 void check_psf();
