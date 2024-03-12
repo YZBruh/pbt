@@ -43,7 +43,7 @@ Report bugs to <xda-@YZBruh>
 - Packages are available in publications.
 - İt is mandatory to use the `-b` | `--backup` or `-f` | `--flash` and `-p` | `--partition` argument. After all, a partition name and progress type is required to be progress.
 - If the logical partition flag is not used, a classic partition is tried to be processing by default.
-- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.5.0-en-developing/CHANGELOG.md)
+- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.5.0-en/CHANGELOG.md)
 - Let me know your suggestions!
 
 ### How is it built?
