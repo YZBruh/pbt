@@ -1,72 +1,72 @@
 ## Partition Manager (pmt)
 
-This binary static C library is for manage partitions of android devices.
-It offers a lot of options. I will place these below. But first let me talk about the operation...
+Bu ikili statik C kitaplığı android cihazların bölümlerini kontrol etmek içindir.
+Bir çok seçenek sunar. Bunlara aşşağıda yer vereceğim. Ama önce işleyişten bahsedeyim...
 
 ```
-1. The partition name is obtained (with the -p or --partition argument)
-2. Other arguments (if used) are processed.
-3. It is backed up using DD. If the progress is not a problem, it is not given (DD)
+1. Bölüm adı elde edilir (-p veya --partition argümanı ile)
+2. Diğer argümanlar (kullanılmış ise) işlenir.
+3. DD kullanarak yedeklenir. İlerleyiş sorun olmaz ise verilmez (DD)
 ```
 
-#### Presented arguments (options)
+#### Sunulan argümanlar (seçenekler)
 
 ```
-Usage (arguments):
-   -b, --backup      backup mode
-   -f, --flash       flash mode
-   -p, --partition   name of the partition to be backed up
-   -l, --logical     know that the partition that will be backed up is logical
-   -o, --out         (only backups) the output name of the backed-up partition (default: partition name)
-   -d, --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)
-   -c, --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)
-   -D, --list        list partitions
-   -v, --version     see version
-   -h, --help        see help message
-   -L, --license     see license
+Kullanımı (argümanlar):
+   -b, --backup      yedek modu
+   -f, --flash       flaş modu
+   -p, --partition   yedeklenecek olan bölümün adı
+   -l, --logical     yedeklenecek olan bölüm eğer mantıksal ise bu bayrağı kullanın
+   -o, --out         yedeklenen bölümün dosya adını belirtin (varsayılan: bölüm adı)
+   -d, --outdir      yedeklenecek olan bölümün kaydedileceği dizin (varsayılan: /storage/emulated/0)
+   -c, --context     eğer özel bir /dev bağlamı kullanmak isterseniz bu argümanı kullanın. Sadece klasik bölümlerde kullanılabilir (varsayılan: /dev/block/by-name)
+   -D, --list        bölümleri listeler
+   -v, --version     versiyonu görüntüle
+   -h, --help        yardım mesajını görüntüle
+   -L, --license     lisanları görüntüle
 
-Example 1:
+Örnek 1:
    -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name
 
-Example 2:
+Örnek 2:
    --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name
 
-Example 3:
+Örnek 3:
    -c /dev/block/platform/bootdevice/by-name --list
 
-Report bugs to <xda-@YZBruh>
+Hataları bildirin: <xda-@YZBruh>
 ```
 
-#### Some notes
+#### Bazı notlar
+- İstediğiniz soruları sormaktan çekinmeyin.
+- Paketler yayınlarda mevcuttur.
+- `-b` | `--backup` veya `-f` | `--flash` ve `-p` | `--partition` argümanlarının kullanılması zorunludur. Sonuçta, ilerleme olması için bir bölüm adı ve ilerleme türü gerekir.
+- Eğer mantıksal bölüm bayrağı kullanılmaz ise varsayılan olarak klasik bir bölûm ile çalışılır.
+- [Özel sürüm değişikliklerini görmek için tıklayın](https://github.com/YZBruh/pbt/blob/1.5.0-tr/CHANGELOG.md)
+- Önerilerinizi bildirin!
 
-- Feel free to ask any questions you want.
-- Packages are available in publications.
-- İt is mandatory to use the `-b` | `--backup` or `-f` | `--flash` and `-p` | `--partition` argument. After all, a partition name and progress type is required to be progress.
-- If the logical partition flag is not used, a classic partition is tried to be processing by default.
-- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.5.0-en-developing/CHANGELOG.md)
-- Let me know your suggestions!
+### Nasıl inşa edilir?
 
-### How is it built?
-Even termux is enough to build the pmt. Or you can compile it with linux if you want. NOTE: Use a custom gcc according to the architecture you want to compile.
+pmt'yi inşa etmek için termux bile yeterlidir. Veya isterseniz linux ile derleyebilirsiniz. NOT: Derlemek istediğiniz mimariye göre özel bir gcc kullanın.
 
-If you want to change something, take a look at the configuration. You can change him.
-it is located in the `mka` folder. His name is `config.mk`. I gave the information in the file. You can ask more.
+Eğer bir şeyleri değiştirmek istiyorsanız konfigrasyona göz atın. Onu değiştirebilirsiniz.
+`mka` klasörü içinde bulunur. Adı `config.mk`. Dosya içinde bilgileri verdim. Daha fazlasını sorabilirsiniz.
 
-To build;
+İnşa etmek için;
 ```
 make
 ```
 
-Special `make` commands (pbt offers :) ;
+Özel `make` komutları (pmt sunar :) ;
 ```
---------- Partition Manager help ---------
+--------- Partition Manager yardım ---------
 
- Commands;
-    make                 ==> Build Partition Backupper
-    make clean           ==> Clear files (Builded binaries are not deleted)
-    make clean-all       ==> Clear files (Builded binaries are deleted)
-    make install-termux  ==> If you are using termux, it installs the compiled pbt into termux. So it allows you to use it like a normal command.
-    make help            ==> Display help message
+ Komutlar;
+    make                 ==> Partition Backupper inşasını başlatın.
+    make clean           ==> Dosyaları temizle (İnşa edilmiş kitaplık silinmez)
+    make clean-all       ==> Dosyaları temizle (İnşa edilmiş kitaplık silinir)
+    make install-termux  ==> Eğer termux kullanıyor ve mimariniz uygun ise pmt'yi termux'a kurar.
+    make help            ==> Bu yardım mesajını göster.
 ```
 
-I compiled it with termux :D. Why should I bother... I compiled it with `GCC 17.0.6`. You can look at the version with the viewing option :)
+Ben termux ile derledim :D. Neden uğraşayımki... `GCC 17.0.6` ile derledim. Sürüm görme seçeneği ile bakabilirsiniz :)
