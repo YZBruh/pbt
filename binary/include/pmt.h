@@ -1,5 +1,3 @@
-#define _COMMON_H_
-
 /* By YZBruh */
 
 /*
@@ -18,17 +16,36 @@
  * limitations under the License.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* check compiler system */
+#ifdef _WIN32
+    #error "it can only be compiled in linux or android environment. but current system windows (_WIN32 defined)"
+#elif ! __linux__ || __android__
+    #error "unknown compiler system founded"
+#endif
+
+/* compiler architecture if arm is not 32-bit or 64-bit, the compilation is stopped */
+#if ! defined __aarch64__ || __aarch32__ || __armv8__ || __armv7l__
+    #error "only 32-bit or 64-bit arm compilers can be used"
+#endif
+
+#ifndef _COMMON_H_
+#define _COMMON_H_
+
 /* color definations */
-#define ANSI_RED      "\033[31m"
-#define ANSI_YELLOW   "\033[33m"
-#define ANSI_GREEN    "\033[32m"
-#define ANSI_RESET    "\033[0m"
+#define ANSI_RED          "\033[31m"
+#define ANSI_YELLOW       "\033[33m"
+#define ANSI_GREEN        "\033[32m"
+#define ANSI_RESET        "\033[0m"
 
 /* info */
-#define PACK_VER      "1.5.0"
-#define PACK_VER_CODE "150"
-#define PACK_NAME     "Partition Manager"
-#define PACK_LANG     "en"
+#define PMT_VERSION          "1.7.0"
+#define PMT_VERSION_CODE     "170"
+#define PMT_PACKAGE_NAME     "Partition Manager"
+#define PMT_PACKAGE_LANG     "en"
 
 /* variable definations */
 extern char *out;
@@ -36,17 +53,27 @@ extern char *outdir;
 extern char *cust_cxt;
 extern char *target_partition;
 extern char *target_flash_file;
-extern bool use_logical;
-extern bool use_cust_cxt;
+extern bool pmt_use_logical;
+extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
 extern bool pmt_logical;
 extern bool pmt_flash;
 extern bool pmt_backup;
+extern bool pmt_force_mode;
 
 /* function definations */
 void listpart();
-void error(const char *err_msg);
+void error(const char *err_msg, uint32_t errcode);
 void check_psf();
 void check_root();
 void backup(char *target_backup_partition, char *backup_partition_style);
 void flash(char *target_flash_partition, char *target_file, char *flash_partition_style);
+void help();
+void licenses();
+
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+/* end of code */
