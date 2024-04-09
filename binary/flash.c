@@ -1,13 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stddef.h>
-
-#include "include/common.h"
-
 /* By YZBruh */
 
 /*
@@ -26,8 +16,22 @@
  * limitations under the License.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <stdbool.h>
+
+#include "include/pmt.h"
+
 extern char *cust_cxt;
-extern bool use_cust_cxt;
+extern bool pmt_use_cust_cxt;
+extern bool pmt_force_mode;
 
 /* flasher func */
 void flash(char *target_flash_partition, char *target_file, char *flash_partition_style)
@@ -36,7 +40,7 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
     /* determine device block */
     /* for classic */
     if (strstr(flash_partition_style, "classic") != NULL) {
-        if (use_cust_cxt) {
+        if (pmt_use_cust_cxt) {
             sprintf(flasher_path, "%s/%s", cust_cxt, target_flash_partition);
         } else {
             sprintf(flasher_path, "/dev/block/by-name/%s", target_flash_partition);
@@ -45,14 +49,20 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
     } else if (strstr(flash_partition_style, "logical") != NULL) {
         sprintf(flasher_path, "/dev/block/mapper/%s", target_flash_partition);
     } else {
-        error("İnvalid partition type!\n");
+        if (!pmt_force_mode) {
+            error("İnvalid partition type!\n", 30);
+        } else {
+            exit(30);
+        }
     }
 
     /* check partition */
     if (access(flasher_path, F_OK) == -1) {
-        error("Partition not found!\n");
-    } else {
-        printf("Target partition: %s\nFlashing...\n", target_flash_partition);
+        if (!pmt_force_mode) {
+            error("Partition not found!\n", 31);
+        } else {
+            exit(31);
+        }
     }
 
     /* setting up */
@@ -61,10 +71,16 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
 
     /* start flash */
     if (system(flasher_cmd) != 0) {
-        error("Failed!\n");
-    } else {
-        printf("%sSuccess.%s\n", ANSI_GREEN, ANSI_RESET);
+        if (!pmt_force_mode) {
+            error("Failed!\n", 98);
+        } else {
+            exit(98);
+        }
     }
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /* end of code */
