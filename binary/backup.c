@@ -1,13 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stddef.h>
-
-#include "include/common.h"
-
 /* By YZBruh */
 
 /*
@@ -26,18 +16,33 @@
  * limitations under the License.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+#include "include/pmt.h"
+
 extern char *out;
 extern char *outdir;
 extern char *cust_cxt;
-extern bool use_logical;
-extern bool use_cust_cxt;
+extern bool pmt_use_logical;
+extern bool pmt_use_cust_cxt;
+extern bool pmt_force_mode;
 
 /* backupper func */
 void backup(char *target_backup_partition, char *backup_partition_style)
 {
     static char backupper_path[200];
     if (strstr(backup_partition_style, "classic") != NULL) {
-        if (use_cust_cxt) {
+        if (pmt_use_cust_cxt) {
             sprintf(backupper_path, "%s/%s", cust_cxt, target_backup_partition);
         } else {
             sprintf(backupper_path, "/dev/block/by-name/%s", target_backup_partition);
@@ -45,13 +50,19 @@ void backup(char *target_backup_partition, char *backup_partition_style)
     } else if (strstr(backup_partition_style, "logical") != NULL) {
         sprintf(backupper_path, "/dev/block/mapper/%s", target_backup_partition);
     } else {
-        error("İnvalid partition type!\n");
+        if (!pmt_force_mode) {
+            error("İnvalid partition type!\n", 28);
+        } else {
+            exit(28);
+        }
     }
 
     if (access(backupper_path, F_OK) == -1) {
-        error("Partition not found!\n");
-    } else {
-        printf("Target partition: %s\nBackupping...\n", target_backup_partition);
+        if (!pmt_force_mode) {
+            error("Partition not found!\n", 29);
+        } else {
+            exit(29);
+        }
     }
 
     static char backupper_cmd[256];
@@ -70,7 +81,11 @@ void backup(char *target_backup_partition, char *backup_partition_style)
     }
 
     if (system(backupper_cmd) != 0) {
-        error("Failed!\n");
+        if (!pmt_force_mode) {
+            error("Failed!\n", 99);
+        } else {
+            exit(EXIT_FAILURE);
+        }
     } else {
         if (outdir != NULL) {
             if (out != NULL) {
@@ -85,8 +100,11 @@ void backup(char *target_backup_partition, char *backup_partition_style)
                 printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_backup_partition, ANSI_RESET);
             }
         }
-        
     }
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /* end of code */
