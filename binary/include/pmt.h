@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 /* compiler architecture if arm is not 32-bit or 64-bit, the compilation is stopped */
-#if ! defined __aarch64__ || __aarch32__ || __armv8__ || __armv7l__
+#if ! defined __aarch64__ || __aarch32__ || __armv8__ || __armv7l__ || armv7l
     #error "only 32-bit or 64-bit arm compilers can be used"
 #endif
 
