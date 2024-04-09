@@ -12,26 +12,23 @@ It offers a lot of options. I will place these below. But first let me talk abou
 #### Presented arguments (options)
 
 ```
-Usage (arguments):
-   -b, --backup      backup mode
-   -f, --flash       flash mode
-   -p, --partition   name of the partition to be backed up
-   -l, --logical     know that the partition that will be backed up is logical
-   -o, --out         (only backups) the output name of the backed-up partition (default: partition name)
-   -d, --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)
-   -c, --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)
-   -D, --list        list partitions
-   -v, --version     see version
-   -h, --help        see help message
-   -L, --license     see license
+Usage:
+   -b | --backup      backup mode
+   -F | --flash       flash mode
+   -p | --partition   name of the partition to be backed up
+   -l | --logical     know that the partition that will be backed up is logical
+   -o | --out         (only backups) the output name of the backed-up partition (default: partition name)
+   -d | --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)
+   -c | --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)
+   -D | --list        list partitions
+   -f | --force       force mode. Output is not produced. Even if it's a mistake. But if the target is not a mode, the error is given. If you want to work stable, it is important to specify this option first.
+   -v | --version     see version
+       --help        see help message
+   -L | --license     see license
 
-Example 1:
+Examples:
    -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name
-
-Example 2:
    --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name
-
-Example 3:
    -c /dev/block/platform/bootdevice/by-name --list
 
 Report bugs to <xda-@YZBruh>
@@ -43,7 +40,7 @@ Report bugs to <xda-@YZBruh>
 - Packages are available in publications.
 - İt is mandatory to use the `-b` | `--backup` or `-f` | `--flash` and `-p` | `--partition` argument. After all, a partition name and progress type is required to be progress.
 - If the logical partition flag is not used, a classic partition is tried to be processing by default.
-- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.5.0-en/CHANGELOG.md)
+- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.7.0-en/CHANGELOG.md)
 - Let me know your suggestions!
 
 ### How is it built?
@@ -62,11 +59,12 @@ Special `make` commands (pbt offers :) ;
 --------- Partition Manager help ---------
 
  Commands;
-    make                 ==> Build Partition Backupper
-    make clean           ==> Clear files (Builded binaries are not deleted)
-    make clean-all       ==> Clear files (Builded binaries are deleted)
-    make install-termux  ==> If you are using termux, it installs the compiled pbt into termux. So it allows you to use it like a normal command.
-    make help            ==> Display help message
+    make                   ==> Build Partition Manager
+    make clean             ==> Clear files (Builded binaries are not deleted)
+    make clean-all         ==> Clear files (Builded binaries are deleted)
+    make install-termux    ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.
+    make uninstall-termux  ==> If you are using termux, it uninstalls the compiled pmt into termux. So it allows you to use it like a normal command.
+    make help              ==> Display help message
 ```
 
 I compiled it with termux :D. Why should I bother... I compiled it with `GCC 17.0.6`. You can look at the version with the viewing option :)
