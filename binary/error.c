@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <stdbool.h>
-
-#include "include/common.h"
-
 /* By YZBruh */
 
 /*
@@ -23,11 +16,25 @@
  * limitations under the License.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#include "include/pmt.h"
+
 /* shorter error messages will be functional xd */
-void error(const char *err_msg)
+void error(const char *err_msg, uint32_t errcode)
 {
     fprintf(stderr, ANSI_RED "%s" ANSI_RESET, err_msg);
-    exit(EXIT_FAILURE);
+    exit(errcode);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /* end of code */
