@@ -1,13 +1,3 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stddef.h>
-
-#include "include/common.h"
-
 /* By YZBruh */
 
 /*
@@ -26,16 +16,31 @@
  * limitations under the License.
  */
 
-extern bool use_cust_cxt;
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <errno.h>
+
+#include "include/pmt.h"
+
+extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
 extern bool pmt_logical;
+extern bool pmt_force_mode;
 extern char *cust_cxt;
 
 /* check parts */
 void check_psf()
 {
     /* true = ab | false = a */
-    if (use_cust_cxt) {
+    if (pmt_use_cust_cxt) {
         static char cust_cxt_ck_path[150];
         sprintf(cust_cxt_ck_path, "%s/boot_a", cust_cxt);
         if (access(cust_cxt_ck_path, F_OK) != 0) {
@@ -52,7 +57,7 @@ void check_psf()
     }
     
     /* true = logical | false = classic */
-    if (use_cust_cxt) {
+    if (pmt_use_cust_cxt) {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
         if (access(cust_cxt_ckl_path, F_OK) != 0) {
@@ -74,8 +79,17 @@ void check_root()
 {
     /* a quick, easy method to verify root :D */
     if (chdir("/dev/block") != 0) {
-        error("Root privileges could not be detected! Please run this binary with root.\n");
+        if (!pmt_force_mode) {
+            fprintf(stderr, ANSI_RED "Root privileges could not be detected! Please run this binary with root. Error reason: %s\n" ANSI_RESET, strerror(errno));
+            exit(27);
+        } else {
+            exit(27);
+        }
     }
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 /* end of code */
