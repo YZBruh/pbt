@@ -98,7 +98,7 @@ help:
 	printf "    make clean             ==> Clear files (Builded binaries are not deleted)\n"; \
 	printf "    make clean-all         ==> Clear files (Builded binaries are deleted)\n"; \
 	printf "    make install-termux    ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.\n"; \
-	printf "    make uninstall-termux  ==> If you are using termux, it uninstalls the compiled pmt into termux. So it allows you to use it like a normal command.\n"; \
+	printf "    make uninstall-termux  ==> If you are using termux, it uninstalls the compiled pmt into termux.\n"; \
 	printf "    make help              ==> Display help message\n"; \
 	printf " \n";
 
