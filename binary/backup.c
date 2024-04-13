@@ -26,7 +26,6 @@ extern "C" {
 #include <sys/stat.h>
 #include <string.h>
 #include <stdbool.h>
-#include <stddef.h>
 
 #include "include/pmt.h"
 
