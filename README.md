@@ -47,7 +47,7 @@ Report bugs to <xda-@YZBruh>
 Even termux is enough to build the pmt. Or you can compile it with linux if you want. NOTE: Use a custom gcc according to the architecture you want to compile.
 
 If you want to change something, take a look at the configuration. You can change him.
-it is located in the `mka` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
+it is located in the `config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
 
 To build;
 ```
@@ -63,8 +63,8 @@ Special `make` commands (pbt offers :) ;
     make clean             ==> Clear files (Builded binaries are not deleted)
     make clean-all         ==> Clear files (Builded binaries are deleted)
     make install-termux    ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.
-    make uninstall-termux  ==> If you are using termux, it uninstalls the compiled pmt into termux. So it allows you to use it like a normal command.
+    make uninstall-termux  ==> If you are using termux, it uninstalls the compiled pmt into termux.
     make help              ==> Display help message
 ```
 
-I compiled it with termux :D. Why should I bother... I compiled it with `GCC 17.0.6`. You can look at the version with the viewing option :)
+I compiled it with termux :D. Why should I bother... I compiled it with `GCC 18.0.2` You can look at the version with the viewing option :)
