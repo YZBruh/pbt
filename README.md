@@ -31,7 +31,7 @@ Examples:
    --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name
    -c /dev/block/platform/bootdevice/by-name --list
 
-Report bugs to <xda-@YZBruh>
+Report bugs to <yagizzengin73@gmail.com>
 ```
 
 #### Some notes
