@@ -1,7 +1,7 @@
 /* By YZBruh */
 
 /*
- * Copyright 2024 YZBruh - Partition Manager
+ * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ extern "C" {
 #include <sys/stat.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "include/pmt.h"
 
@@ -40,24 +41,30 @@ extern bool pmt_force_mode;
 void backup(char *target_backup_partition, char *backup_partition_style)
 {
     static char backupper_path[200];
-    if (strstr(backup_partition_style, "classic") != NULL) {
-        if (pmt_use_cust_cxt) {
+    if (strstr(backup_partition_style, "classic") != NULL)
+    {
+        if (pmt_use_cust_cxt)
+        {
             sprintf(backupper_path, "%s/%s", cust_cxt, target_backup_partition);
         } else {
             sprintf(backupper_path, "/dev/block/by-name/%s", target_backup_partition);
         }
-    } else if (strstr(backup_partition_style, "logical") != NULL) {
+    } else if (strstr(backup_partition_style, "logical") != NULL)
+    {
         sprintf(backupper_path, "/dev/block/mapper/%s", target_backup_partition);
     } else {
-        if (!pmt_force_mode) {
+        if (!pmt_force_mode)
+        {
             error("İnvalid partition type!\n", 28);
         } else {
             exit(28);
         }
     }
 
-    if (access(backupper_path, F_OK) == -1) {
-        if (!pmt_force_mode) {
+    if (access(backupper_path, F_OK) == -1)
+    {
+        if (!pmt_force_mode)
+        {
             error("Partition not found!\n", 29);
         } else {
             exit(29);
@@ -65,35 +72,43 @@ void backup(char *target_backup_partition, char *backup_partition_style)
     }
 
     static char backupper_cmd[256];
-    if (outdir != NULL) {
-        if (out != NULL) {
+    if (outdir != NULL)
+    {
+        if (out != NULL)
+        {
             sprintf(backupper_cmd, "dd if=%s of=%s/%s.img status=none", backupper_path, outdir, out);
         } else {
             sprintf(backupper_cmd, "dd if=%s of=%s/%s.img status=none", backupper_path, outdir, target_backup_partition);
         }
     } else {
-        if (out != NULL) {
+        if (out != NULL)
+        {
             sprintf(backupper_cmd, "dd if=%s of=/storage/emulated/0/%s.img status=none", backupper_path, out);
         } else {
             sprintf(backupper_cmd, "dd if=%s of=/storage/emulated/0/%s.img status=none", backupper_path, target_backup_partition);
         }
     }
 
-    if (system(backupper_cmd) != 0) {
-        if (!pmt_force_mode) {
+    if (system(backupper_cmd) != 0)
+    {
+        if (!pmt_force_mode)
+        {
             error("Failed!\n", 99);
         } else {
             exit(EXIT_FAILURE);
         }
     } else {
-        if (outdir != NULL) {
-            if (out != NULL) {
+        if (outdir != NULL)
+        {
+            if (out != NULL)
+            {
                 printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, out, ANSI_RESET);
             } else {
                 printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, target_backup_partition, ANSI_RESET);
             }
         } else {
-            if (out != NULL) {
+            if (out != NULL)
+            {
                 printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
             } else {
                 printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_backup_partition, ANSI_RESET);
