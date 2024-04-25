@@ -1,7 +1,7 @@
 /* By YZBruh */
 
 /*
- * Copyright 2024 YZBruh - Partition Manager
+ * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,11 @@ void listpart() {
     DIR *dir;
     struct dirent *entry;
 
-    if (pmt_use_cust_cxt) {
+    if (pmt_use_cust_cxt)
+    {
         dir = opendir(cust_cxt);
-        if (dir == NULL) {
+        if (dir == NULL)
+        {
             if (!pmt_force_mode) {
                 fprintf(stderr, "Could not open: `%s`. Error reason: %s\n", cust_cxt, strerror(errno));
                 exit(62);
@@ -52,8 +54,10 @@ void listpart() {
         }
     } else {
         dir = opendir("/dev/block/by-name");
-        if (dir == NULL) {
-            if (!pmt_force_mode) {
+        if (dir == NULL)
+        {
+            if (!pmt_force_mode)
+            {
                 fprintf(stderr, "Could not open: `/dev/block/by-name`. Error reason: %s\n", strerror(errno));
                 exit(63);
             } else {
@@ -68,18 +72,22 @@ void listpart() {
 
     closedir(dir);
 
-    if (pmt_logical) {
+    if (pmt_logical)
+    {
         printf("List of logical partitions (/dev/block/mapper): \n");
-        if (system("ls /dev/block/mapper") != 0 && !pmt_force_mode) {
+        if (system("ls /dev/block/mapper") != 0 && !pmt_force_mode)
+        {
             error("An error occurred when the logical partition list appears!\n", 64);
         }
     }
 
-    if (pmt_ab && !pmt_force_mode) {
+    if (pmt_ab && !pmt_force_mode)
+    {
         printf("%sWarning: device using A/B partition style.%s\n", ANSI_YELLOW, ANSI_RESET);
     }
 
-    if (pmt_logical && !pmt_force_mode) {
+    if (pmt_logical && !pmt_force_mode)
+    {
         printf("%sWarning: device using logical partition type.%s\n", ANSI_YELLOW, ANSI_RESET);
     }
 }
