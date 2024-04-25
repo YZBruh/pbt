@@ -1,6 +1,6 @@
 # By YZBruh
 
-# Copyright 2024 YZBruh - Partition Manager
+# Copyright 2024 Partition Manager
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ USE_CUST_GCC := false
 CUST_GCC := 
 
 # addionital gcc flags
-EXTRA_GCC_FLAGS := 
+EXTRA_GCC_FLAGS :=
 
 #########################################
 #########################################
