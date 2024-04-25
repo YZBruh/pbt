@@ -1,7 +1,7 @@
 /* By YZBruh */
 
 /*
- * Copyright 2024 YZBruh - Partition Manager
+ * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ extern "C" {
 
 void licenses()
 {
-    printf("Copyright 2024 YZBruh - Partition Manager\n");
+    printf("Copyright 2024 Partition Manager\n");
     printf("Licensed under the Apache License, Version 2.0 (the \"License\");\n");
     printf("you may not use this file except in compliance with the License.\n");
     printf("You may obtain a copy of the License at\n\n");
@@ -43,6 +43,7 @@ void help()
     printf("Usage: \n");
     printf("   -b | --backup      backup mode\n");
     printf("   -F | --flash       flash mode\n");
+    printf("   -r | --format      format mode (only ext2/3/4 file systems)\n");
     printf("   -p | --partition   name of the partition to be backed up\n");
     printf("   -l | --logical     know that the partition that will be backed up is logical\n");
     printf("   -o | --out         (only backups) the output name of the backed-up partition (default: partition name)\n");
@@ -57,7 +58,7 @@ void help()
     printf("   -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name\n");
     printf("   --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name\n");
     printf("   -c /dev/block/platform/bootdevice/by-name --list\n\n");
-    printf("Report bugs to <xda-@YZBruh>\n");
+    printf("Report bugs to <yagizzengin73@gmail.com>\n");
 }
 
 #ifdef __cplusplus
