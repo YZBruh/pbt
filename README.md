@@ -1,6 +1,6 @@
 ## Partition Manager (pmt)
 
-This binary static C library is for manage partitions of android devices.
+This binary C is for manage partitions of android devices.
 It offers a lot of options. I will place these below. But first let me talk about the operation...
 
 ```
@@ -15,6 +15,7 @@ It offers a lot of options. I will place these below. But first let me talk abou
 Usage:
    -b | --backup      backup mode
    -F | --flash       flash mode
+   -r | --format      format mode (only ext2/3/4 file systems)
    -p | --partition   name of the partition to be backed up
    -l | --logical     know that the partition that will be backed up is logical
    -o | --out         (only backups) the output name of the backed-up partition (default: partition name)
@@ -23,7 +24,7 @@ Usage:
    -D | --list        list partitions
    -f | --force       force mode. Output is not produced. Even if it's a mistake. But if the target is not a mode, the error is given. If you want to work stable, it is important to specify this option first.
    -v | --version     see version
-       --help        see help message
+        --help        see help message
    -L | --license     see license
 
 Examples:
@@ -40,7 +41,7 @@ Report bugs to <yagizzengin73@gmail.com>
 - Packages are available in publications.
 - İt is mandatory to use the `-b` | `--backup` or `-f` | `--flash` and `-p` | `--partition` argument. After all, a partition name and progress type is required to be progress.
 - If the logical partition flag is not used, a classic partition is tried to be processing by default.
-- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.7.0-en/CHANGELOG.md)
+- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/1.8.0-en/CHANGELOG.md)
 - Let me know your suggestions!
 
 ### How is it built?
@@ -56,15 +57,15 @@ make
 
 Special `make` commands (pbt offers :) ;
 ```
---------- Partition Manager help ---------
+------- Partition Manager help -------
 
  Commands;
     make                   ==> Build Partition Manager
-    make clean             ==> Clear files (Builded binaries are not deleted)
-    make clean-all         ==> Clear files (Builded binaries are deleted)
-    make install-termux    ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.
-    make uninstall-termux  ==> If you are using termux, it uninstalls the compiled pmt into termux.
+    make deb               ==> Generate deb (debian) package (compatibility => termux)
+    make clean             ==> Clear builded binary.
+    make install           ==> If you are using termux, it installs the compiled pmt into termux. So it allows you to use it like a normal command.
+    make uninstall         ==> If you are using termux, it uninstalls the compiled pmt into termux. So it allows you to use it like a normal command.
     make help              ==> Display help message
 ```
 
-I compiled it with termux :D. Why should I bother... I compiled it with `GCC 18.0.2` You can look at the version with the viewing option :)
+I compiled it with termux :D. Why should I bother... I compiled it with `GCC 18.1.4` You can look at the version with the viewing option :)
