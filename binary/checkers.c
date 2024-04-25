@@ -1,7 +1,7 @@
 /* By YZBruh */
 
 /*
- * Copyright 2024 YZBruh - Partition Manager
+ * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <errno.h>
 
 #include "include/pmt.h"
@@ -39,16 +40,19 @@ extern char *cust_cxt;
 void check_psf()
 {
     /* true = ab | false = a */
-    if (pmt_use_cust_cxt) {
+    if (pmt_use_cust_cxt)
+    {
         static char cust_cxt_ck_path[150];
         sprintf(cust_cxt_ck_path, "%s/boot_a", cust_cxt);
-        if (access(cust_cxt_ck_path, F_OK) != 0) {
+        if (access(cust_cxt_ck_path, F_OK) != 0)
+        {
             pmt_ab = false;
         } else {
             pmt_ab = true;
         }
     } else {
-        if (access("/dev/block/by-name/boot_a", F_OK) != 0) {
+        if (access("/dev/block/by-name/boot_a", F_OK) != 0)
+        {
             pmt_ab = false;
         } else {
             pmt_ab = true;
@@ -56,16 +60,19 @@ void check_psf()
     }
     
     /* true = logical | false = classic */
-    if (pmt_use_cust_cxt) {
+    if (pmt_use_cust_cxt)
+    {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
-        if (access(cust_cxt_ckl_path, F_OK) != 0) {
+        if (access(cust_cxt_ckl_path, F_OK) != 0)
+        {
             pmt_logical = false;
         } else {
             pmt_logical = true;
         }
     } else {
-        if (access("/dev/block/by-name/super", F_OK) != 0) {
+        if (access("/dev/block/by-name/super", F_OK) != 0)
+        {
             pmt_logical = false;
         } else {
             pmt_logical = true;
@@ -77,8 +84,10 @@ void check_psf()
 void check_root()
 {
     /* a quick, easy method to verify root :D */
-    if (chdir("/dev/block") != 0) {
-        if (!pmt_force_mode) {
+    if (chdir("/dev/block") != 0)
+    {
+        if (!pmt_force_mode)
+        {
             fprintf(stderr, ANSI_RED "Root privileges could not be detected! Please run this binary with root. Error reason: %s\n" ANSI_RESET, strerror(errno));
             exit(27);
         } else {
