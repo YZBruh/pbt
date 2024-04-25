@@ -1,7 +1,7 @@
 /* By YZBruh */
 
 /*
- * Copyright 2024 YZBruh - Partition Manager
+ * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,17 +39,21 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
     static char flasher_path[200];
     /* determine device block */
     /* for classic */
-    if (strstr(flash_partition_style, "classic") != NULL) {
-        if (pmt_use_cust_cxt) {
+    if (strstr(flash_partition_style, "classic") != NULL)
+    {
+        if (pmt_use_cust_cxt)
+        {
             sprintf(flasher_path, "%s/%s", cust_cxt, target_flash_partition);
         } else {
             sprintf(flasher_path, "/dev/block/by-name/%s", target_flash_partition);
         }
     /* for logical */
-    } else if (strstr(flash_partition_style, "logical") != NULL) {
+    } else if (strstr(flash_partition_style, "logical") != NULL)
+    {
         sprintf(flasher_path, "/dev/block/mapper/%s", target_flash_partition);
     } else {
-        if (!pmt_force_mode) {
+        if (!pmt_force_mode)
+        {
             error("İnvalid partition type!\n", 30);
         } else {
             exit(30);
@@ -57,8 +61,10 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
     }
 
     /* check partition */
-    if (access(flasher_path, F_OK) == -1) {
-        if (!pmt_force_mode) {
+    if (access(flasher_path, F_OK) == -1)
+    {
+        if (!pmt_force_mode)
+        {
             error("Partition not found!\n", 31);
         } else {
             exit(31);
@@ -70,8 +76,10 @@ void flash(char *target_flash_partition, char *target_file, char *flash_partitio
     sprintf(flasher_cmd, "dd if=%s of=%s status=none", target_file, flasher_path);
 
     /* start flash */
-    if (system(flasher_cmd) != 0) {
-        if (!pmt_force_mode) {
+    if (system(flasher_cmd) != 0)
+    {
+        if (!pmt_force_mode)
+        {
             error("Failed!\n", 98);
         } else {
             exit(98);
