@@ -74,7 +74,7 @@ void format(char *target_format_partition, char *format_partition_style);
 void help();
 void licenses();
 
-#endif
+#endif /* _PMT_H */
 
 #ifdef __cplusplus
 }
