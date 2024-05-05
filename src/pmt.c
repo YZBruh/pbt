@@ -1,6 +1,6 @@
 /* By YZBruh */
 
-/*
+/**
  * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
+/* force use C std (if default is C++) */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/* include needed libs (headers) */
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -29,13 +31,16 @@ extern "C" {
 #include <getopt.h>
 #include <errno.h>
 
+/* include custom pmt header */
 #include "include/pmt.h"
 
+/* add value to variables that are added globally and are not worth */
 char *out = NULL;
 char *outdir = NULL;
 char *cust_cxt = NULL;
 char *target_partition = NULL;
 char *target_flash_file = NULL;
+char *partition_type = NULL;
 char *format_fs = NULL;
 bool pmt_use_logical = NULL;
 bool pmt_use_cust_cxt = NULL;
@@ -74,19 +79,30 @@ int main(int argc, char *argv[])
         {0, 0, 0, 0}
     };
 
+    /* boolean statements (only valid in this file) to distinguish. and pointer from a shortcut for the symbol rule */
+    static bool wiew_help = false;
+    static bool wiew_licenses = false;
+    static bool wiew_version = false;
+    static bool list_partitions = false;
+    static bool combo_wiewers = false;
+    static bool use_cust_outdir = false;
     static char *opt_symbol = "-";
     static char *common_symbol_rule;
     common_symbol_rule = "When entering the attached argument of an option, an argument of another option type cannot be used. In short, the rule is: there can be no '-' at the beginning of the attached argument.\n";
+
     int opt;
+
     /* control for each argument */
     while ((opt = getopt_long(argc, argv, "bF:rp:lo:d:c:DfvL", long_options, NULL)) != -1)
     {
         /* process arguments */
         switch (opt)
         {
+            /* backup mode */
             case 'b':
                 pmt_backup = true;
                 break;
+            /* flash mode */
             case 'F':
                 target_flash_file = strdup(optarg);
                 if (strncmp(target_flash_file, opt_symbol, 1) == 0)
@@ -99,31 +115,8 @@ int main(int argc, char *argv[])
                     }
                 }
                 pmt_flash = true;
-                check_root();
-                check_psf();
-                struct stat flashf_info;
-                if (stat(target_flash_file, &flashf_info) != 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s: %s: %s\n", argv[0], target_flash_file, strerror(errno));
-                        exit(15);
-                    } else {
-                        exit(15);
-                    }
-                } else {
-                    if (!S_ISREG(flashf_info.st_mode))
-                    {
-                        if (!pmt_force_mode)
-                        {
-                            fprintf(stderr, "%s: %s: is a not file.\n", argv[0], target_flash_file);
-                            exit(16);
-                        } else {
-                            exit(16);
-                        }
-                    }
-                }
                 break;
+            /* format mode */
             case 'r':
                 format_fs = strdup(optarg);
                 if (strncmp(format_fs, opt_symbol, 1) == 0)
@@ -137,17 +130,8 @@ int main(int argc, char *argv[])
                     }
                 }
                 pmt_format = true;
-                if (strcmp(format_fs, "ext4") != 0 || strcmp(format_fs, "ext3") != 0 || strcmp(format_fs, "ext2") != 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s: formatter: unsupported filesystem: %s", argv[0], format_fs);
-                        exit(41);
-                    } else {
-                        exit(41);
-                    }
-                }
                 break;
+            /* partition selector option */
             case 'p':
                 target_partition = strdup(optarg);
                 if (strncmp(target_partition, opt_symbol, 1) == 0)
@@ -160,6 +144,7 @@ int main(int argc, char *argv[])
                     }
                 }
                 break;
+            /* logical partitions option */
             case 'l':
                 check_root();
                 check_psf();
@@ -175,6 +160,7 @@ int main(int argc, char *argv[])
                     }
                 }
                 break;
+            /* output file option */
             case 'o':
                 out = strdup(optarg);
                 if (strncmp(out, opt_symbol, 1) == 0)
@@ -187,42 +173,12 @@ int main(int argc, char *argv[])
                     }
                 }
                 break;
+            /* output dir option */
             case 'd':
+                use_cust_outdir = true;
                 outdir = strdup(optarg);
-                if (strncmp(outdir, opt_symbol, 1) == 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        error(common_symbol_rule, 19);
-                    } else {
-                        exit(19);
-                    }
-                }
-                check_root();
-                check_psf();
-                struct stat out_info;
-                if (stat(outdir, &out_info) != 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s: %s: %s\n", argv[0], outdir, strerror(errno));
-                        exit(18);
-                    } else {
-                        exit(18);
-                    }
-                } else {
-                    if (!S_ISDIR(out_info.st_mode))
-                    {
-                        if (!pmt_force_mode)
-                        {
-                            fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], outdir);
-                            exit(20);
-                        } else {
-                            exit(20);
-                        }
-                    }
-                }
                 break;
+            /* context selector option */
             case 'c':
                 pmt_use_cust_cxt = true;
                 cust_cxt = strdup(optarg);
@@ -236,35 +192,47 @@ int main(int argc, char *argv[])
                     }
                 }
                 break;
+            /* partition lister function */
             case 'D':
-                check_root();
-                listpart();
-                exit(EXIT_SUCCESS);
+                list_partitions = true;
+                /* check combo wiewer options and progress */
+                if (wiew_version || wiew_help || wiew_licenses)
+                {
+                    combo_wiewers = true;
+                }
                 break;
+            /* force mode option */
             case 'f':
                 pmt_force_mode = true;
                 break;
+            /* version info option */
             case 'v':
-                printf("Version: %s (code %s)\n", PMT_VERSION, PMT_VERSION_CODE);
-                #ifdef __clang__
-                    printf("Compiler: clang %s", __clang_version__);
-                #endif
-                #ifdef __GNUC__
-                    printf("(GNUC %d.%d.%d)\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-                #else
-                    printf("\n");
-                #endif
-                printf("See licenses with -L argument.\n");
-                exit(EXIT_SUCCESS);
+                wiew_version = true;
+                /* check combo wiewer options and progress */
+                if (list_partitions || wiew_help || wiew_licenses)
+                {
+                    combo_wiewers = true;
+                }
                 break;
+            /* help message opption */
             case 0:
-                help();
-                exit(EXIT_SUCCESS);
+                wiew_help = true;
+                /* check combo wiewer options and progress */
+                if (wiew_version || list_partitions || wiew_licenses)
+                {
+                    combo_wiewers = true;
+                }
                 break;
+            /* license wiewer option */
             case 'L':
-                licenses();
-                exit(EXIT_SUCCESS);
+                wiew_licenses = true;
+                /* check combo wiewer options and progress */
+                if (wiew_version || wiew_help || list_partitions)
+                {
+                    combo_wiewers = true;
+                }
                 break;
+            /* for invalid options */
             case '?':
                 printf("Try `%s --help' for more information.\n", argv[0]);
                 exit(43);
@@ -275,18 +243,46 @@ int main(int argc, char *argv[])
         }
     }
 
-    /* minor checks */
-    if (!pmt_backup && !pmt_flash)
+    /* stop the program if multiple viewer is used */
+    if (combo_wiewers)
+    {
+        fprintf(stderr, "%s: Multiple wiewers cannot be used at the same line.\n", argv[0]);
+        exit(81);
+    }
+
+    /* controller to handle viewer */
+    if (wiew_help)
+    {
+        help();
+        exit(EXIT_SUCCESS);
+    } else if (wiew_version)
+    {
+        version();
+        exit(EXIT_SUCCESS);
+    } else if (wiew_licenses)
+    {
+        licenses();
+        exit(EXIT_SUCCESS);
+    } else if (list_partitions)
+    {
+        check_root();
+        listpart();
+        exit(EXIT_SUCCESS);
+    }
+
+    /* target control is done */
+    if (!pmt_backup && !pmt_flash && !pmt_format)
     {
         fprintf(stderr, "%s: missing operand.\nTry `%s --help` for more information.\n", argv[0], argv[0]);
         exit(3);
     }
 
+    /* prevent multiple mode use */
     if (pmt_backup && pmt_flash)
     {
         if (!pmt_force_mode)
         {
-            error("Backup and flash functions cannot be used in the same command\n", 9);
+            error("Backup and flash functions cannot be used in the same command.\n", 9);
         } else {
             exit(9);
         }
@@ -295,6 +291,81 @@ int main(int argc, char *argv[])
     /* checks */
     check_root();
     check_psf();
+
+    if (pmt_format)
+    {
+        if (strcmp(format_fs, "ext4") != 0 || strcmp(format_fs, "ext3") != 0 || strcmp(format_fs, "ext2") != 0)
+        {
+            if (!pmt_force_mode)
+            {
+                fprintf(stderr, "%s: formatter: unsupported filesystem: %s", argv[0], format_fs);
+                exit(41);
+            } else {
+                exit(41);
+            }
+        }
+    }
+
+    if (use_cust_outdir)
+    {
+        if (strncmp(outdir, opt_symbol, 1) == 0)
+        {
+            if (!pmt_force_mode)
+            {
+                error(common_symbol_rule, 19);
+            } else {
+                exit(19);
+            }
+        }
+        struct stat out_info;
+        if (stat(outdir, &out_info) != 0)
+        {
+            if (!pmt_force_mode)
+            {
+                fprintf(stderr, "%s: cannot stat '%s': %s\n", argv[0], outdir, strerror(errno));
+                exit(18);
+            } else {
+                exit(18);
+            }
+        } else {
+            if (!S_ISDIR(out_info.st_mode))
+            {
+                if (!pmt_force_mode)
+                {
+                    fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], outdir);
+                    exit(20);
+                } else {
+                    exit(20);
+                }
+            }
+        }
+    }
+
+    if (pmt_flash)
+    {
+        struct stat flashf_info;
+        if (stat(target_flash_file, &flashf_info) != 0)
+        {
+            if (!pmt_force_mode)
+            {
+                fprintf(stderr, "%s: cannot stat '%s': %s\n", argv[0], target_flash_file, strerror(errno));
+                exit(15);
+            } else {
+                exit(15);
+            }
+        } else {
+            if (!S_ISREG(flashf_info.st_mode))
+            {
+                if (!pmt_force_mode)
+                {
+                    fprintf(stderr, "%s: %s: is a not file.\n", argv[0], target_flash_file);
+                    exit(16);
+                } else {
+                    exit(16);
+                }
+            }
+        }
+    }
 
     /* custom context checker */
     if (pmt_use_cust_cxt)
@@ -323,8 +394,9 @@ int main(int argc, char *argv[])
         }
         if (strstr(cust_cxt, "/dev") == NULL && !pmt_force_mode)
         {
-            printf("%sThis custom context is strange...%s\n", ANSI_YELLOW, ANSI_RESET);
-        }
+            fprintf(stderr, "%sYou're going through my wave? There's nothing about this /dev. Use force mode if you don't want this error%s\n", ANSI_YELLOW, ANSI_RESET);
+            exit(81);
+        } 
     }
 
     if (target_partition == NULL)
@@ -337,35 +409,25 @@ int main(int argc, char *argv[])
             exit(5);
         }
     } else {
+        /**
+         * 
+         * 1 = backup mode 
+         * 
+         * 2 = flash mode 
+         * 
+         * 3 = format
+         */
         if (pmt_backup)
         {
-            if (pmt_use_logical)
-            {
-                backup(target_partition, "logical");
-                exit(EXIT_SUCCESS);
-            } else {
-                backup(target_partition, "classic");
-                exit(EXIT_SUCCESS);
-            }
+            pmt(1);
+            exit(EXIT_SUCCESS);
         } else if (pmt_flash)
         {
-            if (pmt_use_logical)
-            {
-                flash(target_partition, target_flash_file, "logical");
-                exit(EXIT_SUCCESS);
-            } else {
-                flash(target_partition, target_flash_file, "classic");
-                exit(EXIT_SUCCESS);
-            }
+            pmt(2);
+            exit(EXIT_SUCCESS);
         } else if (pmt_format)
         {
-            if (pmt_use_logical) {
-                format(target_partition, "logical");
-                exit(EXIT_SUCCESS);
-            } else {
-                format(target_partition, "classic");
-                exit(EXIT_SUCCESS);
-            }
+            pmt(3);
         } else {
             fprintf(stderr, "%s: no target (backup or flash).\nTry `%s --help` for more information.\n", argv[0], argv[0]);
             exit(3);
