@@ -16,14 +16,9 @@
 
 # sources
 SRCS := \
-	$(SOURCE_DIR)/$(TARGET).c \
-	$(SOURCE_DIR)/error.c     \
-	$(SOURCE_DIR)/checkers.c  \
-	$(SOURCE_DIR)/listpart.c  \
-	$(SOURCE_DIR)/flash.c     \
-	$(SOURCE_DIR)/backup.c    \
-	$(SOURCE_DIR)/format.c    \
-	$(SOURCE_DIR)/docs.c
+	$(wildcard $(SOURCE_DIR)/*.c)
 
 # only the reason why the resource list is available is that:
 # construction of a code was made with a different make sub-process in the old compilation logic. And then the built files were saved. And the main structure was created. But no longer needs it. According to new logic...
+
+# end
