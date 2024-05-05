@@ -116,9 +116,9 @@ deb:
 	printf " - Generating out dir...\n"; \
 	mkdir -p $(DEB_DIR); \
 	printf " - Copying files...\n"; \
+	cp -r $(DEBUTILS_DIR)/data $(DEBUTILS_DIR)/temp || exit 1; \
 	rm -f $(DEBTERMUX_USR)/share/man/man1/dummy; \
 	rm -f $(DEBTERMUX_USR)/bin/dummy; \
-	cp -r $(DEBUTILS_DIR)/data $(DEBUTILS_DIR)/temp || exit 1; \
 	mkdir -p $(DEBUTILS_DIR)/temp/DEBIAN; \
 	if [ "$(ARCH)" = "aarch64" ] || [ "$(ARCH)" = "armv8l" ]; then \
 		printf " - Selected arm-64 package control file.\n"; \
@@ -207,3 +207,5 @@ uninstall:
 	else \
 		printf "This function is only available on Termux.\n"; \
 	fi
+
+# end
