@@ -1,6 +1,6 @@
 /* By YZBruh */
 
-/*
+/**
  * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <stddef.h>
+#include <sys/stat.h>
 #include <errno.h>
 
 #include "include/pmt.h"
@@ -39,39 +39,41 @@ extern char *cust_cxt;
 /* check parts */
 void check_psf()
 {
+    struct stat abinf;
     /* true = ab | false = a */
     if (pmt_use_cust_cxt)
     {
         static char cust_cxt_ck_path[150];
         sprintf(cust_cxt_ck_path, "%s/boot_a", cust_cxt);
-        if (access(cust_cxt_ck_path, F_OK) != 0)
+        if (stat(cust_cxt_ck_path, &abinf) != 0)
         {
             pmt_ab = false;
         } else {
             pmt_ab = true;
         }
     } else {
-        if (access("/dev/block/by-name/boot_a", F_OK) != 0)
+        if (stat("/dev/block/by-name/boot_a", &abinf) != 0)
         {
             pmt_ab = false;
         } else {
             pmt_ab = true;
         }
     }
-    
+
+    struct stat logcinf;
     /* true = logical | false = classic */
     if (pmt_use_cust_cxt)
     {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
-        if (access(cust_cxt_ckl_path, F_OK) != 0)
+        if (stat(cust_cxt_ckl_path, &logcinf) != 0)
         {
             pmt_logical = false;
         } else {
             pmt_logical = true;
         }
     } else {
-        if (access("/dev/block/by-name/super", F_OK) != 0)
+        if (stat("/dev/block/by-name/super", &logcinf) != 0)
         {
             pmt_logical = false;
         } else {
