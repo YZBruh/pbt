@@ -1,6 +1,6 @@
 /* By YZBruh */
 
-/*
+/**
  * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,14 +36,14 @@ extern "C" {
 #define _PMT_H
 
 /* color definations */
-#define ANSI_RED          "\033[31m"
-#define ANSI_YELLOW       "\033[33m"
-#define ANSI_GREEN        "\033[32m"
-#define ANSI_RESET        "\033[0m"
+#define ANSI_RED             "\033[31m"
+#define ANSI_YELLOW          "\033[33m"
+#define ANSI_GREEN           "\033[32m"
+#define ANSI_RESET           "\033[0m"
 
 /* info */
-#define PMT_VERSION          "1.8.0"
-#define PMT_VERSION_CODE     "180"
+#define PMT_VERSION          "1.9.0"
+#define PMT_VERSION_CODE     "190"
 #define PMT_PACKAGE_NAME     "Partition Manager"
 #define PMT_PACKAGE_LANG     "en"
 
@@ -54,6 +54,7 @@ extern char *cust_cxt;
 extern char *target_partition;
 extern char *target_flash_file;
 extern char *format_fs;
+extern char *partition_type;
 extern bool pmt_use_logical;
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
@@ -68,9 +69,8 @@ void listpart();
 void error(const char *err_msg, uint32_t errcode);
 void check_psf();
 void check_root();
-void backup(char *target_backup_partition, char *backup_partition_style);
-void flash(char *target_flash_partition, char *target_file, char *flash_partition_style);
-void format(char *target_format_partition, char *format_partition_style);
+void pmt(short progress_code);
+void version();
 void help();
 void licenses();
 
