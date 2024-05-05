@@ -22,15 +22,17 @@
 #                                       #
 #########################################
 
-
 # use custom gcc | true or false
-USE_CUST_GCC := false
+USE_CUST_GCC ?= false
 
 # custom gcc ext (if used)
-CUST_GCC := 
+CUST_GCC ?= 
 
 # addionital gcc flags
-EXTRA_GCC_FLAGS :=
+EXTRA_GCC_FLAGS ?= 
+
+# debugging mode (binary)
+ENABLE_BINARY_DEBUGGING ?= false
 
 #########################################
 #########################################
@@ -45,17 +47,17 @@ EXTRA_GCC_FLAGS :=
 
 # gcc setting
 ifeq ($(USE_CUST_GCC), true)
-	CC := $(CUST_GCC)
-	LD := $(CUST_GCC)
+	CC ?= $(CUST_GCC)
 else ifeq ($(USE_CUST_GCC), false)
-	CC := gcc
-	LD := gcc
-else
-	$(error İnvalid custom gcc config flag: $(USE_CUST_GCC))
+	CC ?= gcc
 endif
 
 # gcc flag settings
-CFLAGS := -O3 -g -Wall -Wextra $(EXTRA_GCC_FLAGS)
+ifeq ($(ENABLE_BINARY_DEBUGGING), true)
+	CFLAGS ?= -O3 -g -Wall -Wextra $(EXTRA_GCC_FLAGS)
+else ifeq ($(ENABLE_BINARY_DEBUGGING), false)
+	CFLAGS ?= -O3 -Wall $(EXTRA_GCC_FLAGS)
+endif
 
 #########################################
 #########################################
