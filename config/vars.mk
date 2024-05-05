@@ -15,8 +15,8 @@
 # limitations under the License.
 
 # speficy
-VERSION := 1.8.0
-VERSION_CODE := 180
+VERSION := 1.9.0
+VERSION_CODE := 190
 TARGET := pmt
 LANG := en
 
@@ -27,7 +27,7 @@ ARCH := $(shell uname -m)
 CUR_DIR := $(shell pwd)
 
 # others needed important variables
-SOURCE_DIR := $(CUR_DIR)/src
+SOURCE_DIR ?= $(CUR_DIR)/src
 OUT_DIR := $(CUR_DIR)/out
 BINARY_DIR := $(OUT_DIR)/binary
 PACKAGE_DIR := $(OUT_DIR)/package
