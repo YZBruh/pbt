@@ -20,11 +20,6 @@
 extern "C" {
 #endif
 
-/* check compiler. only NDK supported */
-#if !defined(ANDROID)
-    #error "compilation can only be done with android NDK"
-#endif
-
 #ifndef _PMT_H
 #define _PMT_H
 
