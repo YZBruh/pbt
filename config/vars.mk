@@ -47,6 +47,7 @@ endif
 API := 29
 
 # compiler
+undefine CC
 CC ?= $(TOOLCHAIN)/bin/$(TARGET_ARCH)$(API)-clang
 
 # source config
