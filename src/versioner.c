@@ -27,15 +27,26 @@ extern "C" {
 
 void version()
 {
-    printf("Version: %s (code %s)\n", PMT_VERSION, PMT_VERSION_CODE);
-    #ifdef __clang__
-        printf("Compiler: clang %s", __clang_version__);
+    printf("Version: %s (code %s) ", PMT_VERSION, PMT_VERSION_CODE);
+
+    #if __SIZEOF_POINTER__ == 4
+        printf("32-bit binary\n");
+    #elif __SIZEOF_POINTER__ == 8
+        printf("64-bit binary\n");
+    #else
+        printf("\n");
     #endif
+
+    #ifdef __clang__
+        printf("Compiler: clang %s ", __clang_version__);
+    #endif
+
     #ifdef __GNUC__
         printf("(GNUC %d.%d.%d)\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
     #else
         printf("\n");
     #endif
+
     printf("See licenses with -L argument.\n");
 }
 
