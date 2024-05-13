@@ -54,7 +54,6 @@ pmt       android-ndk       other-directories
 ```
 
  - The directory structure was thought exactly like this. Be careful.
- - Specify macOS or Linux system usage in config or build command. Default is linux.
 
 If you want to change something, take a look at the configuration. You can change him.
 it is located in the `config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
