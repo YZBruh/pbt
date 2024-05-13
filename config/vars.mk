@@ -32,7 +32,7 @@ NDK_DIR := "../android-ndk"
 $(shell chmod 777 $(CUR_DIR)/config/ndk.sh)
 $(shell $(CUR_DIR)/config/ndk.sh)
 
-ifeq ($(OS),Linux)
+ifeq ($(OS),Darwin)
         TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/darwin-x86_64
 else ifeq ($(OS),Linux)
         TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/linux-x86_64
