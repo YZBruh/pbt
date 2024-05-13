@@ -45,7 +45,13 @@ Report bugs to <yagizzengin73@gmail.com>
 - Let me know your suggestions!
 
 ### How is it built?
-Android NDK is required to build. [Click for usage information](https://developer.android.com/ndk/guides/other_build_systems). [Click for NDK downloads](https://developer.android.com/ndk/downloads). NOTE: The current configuration is configured for compilation with NDK. The configuration was configured according to the NDK guide (I gave the link). You may need to replace it depending on the situation. You just need to set the `CC` variable in the compile command.
+Android NDK is required to build. [Click for usage information](https://developer.android.com/ndk/guides/other_build_systems). [Click for NDK downloads](https://developer.android.com/ndk/downloads). 
+ - NOTE 1: The current configuration is configured for compilation with NDK. The configuration was configured according to the NDK guide (I gave the link). You may need to replace it depending on the situation. You just need to set the `CC` variable in the compile command.
+ - NOTE 2: The current target architecture is aarch64. You can change this in the configuration or by adding it to the compile command. Be careful. While making this current configuration, the following was considered (directory structure):
+
+```
+pmt-source-dir       android-ndk-dir       other-directories
+```
 
 If you want to change something, take a look at the configuration. You can change him.
 it is located in the `config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
