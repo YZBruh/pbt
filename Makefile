@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include config/vars.mk
 include config/env.mk
+include config/vars.mk
 include config/source.mk
 -include config/INS_STAT.mk
 -include config/UNINS_STAT.mk
