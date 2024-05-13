@@ -44,7 +44,7 @@ else ifeq ($(TARGET_BUILD_ARCH),armv7a)
         TARGET_ARCH := armv7a-linux-androideabi
 endif
 
-API := 21
+API := 29
 
 # compiler
 CC ?= $(TOOLCHAIN)/bin/$(TARGET_ARCH)$(API)-clang
