@@ -20,16 +20,9 @@
 extern "C" {
 #endif
 
-/* check compiler system */
-#ifdef _WIN32
-    #error "it can only be compiled in linux or android environment. but current system windows (_WIN32 defined)"
-#elif ! __linux__ || __android__
-    #error "unknown compiler system founded"
-#endif
-
-/* compiler architecture if arm is not 32-bit or 64-bit, the compilation is stopped */
-#if ! __SIZEOF_POINTER__ == 4 || ! __SIZEOF_POINTER__ == 8
-    #error "only 32-bit or 64-bit arm compilers can be used"
+/* check compiler. only NDK supported */
+#if !defined(ANDROID)
+    #error "compilation can only be done with android NDK"
 #endif
 
 #ifndef _PMT_H
