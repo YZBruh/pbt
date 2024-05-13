@@ -28,7 +28,7 @@ OS := $(shell uname)
 CUR_DIR := $(shell pwd)
 
 # NDK config
-NDK_DIR := ../android-ndk
+NDK_DIR := "../android-ndk"
 $(shell bash $(CUR_DIR)/config/ndk.sh)
 
 ifeq ($(OS),Linux)
