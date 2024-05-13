@@ -47,7 +47,8 @@ Report bugs to <yagizzengin73@gmail.com>
 ### How is it built?
 Android NDK is required to build. [Click for usage information](https://developer.android.com/ndk/guides/other_build_systems). [Click for NDK downloads](https://developer.android.com/ndk/downloads). 
  - NOTE 1: The current configuration is configured for compilation with NDK. The configuration was configured according to the NDK guide (I gave the link). You may need to replace it depending on the situation. You just need to set the `CC` variable in the compile command.
- - NOTE 2: The current target architecture is aarch64. You can change this in the configuration or by adding it to the compile command. Be careful. While making this current configuration, the following was considered (directory structure):
+ - NOTE 2: Use NDK 22+
+ - NOTE 3: The current target architecture is aarch64. You can change this in the configuration or by adding it to the compile command. Be careful. While making this current configuration, the following was considered (directory structure):
 
 ```
 pmt       android-ndk       other-directories
