@@ -29,7 +29,7 @@ CUR_DIR := $(shell pwd)
 
 # NDK config
 NDK_DIR := "../android-ndk"
-$(shell ". $(CUR_DIR)/config/ndk.sh")
+$(shell "source "$(CUR_DIR)/config/ndk.sh"")
 
 ifeq ($(OS),Linux)
         TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/darwin-x86_64
