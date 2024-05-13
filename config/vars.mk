@@ -22,11 +22,32 @@ LANG := en
 
 # device arch info
 ARCH := $(shell uname -m)
+OS := $(shell uname)
 
 # current directory
 CUR_DIR := $(shell pwd)
 
-# others needed important variables
+# NDK config
+NDK_DIR := $(shell cd ../android-ndk && pwd && cd -)
+
+ifeq ($(OS),Linux)
+        TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/darwin-x86_64
+else ifeq ($(OS),Linux)
+        TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/linux-x86_64
+endif
+
+ifeq ($(TARGET_BUILD_ARCH),aarch64)
+        TARGET_ARCH := aarch64-linux-android
+else ifeq ($(TARGET_BUILD_ARCH),armv7a)
+        TARGET_ARCH := armv7a-linux-androideabi
+endif
+
+API := 21
+
+# compiler
+CC ?= $(TOOLCHAIN)/bin/$(TARGET_ARCH)$(API)-clang
+
+# source config
 SOURCE_DIR ?= $(CUR_DIR)/src
 OUT_DIR := $(CUR_DIR)/out
 BINARY_DIR := $(OUT_DIR)/binary
