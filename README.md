@@ -50,8 +50,10 @@ Android NDK is required to build. [Click for usage information](https://develope
  - NOTE 2: The current target architecture is aarch64. You can change this in the configuration or by adding it to the compile command. Be careful. While making this current configuration, the following was considered (directory structure):
 
 ```
-pmt-source-dir       android-ndk-dir       other-directories
+pmt       android-ndk       other-directories
 ```
+
+The directory structure was thought exactly like this. Be careful.
 
 If you want to change something, take a look at the configuration. You can change him.
 it is located in the `config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
