@@ -22,14 +22,11 @@
 #                                       #
 #########################################
 
-# use custom gcc | true or false
-USE_CUST_GCC ?= false
-
-# custom gcc ext (if used)
-CUST_GCC ?= 
-
 # addionital gcc flags
 EXTRA_GCC_FLAGS ?= 
+
+# arch config. 32-bit = armv7a | 64-bit = aarch64 | default = aarch64
+TARGET_BUILD_ARCH := aarch64
 
 # debugging mode (binary)
 ENABLE_BINARY_DEBUGGING ?= false
@@ -44,13 +41,6 @@ ENABLE_BINARY_DEBUGGING ?= false
 #      Warning: please do not edit      #
 #                                       #
 #########################################
-
-# gcc setting
-ifeq ($(USE_CUST_GCC), true)
-	CC ?= $(CUST_GCC)
-else ifeq ($(USE_CUST_GCC), false)
-	CC ?= gcc
-endif
 
 # gcc flag settings
 ifeq ($(ENABLE_BINARY_DEBUGGING), true)
