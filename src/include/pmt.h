@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* check compiler. only NDK supported */
-#ifndef __NDK__
+#if !defined(__ANDROID__)
     #error "compilation can only be done with android NDK"
 #endif
 
