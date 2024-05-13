@@ -45,7 +45,7 @@ Report bugs to <yagizzengin73@gmail.com>
 - Let me know your suggestions!
 
 ### How is it built?
-Even termux is enough to build the pmt. Or you can compile it with linux if you want. NOTE: Use a custom gcc according to the architecture you want to compile.
+Android NDK is required to build. [Click for usage information](https://developer.android.com/ndk/guides/other_build_systems). [Click for NDK downloads](https://developer.android.com/ndk/downloads).
 
 If you want to change something, take a look at the configuration. You can change him.
 it is located in the `config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
@@ -55,7 +55,7 @@ To build;
 make
 ```
 
-Special `make` commands (pbt offers :) ;
+Special `make` commands (pmt offers :) ;
 ```
 ------- Partition Manager help -------
 
@@ -67,5 +67,3 @@ Special `make` commands (pbt offers :) ;
     make uninstall         ==> If you are using termux, it uninstalls the compiled pmt into termux. So it allows you to use it like a normal command.
     make help              ==> Display help message
 ```
-
-I compiled it with termux :D. Why should I bother... I compiled it with `GCC 18.1.4` You can look at the version with the viewing option :)
