@@ -28,7 +28,13 @@ OS := $(shell uname)
 CUR_DIR := $(shell pwd)
 
 # NDK config
-$(shell [ ! -d ../android-ndk ] || $(eval NDK_DIR := $(shell cd ../android-ndk && pwd && cd -)))
+NDK_DIR := ../android-ndk
+
+ifeq ($(wildcard, $(NDK_DIR)),)
+        ifeq "$(origin CC)" "default"
+                @printf "Warning: NDK directory not found. And the current configuration may create problems. Set the CC variable in the build command.\n\n"
+        endif
+endif
 
 ifeq ($(OS),Linux)
         TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/darwin-x86_64
