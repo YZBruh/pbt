@@ -26,7 +26,7 @@
 EXTRA_GCC_FLAGS ?= 
 
 # arch config. 32-bit = armv7a | 64-bit = aarch64 | default = aarch64
-TARGET_BUILD_ARCH := aarch64
+TARGET_BUILD_ARCH ?= aarch64
 
 # debugging mode (binary)
 ENABLE_BINARY_DEBUGGING ?= false
