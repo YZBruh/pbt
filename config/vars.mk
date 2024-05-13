@@ -28,7 +28,7 @@ OS := $(shell uname)
 CUR_DIR := $(shell pwd)
 
 # NDK config
-NDK_DIR := "../android-ndk"
+NDK_DIR := $(shell dirname ../android-ndk/file)
 $(shell chmod 777 $(CUR_DIR)/config/ndk.sh)
 $(shell $(CUR_DIR)/config/ndk.sh)
 
