@@ -21,6 +21,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #include "include/pmt.h"
