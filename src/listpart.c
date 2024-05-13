@@ -26,6 +26,7 @@ extern "C" {
 #include <stdbool.h>
 #include <errno.h>
 #include <dirent.h>
+#include <string.h>
 
 #include "include/pmt.h"
 
