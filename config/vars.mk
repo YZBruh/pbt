@@ -28,6 +28,8 @@ OS := $(shell uname)
 CUR_DIR := $(shell pwd)
 
 # NDK config
+$(shell err() { echo "$1" && exit 1 })
+$(shell [ -d ../android-ndk ] || err "error: ndk not found")
 NDK_DIR := $(shell cd ../android-ndk && pwd && cd -)
 
 ifeq ($(OS),Linux)
