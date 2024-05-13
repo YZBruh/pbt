@@ -17,7 +17,7 @@
 # limitations under the License.
 
 if [ ! -d ../android-ndk ]; then
-    printf "Warning: NDK directory not found. And the current configuration may create problems...\n\n"
+    printf "warning; ndk directory not found. And the current configuration may create problems...\n\n"
 fi
 
 # end of script
