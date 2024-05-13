@@ -28,8 +28,7 @@ OS := $(shell uname)
 CUR_DIR := $(shell pwd)
 
 # NDK config
-$(shell [ -d ../android-ndk ] || echo "error: ndk not found" && exit 1)
-NDK_DIR := $(shell cd ../android-ndk && pwd && cd -)
+$(shell [ ! -d ../android-ndk ] || $(eval NDK_DIR := $(shell cd ../android-ndk && pwd && cd -)))
 
 ifeq ($(OS),Linux)
         TOOLCHAIN := $(NDK_DIR)/toolchains/llvm/prebuilt/darwin-x86_64
