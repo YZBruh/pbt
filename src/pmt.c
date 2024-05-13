@@ -23,6 +23,7 @@ extern "C" {
 
 /* include needed libs (headers) */
 #include <stdio.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
