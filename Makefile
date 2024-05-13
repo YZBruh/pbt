@@ -37,7 +37,7 @@ all:
 	printf " - Generating xz package...\n"; \
 	cp $(BINARY_DIR)/pmt $(PACKAGE_DIR) || exit 1; \
 	xz $(PACKAGE_DIR)/pmt; \
-	mv $(PACKAGE_DIR)/pmt.xz $(PACKAGE_DIR)/pmt-$(ARCH)-$(LANG).xz || exit 1; \
+	mv $(PACKAGE_DIR)/pmt.xz $(PACKAGE_DIR)/pmt-$(TARGET_ARCH)-$(LANG).xz || exit 1; \
 	printf " - Success\n\n"; \
 	printf " ------------------------------------ \n";
 
