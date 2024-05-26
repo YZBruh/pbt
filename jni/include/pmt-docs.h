@@ -16,26 +16,15 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdbool.h>
+void help();
+void licenses();
 
-#include "include/pmt.h"
-
-/* shorter error messages will be functional xd */
-void error(const char *err_msg, uint32_t errcode)
-{
-    fprintf(stderr, ANSI_RED "%s" ANSI_RESET, err_msg);
-    exit(errcode);
+#if defined(__cplusplus)
 }
+#endif /* __cplusplus */
 
-#ifdef __cplusplus
-}
-#endif
-
-/* end of code */
+/* end */

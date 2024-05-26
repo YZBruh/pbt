@@ -1,6 +1,6 @@
 # By YZBruh
 
-# Copyright 2024 YZBruh - Partition Manager
+# Copyright 2024 Partition Manager
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# sources
-SRCS := \
-	$(wildcard $(SOURCE_DIR)/*.c)
+# architecture
+APP_ABI := \
+    arm64-v8a \
+    armeabi-v7a
 
-# only the reason why the resource list is available is that:
-# construction of a code was made with a different make sub-process in the old compilation logic. And then the built files were saved. And the main structure was created. But no longer needs it. According to new logic...
+APP_PLATFORM := android-21
+
+APP_OPTIM := release
 
 # end

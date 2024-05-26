@@ -16,20 +16,18 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <errno.h>
 #include <dirent.h>
 #include <string.h>
-
-#include "include/pmt.h"
+#include <pmt.h>
 
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
@@ -50,9 +48,7 @@ void listpart() {
             if (!pmt_force_mode) {
                 fprintf(stderr, "Could not open: `%s`. Error reason: %s\n", cust_cxt, strerror(errno));
                 exit(62);
-            } else {
-                exit(62);
-            }
+            } else exit(62);
         }
     } else {
         dir = opendir("/dev/block/by-name");
@@ -62,9 +58,7 @@ void listpart() {
             {
                 fprintf(stderr, "Could not open: `/dev/block/by-name`. Error reason: %s\n", strerror(errno));
                 exit(63);
-            } else {
-                exit(63);
-            }
+            } else exit(63);
         }
     }
 
@@ -79,23 +73,18 @@ void listpart() {
         printf("List of logical partitions (/dev/block/mapper): \n");
         if (system("ls /dev/block/mapper") != 0 && !pmt_force_mode)
         {
-            error("An error occurred when the logical partition list appears!\n", 64);
+            fprintf(stderr, "%sAn error occurred when the logical partition list appears!%s\n", ANSI_RED, ANSI_RESET);
+            exit(64);
         }
     }
 
-    if (pmt_ab && !pmt_force_mode)
-    {
-        printf("%sWarning: device using A/B partition style.%s\n", ANSI_YELLOW, ANSI_RESET);
-    }
+    if (pmt_ab && !pmt_force_mode) printf("%sWarning: device using A/B partition style.%s\n", ANSI_YELLOW, ANSI_RESET);
 
-    if (pmt_logical && !pmt_force_mode)
-    {
-        printf("%sWarning: device using logical partition type.%s\n", ANSI_YELLOW, ANSI_RESET);
-    }
+    if (pmt_logical && !pmt_force_mode) printf("%sWarning: device using logical partition type.%s\n", ANSI_YELLOW, ANSI_RESET);
 }
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
-#endif
+#endif /* __cplusplus */
 
 /* end of code */

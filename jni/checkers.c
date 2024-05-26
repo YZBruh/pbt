@@ -16,20 +16,17 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sys/stat.h>
 #include <errno.h>
-
-#include "include/pmt.h"
+#include <pmt.h>
 
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
@@ -40,46 +37,28 @@ extern char *cust_cxt;
 /* check parts */
 void check_psf()
 {
-    struct stat abinf;
     /* true = ab | false = a */
     if (pmt_use_cust_cxt)
     {
         static char cust_cxt_ck_path[150];
         sprintf(cust_cxt_ck_path, "%s/boot_a", cust_cxt);
-        if (stat(cust_cxt_ck_path, &abinf) != 0)
-        {
-            pmt_ab = false;
-        } else {
-            pmt_ab = true;
-        }
+        if (access(cust_cxt_ck_path, F_OK) != 0) pmt_ab = false;
+        else pmt_ab = true;
     } else {
-        if (stat("/dev/block/by-name/boot_a", &abinf) != 0)
-        {
-            pmt_ab = false;
-        } else {
-            pmt_ab = true;
-        }
+        if (access("/dev/block/by-name/boot_a", F_OK) != 0) pmt_ab = false;
+        else pmt_ab = true;
     }
 
-    struct stat logcinf;
     /* true = logical | false = classic */
     if (pmt_use_cust_cxt)
     {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
-        if (stat(cust_cxt_ckl_path, &logcinf) != 0)
-        {
-            pmt_logical = false;
-        } else {
-            pmt_logical = true;
-        }
+        if (access(cust_cxt_ckl_path, F_OK) != 0) pmt_logical = false;
+        else pmt_logical = true;
     } else {
-        if (stat("/dev/block/by-name/super", &logcinf) != 0)
-        {
-            pmt_logical = false;
-        } else {
-            pmt_logical = true;
-        }
+        if (access("/dev/block/by-name/super", F_OK) != 0) pmt_logical = false;
+        else pmt_logical = true;
     }
 }
 
@@ -87,20 +66,18 @@ void check_psf()
 void check_root()
 {
     /* a quick, easy method to verify root :D */
-    if (chdir("/dev/block") != 0)
+    if (getuid() != 0)
     {
         if (!pmt_force_mode)
         {
             fprintf(stderr, ANSI_RED "Root privileges could not be detected! Please run this binary with root. Error reason: %s\n" ANSI_RESET, strerror(errno));
             exit(27);
-        } else {
-            exit(27);
-        }
+        } else exit(27);
     }
 }
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
-#endif
+#endif /* __cplusplus */
 
 /* end of code */

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # By YZBruh
 
 # Copyright 2024 Partition Manager
@@ -16,8 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if [ ! -d ../android-ndk ]; then
-    printf "warning; ndk directory not found. And the current configuration may create problems...\n\n"
-fi
+#########################################
+#                                       #
+#          Configuration Flags          #
+#                                       #
+#         Warning: you can edit         #
+#                                       #
+#########################################
 
-# end of script
+# addionital compiler flags
+EXTRA_COMPILER_FLAGS ?= 
+
+# debugging mode (binary)
+ENABLE_DEBUGGING ?= false
+
+# end of environment configuration

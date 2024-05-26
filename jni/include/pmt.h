@@ -16,24 +16,20 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
-#ifndef _PMT_H
-#define _PMT_H
+#if !defined(__PMT_H_)
+#define __PMT_H_
 
-/* color definations */
+/* some definations */
 #define ANSI_RED             "\033[31m"
 #define ANSI_YELLOW          "\033[33m"
 #define ANSI_GREEN           "\033[32m"
 #define ANSI_RESET           "\033[0m"
 
-/* info */
-#define PMT_VERSION          "1.9.0"
-#define PMT_VERSION_CODE     "190"
 #define PMT_PACKAGE_NAME     "Partition Manager"
-#define PMT_PACKAGE_LANG     "en"
 
 /* variable definations */
 extern char *out;
@@ -54,18 +50,15 @@ extern bool pmt_force_mode;
 
 /* function definations */
 void listpart();
-void error(const char *err_msg, uint32_t errcode);
 void check_psf();
 void check_root();
-void pmt(short progress_code);
+void pmt(unsigned short progress_code);
 void version();
-void help();
-void licenses();
 
-#endif /* _PMT_H */
+#endif /* __PMT_H_ */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
-#endif
+#endif /* __cplusplus */
 
 /* end of code */

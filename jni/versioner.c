@@ -16,19 +16,16 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
-
-#include "include/pmt.h"
+#include <pmt-versioning.h>
 
 void version()
 {
-    printf("Version: %s (code %s) ", PMT_VERSION, PMT_VERSION_CODE);
+    printf("Version: %d.%d.%d (code %d%d%d) ", PMT_MAJOR, PMT_LEVEL, PMT_PATCH, PMT_MAJOR, PMT_LEVEL, PMT_PATCH);
 
     #if __SIZEOF_POINTER__ == 4
         printf("32-bit binary\n");
@@ -38,21 +35,17 @@ void version()
         printf("\n");
     #endif
 
-    #ifdef __clang__
-        printf("Compiler: clang %s ", __clang_version__);
-    #endif
-
-    #ifdef __GNUC__
-        printf("(GNUC %d.%d.%d)\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-    #else
-        printf("\n");
+    #if defined(__clang__)
+        printf("Compiler: clang %s\n", __clang_version__);
+    #elif defined(__gcc__)
+        printf("Compiler: gcc %s\n", __gcc_version__)
     #endif
 
     printf("See licenses with -L argument.\n");
 }
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
-#endif
+#endif /* __cplusplus */
 
 /* end of code */

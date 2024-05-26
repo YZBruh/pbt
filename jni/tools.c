@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -31,8 +30,7 @@ extern "C" {
 #include <stddef.h>
 #include <errno.h>
 #include <fcntl.h>
-
-#include "include/pmt.h"
+#include <pmt.h>
 
 #define BFSIZE 1024
 
@@ -60,7 +58,22 @@ extern bool pmt_force_mode;
  * 3 = format mode
  */
 
-void pmt(short progress_code)
+static double
+calc_flsz(char *filepath)
+{
+    static int calc_flsz_file;
+    calc_flsz_file = open(filepath, O_RDONLY);
+    if (calc_flsz_file == -1) return -1;
+
+    off_t flsz = lseek(calc_flsz_file, 0, SEEK_END);
+    close(calc_flsz_file);
+
+    if (flsz == (off_t)-1) return -1;
+
+    return (double)flsz / (1024 * 1024);
+}
+
+void pmt(unsigned short progress_code)
 {
     /* required variables */
     static int srcf, targetf;
@@ -78,33 +91,28 @@ void pmt(short progress_code)
     {
         if (!pmt_use_logical)
         {
-            if (pmt_use_cust_cxt)
-            {
-                sprintf(backupper_path, "%s/%s", cust_cxt, target_partition);
-            } else {
-                sprintf(backupper_path, "/dev/block/by-name/%s", target_partition);
-            }
-        } else if (pmt_use_logical)
-        {
-            sprintf(backupper_path, "/dev/block/mapper/%s", target_partition);
-        } else {
+            if (pmt_use_cust_cxt) sprintf(backupper_path, "%s/%s", cust_cxt, target_partition);
+            else sprintf(backupper_path, "/dev/block/by-name/%s", target_partition);
+        } else if (pmt_use_logical) sprintf(backupper_path, "/dev/block/mapper/%s", target_partition);
+        else {
             if (!pmt_force_mode)
             {
-                error("İnvalid partition type!\n", 28);
-            } else {
+                fprintf(stderr, "İnvalid partition type!\n");
                 exit(28);
-            }
+            } else exit(28);
         }
 
         if (access(backupper_path, F_OK) == -1)
         {
             if (!pmt_force_mode)
             {
-                error("Partition not found!\n", 29);
-            } else {
+                fprintf(stderr, "Partition not found!\n");
                 exit(29);
-            }
+            } else exit(29);
         }
+
+        if (calc_flsz(backupper_path) != -1 && !pmt_force_mode) printf("Disk size of the partition to be backed up: %.2f\n", calc_flsz(backupper_path));
+        else printf("%sFailed to target partition disk size%s\n", ANSI_YELLOW, ANSI_RESET);
 
         srcf = open(backupper_path, O_RDONLY);
         if (srcf == -1) {
@@ -112,27 +120,17 @@ void pmt(short progress_code)
             {
                 fprintf(stderr, "Couldn't read: %s: %s", backupper_path, strerror(errno));
                 exit(39);
-            } else {
-                exit(39);
-            }
+            } else exit(39);
         }
 
         /* determine output */
         if (outdir != NULL)
         {
-            if (out != NULL)
-            {
-                sprintf(outf, "%s/%s.img", outdir, out);
-            } else {
-                sprintf(outf, "%s/%s.img", outdir, target_partition);
-            }
+            if (out != NULL) sprintf(outf, "%s/%s.img", outdir, out);
+            else sprintf(outf, "%s/%s.img", outdir, target_partition);
         } else {
-            if (out != NULL)
-            {
-                sprintf(outf, "/storage/emulated/0/%s.img", out);
-            } else {
-                sprintf(outf, "/storage/emulated/0/%s.img", target_partition);
-            }
+            if (out != NULL) sprintf(outf, "/storage/emulated/0/%s.img", out);
+            else sprintf(outf, "/storage/emulated/0/%s.img", target_partition);
         }
 
         targetf = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0666);
@@ -141,9 +139,7 @@ void pmt(short progress_code)
             {
                 fprintf(stderr, "Couldn't generate: %s: %s", outf, strerror(errno));
                 exit(37);
-            } else {
-                exit(37);
-            }
+            } else exit(37);
         }
 
 
@@ -169,19 +165,11 @@ void pmt(short progress_code)
         /* Print the output information by evaluating all situations */
         if (outdir != NULL)
         {
-            if (out != NULL)
-            {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, out, ANSI_RESET);
-            } else {
-                printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, target_partition, ANSI_RESET);
-            }
+            if (out != NULL) printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, out, ANSI_RESET);
+            else printf("%sSuccess. Output: %s/%s.img%s\n", ANSI_GREEN, outdir, target_partition, ANSI_RESET);
         } else {
-            if (out != NULL)
-            {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
-            } else {
-                printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_partition, ANSI_RESET);
-            }
+            if (out != NULL) printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, out, ANSI_RESET);
+            else printf("%sSuccess. Output: /storage/emulated/0/%s.img%s\n", ANSI_GREEN, target_partition, ANSI_RESET);
         }
     } else if (progress_code == 2)
     {
@@ -189,23 +177,16 @@ void pmt(short progress_code)
         /* for classic */
         if (!pmt_use_logical)
         {
-            if (pmt_use_cust_cxt)
-            {
-                sprintf(flasher_path, "%s/%s", cust_cxt, target_partition);
-            } else {
-                sprintf(flasher_path, "/dev/block/by-name/%s", target_partition);
-            }
+            if (pmt_use_cust_cxt) sprintf(flasher_path, "%s/%s", cust_cxt, target_partition);
+            else sprintf(flasher_path, "/dev/block/by-name/%s", target_partition);
         /* for logical */
-        } else if (pmt_use_logical)
-        {
-            sprintf(flasher_path, "/dev/block/mapper/%s", target_partition);
-        } else {
+        } else if (pmt_use_logical) sprintf(flasher_path, "/dev/block/mapper/%s", target_partition);
+        else {
             if (!pmt_force_mode)
             {
-                error("İnvalid partition type!\n", 30);
-            } else {
+                fprintf(stderr, "İnvalid partition type!\n");
                 exit(30);
-            }
+            } else exit(30);
         }
 
         /* check partition */
@@ -213,11 +194,16 @@ void pmt(short progress_code)
         {
             if (!pmt_force_mode)
             {
-                error("Partition not found!\n", 31);
-            } else {
+                fprintf(stderr, "Partition not found!\n");
                 exit(31);
-            }
+            } else exit(31);
         }
+
+        if (calc_flsz(target_flash_file) != -1 && !pmt_force_mode) printf("Size of flash file: %.2f\n", calc_flsz(target_flash_file));
+        else printf("%sFailed to get flash file size%s\n", ANSI_YELLOW, ANSI_RESET);
+
+        if (calc_flsz(target_partition) != -1 && !pmt_force_mode) printf("Disk size of the target partition: %.2f\n", calc_flsz(target_partition));
+        else printf("%sFailed to get target partition disk size%s\n", ANSI_YELLOW, ANSI_RESET);
 
         srcf = open(target_flash_file, O_RDONLY);
         if (srcf == -1) {
@@ -225,9 +211,7 @@ void pmt(short progress_code)
             {
                 fprintf(stderr, "Couldn't read: %s: %s", target_flash_file, strerror(errno));
                 exit(39);
-            } else {
-                exit(39);
-            }
+            } else exit(39);
         }
 
         targetf = open(target_partition, O_WRONLY | O_CREAT | O_TRUNC, 0666);
@@ -236,9 +220,7 @@ void pmt(short progress_code)
             {
                 fprintf(stderr, "Couldn't read: %s: %s", target_partition, strerror(errno));
                 exit(37);
-            } else {
-                exit(37);
-            }
+            } else exit(37);
         }
 
         /* start writing */
@@ -257,32 +239,22 @@ void pmt(short progress_code)
         close(srcf);
         close(targetf);
 
-        if (!pmt_force_mode)
-        {
-            printf("%sSuccess.%s\n", ANSI_GREEN, ANSI_RESET);
-        }
+        if (!pmt_force_mode) printf("%sSuccess.%s\n", ANSI_GREEN, ANSI_RESET);
     } else if (progress_code == 3)
     {
         /* generate partition extn */
         if (!pmt_use_logical)
         {
-            if (pmt_use_cust_cxt)
-            {
-                sprintf(ppath, "%s/%s", cust_cxt, target_partition);
-            } else {
-                sprintf(ppath, "/dev/block/by-name/%s", target_partition);
-            }
+            if (pmt_use_cust_cxt) sprintf(ppath, "%s/%s", cust_cxt, target_partition);
+            else sprintf(ppath, "/dev/block/by-name/%s", target_partition);
         /* for logical */
-        } else if (pmt_use_logical)
-        {
-            sprintf(ppath, "/dev/block/mapper/%s", target_partition);
-        } else {
+        } else if (pmt_use_logical) sprintf(ppath, "/dev/block/mapper/%s", target_partition);
+        else {
             if (!pmt_force_mode)
             {
-                error("İnvalid partition type!\n", 30);
-            } else {
+                fprintf(stderr, "İnvalid partition type!\n");
                 exit(49);
-            }
+            } else exit(49);
         }
 
         /* check partition */
@@ -290,10 +262,8 @@ void pmt(short progress_code)
         {
             if (!pmt_force_mode)
             {
-                error("Partition not found!\n", 31);
-            } else {
-                exit(31);
-            }
+                fprintf(stderr, "Partition not found!\n");
+            } else exit(31);
         }
 
         /* get target partition block size */
@@ -304,9 +274,7 @@ void pmt(short progress_code)
             {
                 fprintf(stderr, "The partition block size could not be obtained!\n");
                 exit(49);
-            } else {
-                exit(49);
-            }
+            } else exit(49);
         }
 
         /* generate mke2fs command */
@@ -317,16 +285,15 @@ void pmt(short progress_code)
         {
             if (!pmt_force_mode)
             {
-                error("Formatting failed! There may be a chance that something has been damaged!\n", 71);
-            } else {
+                fprintf(stderr, "Formatting failed! There may be a chance that something has been damaged!\n");
                 exit(71);
-            }
+            } else exit(71);
         }
     }
 }
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
-#endif
+#endif /* __cplusplus */
 
 /* end of code */

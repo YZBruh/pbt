@@ -17,13 +17,12 @@
  */
 
 /* force use C std (if default is C++) */
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
 /* include needed libs (headers) */
 #include <stdio.h>
-#include <stdint.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -31,9 +30,8 @@ extern "C" {
 #include <stdbool.h>
 #include <getopt.h>
 #include <errno.h>
-
-/* include custom pmt header */
-#include "include/pmt.h"
+#include <pmt.h>
+#include <pmt-docs.h>
 
 /* add value to variables that are added globally and are not worth */
 char *out = NULL;
@@ -89,7 +87,7 @@ int main(int argc, char *argv[])
     static bool use_cust_outdir = false;
     static char *opt_symbol = "-";
     static char *common_symbol_rule;
-    common_symbol_rule = "When entering the attached argument of an option, an argument of another option type cannot be used. In short, the rule is: there can be no '-' at the beginning of the attached argument.\n";
+    common_symbol_rule = "When entering the attached argument of an option, an argument of another option type cannot be used. In short, the rule is: there can be no '-' at the beginning of the attached argument.";
 
     int opt;
 
@@ -110,10 +108,9 @@ int main(int argc, char *argv[])
                 {
                     if (!pmt_force_mode)
                     {
-                        error(common_symbol_rule, 19);
-                    } else {
+                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
                         exit(19);
-                    }
+                    } else exit(19);
                 }
                 pmt_flash = true;
                 break;
@@ -124,11 +121,9 @@ int main(int argc, char *argv[])
                 {
                     if (!pmt_force_mode)
                     {
-                        fprintf(stderr, "%s", common_symbol_rule);
-                        exit(71);
-                    } else {
-                        exit(71);
-                    }
+                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
+                        exit(19);
+                    } else exit(19);
                 }
                 pmt_format = true;
                 break;
@@ -139,10 +134,9 @@ int main(int argc, char *argv[])
                 {
                     if (!pmt_force_mode)
                     {
-                        error(common_symbol_rule, 19);
-                    } else {
+                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
                         exit(19);
-                    }
+                    } else exit(19);
                 }
                 break;
             /* logical partitions option */
@@ -155,10 +149,9 @@ int main(int argc, char *argv[])
                 } else {
                     if (!pmt_force_mode)
                     {
-                        error("This device does not have logical partitions!\n", 17);
-                    } else {
+                        fprintf(stderr, "This device does not have logical partitions!\n");
                         exit(17);
-                    }
+                    } else exit(17);
                 }
                 break;
             /* output file option */
@@ -168,10 +161,9 @@ int main(int argc, char *argv[])
                 {
                     if (!pmt_force_mode)
                     {
-                        error(common_symbol_rule, 19);
-                    } else {
+                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
                         exit(19);
-                    }
+                    } else exit(19);
                 }
                 break;
             /* output dir option */
@@ -187,20 +179,16 @@ int main(int argc, char *argv[])
                 {
                     if (!pmt_force_mode)
                     {
-                        error(common_symbol_rule, 19);
-                    } else {
+                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
                         exit(19);
-                    }
+                    } else exit(19);
                 }
                 break;
             /* partition lister function */
             case 'D':
                 list_partitions = true;
                 /* check combo wiewer options and progress */
-                if (wiew_version || wiew_help || wiew_licenses)
-                {
-                    combo_wiewers = true;
-                }
+                if (wiew_version || wiew_help || wiew_licenses) combo_wiewers = true;
                 break;
             /* force mode option */
             case 'f':
@@ -210,28 +198,19 @@ int main(int argc, char *argv[])
             case 'v':
                 wiew_version = true;
                 /* check combo wiewer options and progress */
-                if (list_partitions || wiew_help || wiew_licenses)
-                {
-                    combo_wiewers = true;
-                }
+                if (list_partitions || wiew_help || wiew_licenses) combo_wiewers = true;
                 break;
             /* help message opption */
             case 0:
                 wiew_help = true;
                 /* check combo wiewer options and progress */
-                if (wiew_version || list_partitions || wiew_licenses)
-                {
-                    combo_wiewers = true;
-                }
+                if (wiew_version || list_partitions || wiew_licenses) combo_wiewers = true;
                 break;
             /* license wiewer option */
             case 'L':
                 wiew_licenses = true;
                 /* check combo wiewer options and progress */
-                if (wiew_version || wiew_help || list_partitions)
-                {
-                    combo_wiewers = true;
-                }
+                if (wiew_version || wiew_help || list_partitions) combo_wiewers = true;
                 break;
             /* for invalid options */
             case '?':
@@ -283,10 +262,9 @@ int main(int argc, char *argv[])
     {
         if (!pmt_force_mode)
         {
-            error("Backup and flash functions cannot be used in the same command.\n", 9);
-        } else {
+            fprintf(stderr, "Backup and flash functions cannot be used in the same command.\n");
             exit(9);
-        }
+        } else exit(9);
     }
 
     /* checks */
@@ -301,9 +279,7 @@ int main(int argc, char *argv[])
             {
                 fprintf(stderr, "%s: formatter: unsupported filesystem: %s", argv[0], format_fs);
                 exit(41);
-            } else {
-                exit(41);
-            }
+            } else exit(41);
         }
     }
 
@@ -313,10 +289,9 @@ int main(int argc, char *argv[])
         {
             if (!pmt_force_mode)
             {
-                error(common_symbol_rule, 19);
-            } else {
+                fprintf(stderr, "%s\n", common_symbol_rule);
                 exit(19);
-            }
+            } else exit(19);
         }
         struct stat out_info;
         if (stat(outdir, &out_info) != 0)
@@ -325,9 +300,7 @@ int main(int argc, char *argv[])
             {
                 fprintf(stderr, "%s: cannot stat '%s': %s\n", argv[0], outdir, strerror(errno));
                 exit(18);
-            } else {
-                exit(18);
-            }
+            } else exit(18);
         } else {
             if (!S_ISDIR(out_info.st_mode))
             {
@@ -335,9 +308,7 @@ int main(int argc, char *argv[])
                 {
                     fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], outdir);
                     exit(20);
-                } else {
-                    exit(20);
-                }
+                } else exit(20);
             }
         }
     }
@@ -351,9 +322,7 @@ int main(int argc, char *argv[])
             {
                 fprintf(stderr, "%s: cannot stat '%s': %s\n", argv[0], target_flash_file, strerror(errno));
                 exit(15);
-            } else {
-                exit(15);
-            }
+            } else exit(15);
         } else {
             if (!S_ISREG(flashf_info.st_mode))
             {
@@ -361,9 +330,7 @@ int main(int argc, char *argv[])
                 {
                     fprintf(stderr, "%s: %s: is a not file.\n", argv[0], target_flash_file);
                     exit(16);
-                } else {
-                    exit(16);
-                }
+                } else exit(16);
             }
         }
     }
@@ -380,18 +347,14 @@ int main(int argc, char *argv[])
                 {
                     fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], cust_cxt);
                     exit(8);
-                } else {
-                    exit(8);
-                }
+                } else exit(8);
             }
         } else {
             if (!pmt_force_mode)
             {
                 fprintf(stderr, "%s: %s: %s\n", argv[0], cust_cxt, strerror(errno));
                 exit(6);
-            } else {
-                exit(6);
-            }
+            } else exit(6);
         }
         if (strstr(cust_cxt, "/dev") == NULL && !pmt_force_mode)
         {
@@ -406,9 +369,7 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "%s: required partition name.\nTry `%s --help' for more information.\n", argv[0], argv[0]);
             exit(5);
-        } else {
-            exit(5);
-        }
+        } else exit(5);
     } else {
         /**
          * 
@@ -436,7 +397,7 @@ int main(int argc, char *argv[])
     }
 }
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
 #endif
 

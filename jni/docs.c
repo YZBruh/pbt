@@ -16,15 +16,12 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-
-#include "include/pmt.h"
+#include <pmt-docs.h>
 
 void licenses()
 {
@@ -62,8 +59,8 @@ void help()
     printf("Report bugs to <yagizzengin73@gmail.com>\n");
 }
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 }
-#endif
+#endif /* __cplusplus */
 
 /* end of code */
