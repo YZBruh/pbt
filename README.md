@@ -32,7 +32,7 @@ Examples:
    --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name
    -c /dev/block/platform/bootdevice/by-name --list
 
-Report bugs to <yagizzengin73@gmail.com>
+Report bugs to <t.me/YZBruh>
 ```
 
 #### Some notes
