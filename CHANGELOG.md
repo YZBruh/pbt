@@ -3,5 +3,5 @@
     - File/partition sizes were given during backup/flash operations.
     - The use of `fprintf` has started for all error messages.
 
-|   End of 2.0.0 changelog   |
-|____________________________|
+|   END OF VERSION 2.0.0 CHANGELOG   |
+|------------------------------------|
