@@ -85,4 +85,4 @@ chmod 777 make-deb.sh
 
 ### Notes
 If you want to change something, take a look at the configuration. You can change him.
-it is located in the `config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
+it is located in the `jni/config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
