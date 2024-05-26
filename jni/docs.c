@@ -56,7 +56,7 @@ void help()
     printf("   -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name\n");
     printf("   --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name\n");
     printf("   -c /dev/block/platform/bootdevice/by-name --list\n\n");
-    printf("Report bugs to <yagizzengin73@gmail.com>\n");
+    printf("Report bugs to <t.me/YZBruh>\n");
 }
 
 #if defined(__cplusplus)
