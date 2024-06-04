@@ -66,12 +66,19 @@ export NDK_PROJECT_PATH=$(pwd)
            |                   |
           pmt                 pmt
 ```
- - For the make installable debian package make-deb.sh use the script. It can be created within two architectures. Use the script flags correctly: arm64-v8a, armeabi-v7a
+ - For the make installable debian package make-deb.sh use the script. It can be created within two architectures. Use the script flags correctly: arm64-v8a, armeabi-v7a. If you want to process with root, add sudo as the second argument. If you don't want, use no-sudo or leave it blank
+
+```
+--Usage--
+
+./make-deb.sh [arm64-v8a, armeabi-v7a] [sudo, no-sudo, <blank>]
+```
+ 
 ```
 chmod 777 make-deb.sh
 
 # for making 64-bit package
-./make-deb.sh arm64-v8a
+./make-deb.sh arm64-v8a 
 
 # for making 32-bit package
 ./make-deb.sh armeabi-v7a
