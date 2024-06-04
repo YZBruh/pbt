@@ -1,6 +1,6 @@
 /* By YZBruh */
 
-/*
+/**
  * Copyright 2024 Partition Manager
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,29 @@
 
 #if defined(__cplusplus)
 extern "C" {
-#endif /* __cplusplus */
+#endif
 
-/* versioning */
-#define PMT_MAJOR            2
-#define PMT_MINOR            1
-#define PMT_PATCHLEVEL       0
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <err.h>
+#include <sysexits.h>
+#include <pmt.h>
+
+/* root checker function */
+void check_root()
+{
+    /* a quick, easy method to verify root */
+    if (getuid() != 0)
+    {
+        if (!pmt_force_mode) errx(EX_NOPERM, "root access could not be detected! Please run this binary with root.");
+        else exit(EX_NOPERM);
+    }
+}
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
 
-/* end */
+/* end of code */

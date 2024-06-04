@@ -20,32 +20,34 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <errno.h>
 #include <pmt.h>
 
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
 extern bool pmt_logical;
-extern bool pmt_force_mode;
-extern char *cust_cxt;
+extern char* cust_cxt;
+
+static int
+search(const char* _Nonnull target) { return access(target, F_OK); }
 
 /* check parts */
-void check_psf()
+void check_dev_point()
 {
     /* true = ab | false = a */
     if (pmt_use_cust_cxt)
     {
         static char cust_cxt_ck_path[150];
         sprintf(cust_cxt_ck_path, "%s/boot_a", cust_cxt);
-        if (access(cust_cxt_ck_path, F_OK) != 0) pmt_ab = false;
+        if (search(cust_cxt_ck_path) != 0) pmt_ab = false;
         else pmt_ab = true;
-    } else {
-        if (access("/dev/block/by-name/boot_a", F_OK) != 0) pmt_ab = false;
+    }
+    else
+    {
+        if (search("/dev/block/by-name/boot_a") != 0) pmt_ab = false;
         else pmt_ab = true;
     }
 
@@ -54,30 +56,16 @@ void check_psf()
     {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
-        if (access(cust_cxt_ckl_path, F_OK) != 0) pmt_logical = false;
-        else pmt_logical = true;
-    } else {
-        if (access("/dev/block/by-name/super", F_OK) != 0) pmt_logical = false;
+        if (search(cust_cxt_ckl_path) != 0) pmt_logical = false;
         else pmt_logical = true;
     }
-}
-
-/* root checker function */
-void check_root()
-{
-    /* a quick, easy method to verify root :D */
-    if (getuid() != 0)
+    else
     {
-        if (!pmt_force_mode)
-        {
-            fprintf(stderr, ANSI_RED "Root privileges could not be detected! Please run this binary with root. Error reason: %s\n" ANSI_RESET, strerror(errno));
-            exit(27);
-        } else exit(27);
+        if (search("/dev/block/by-name/super") != 0) pmt_logical = false;
+        else pmt_logical = true;
     }
 }
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
-
-/* end of code */

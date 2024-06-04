@@ -26,7 +26,8 @@ LOCAL_SRC_FILES = \
     pmt.c \
     versioner.c \
     tools.c \
-    checkers.c \
+    partition_tool.c \
+    root.c \
     listpart.c \
     docs.c
 

@@ -30,47 +30,99 @@ extern "C" {
 #include <stdbool.h>
 #include <getopt.h>
 #include <errno.h>
+#include <err.h>
+#include <sysexits.h>
 #include <pmt.h>
 #include <pmt-docs.h>
 
 /* add value to variables that are added globally and are not worth */
-char *out = NULL;
-char *outdir = NULL;
-char *cust_cxt = NULL;
-char *target_partition = NULL;
-char *target_flash_file = NULL;
-char *partition_type = NULL;
-char *format_fs = NULL;
+char* out = NULL;
+char* cust_cxt = NULL;
+char* target_partition = NULL;
+char* target_flash_file = NULL;
+char* partition_type = NULL;
+char* format_fs = NULL;
+char* bin_name = NULL;
 bool pmt_use_logical = NULL;
 bool pmt_use_cust_cxt = NULL;
 bool pmt_ab = false;
 bool pmt_logical = false;
+bool pmt_silent = false;
 bool pmt_flash = false;
 bool pmt_backup = false;
 bool pmt_format = false;
 bool pmt_force_mode = false;
 
-/* classic main function (C binary here xd) */
-int main(int argc, char *argv[])
+/* variables for use in control of '-' expression */
+static const char* opt_symbol = "-";
+static const char* common_symbol_rule = "When entering the attached argument of an option, an argument of another option type cannot be used. In short, the rule is: there can be no '-' at the beginning of the attached argument.";
+
+/**
+ * He controls whether the '-' sign at 
+ * the beginning of the given word
+ */
+static void
+check_optsym(const char* _Nonnull mystring)
 {
-    /* check argument total */
-    if (argc < 2)
+    if (strncmp(mystring, opt_symbol, 1) == 0)
     {
-        fprintf(stderr, "%s: missing operand\nTry `%s --help' for more information.\n", argv[0], argv[0]);
-        exit(44);
+        if (!pmt_force_mode) errx(EX_USAGE, "%s", common_symbol_rule);
+        else exit(EX_USAGE);
+    }
+}
+
+/**
+ * The target file is controlled by the stat function. 
+ * Files, directories, links and blocks (disks) are for. 
+ * If it is never found, it returns 1 value.
+ * If he finds 0 value is returned. 
+ * If the desired type is not in -1 value is returned.
+ */
+static int
+search_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
+{
+    struct stat search_stat;
+
+    if (stat(filepath, &search_stat) != 0) return 1;
+
+    if (strcmp(stype, "dir") == 0) 
+    {
+        if (S_ISDIR(search_stat.st_mode)) return 0;
+        else return -1;
+    }
+    else if (strcmp(stype, "file") == 0)
+    {
+        if (S_ISREG(search_stat.st_mode)) return 0;
+        else return -1;
+    }
+    else if (strcmp(stype, "blk") == 0)
+    {
+        if (S_ISBLK(search_stat.st_mode)) return 0;
+        else return -1;
+    }
+    else if (strcmp(stype, "link") == 0)
+    {
+        if (S_ISLNK(search_stat.st_mode)) return 0;
+        else return -1;
     }
 
-    /* a structure for long arguments... */
+    return 0;
+}
+
+/* classic main function (C binary here xd) */
+int main(int argc, char* argv[])
+{
+    /* check argument total */
+    if (argc < 2) errx(EX_USAGE, "missing operand\nTry `%s --help' for more information.", argv[0]);
+
+    bin_name = argv[0];
+
+    /* a structure for long arguments */
     struct option long_options[] = {
-        {"backup", no_argument, 0, 'b'},
-        {"flash", required_argument, 0, 'F'},
-        {"format", required_argument, 0, 'r'},
-        {"partition", required_argument, 0, 'p'},
         {"logical", no_argument, 0, 'l'},
-        {"out", required_argument, 0, 'o'},
-        {"outdir", required_argument, 0, 'd'},
         {"context", required_argument, 0, 'c'},
-        {"list", no_argument, 0, 'D'},
+        {"list", no_argument, 0, 'p'},
+        {"silent", no_argument, 0, 's'},
         {"force", no_argument, 0, 'f'},
         {"version", no_argument, 0, 'v'},
         {"help", no_argument, 0, 0},
@@ -84,92 +136,25 @@ int main(int argc, char *argv[])
     static bool wiew_version = false;
     static bool list_partitions = false;
     static bool combo_wiewers = false;
-    static bool use_cust_outdir = false;
-    static char *opt_symbol = "-";
-    static char *common_symbol_rule;
-    common_symbol_rule = "When entering the attached argument of an option, an argument of another option type cannot be used. In short, the rule is: there can be no '-' at the beginning of the attached argument.";
-
-    int opt;
+    static int search_result = 3;
+    static int opt;
 
     /* control for each argument */
-    while ((opt = getopt_long(argc, argv, "bF:rp:lo:d:c:DfvL", long_options, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "lc:psfvL", long_options, NULL)) != -1)
     {
         /* process arguments */
         switch (opt)
         {
-            /* backup mode */
-            case 'b':
-                pmt_backup = true;
-                break;
-            /* flash mode */
-            case 'F':
-                target_flash_file = strdup(optarg);
-                if (strncmp(target_flash_file, opt_symbol, 1) == 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
-                        exit(19);
-                    } else exit(19);
-                }
-                pmt_flash = true;
-                break;
-            /* format mode */
-            case 'r':
-                format_fs = strdup(optarg);
-                if (strncmp(format_fs, opt_symbol, 1) == 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
-                        exit(19);
-                    } else exit(19);
-                }
-                pmt_format = true;
-                break;
-            /* partition selector option */
-            case 'p':
-                target_partition = strdup(optarg);
-                if (strncmp(target_partition, opt_symbol, 1) == 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
-                        exit(19);
-                    } else exit(19);
-                }
-                break;
             /* logical partitions option */
             case 'l':
                 check_root();
-                check_psf();
-                if (pmt_logical)
+                check_dev_point();
+                if (pmt_logical) pmt_use_logical = true;
+                else
                 {
-                    pmt_use_logical = true;
-                } else {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "This device does not have logical partitions!\n");
-                        exit(17);
-                    } else exit(17);
+                    if (!pmt_force_mode) errx(EX_USAGE, "this device does not have logical partitions!");
+                    else return EX_USAGE;
                 }
-                break;
-            /* output file option */
-            case 'o':
-                out = strdup(optarg);
-                if (strncmp(out, opt_symbol, 1) == 0)
-                {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
-                        exit(19);
-                    } else exit(19);
-                }
-                break;
-            /* output dir option */
-            case 'd':
-                use_cust_outdir = true;
-                outdir = strdup(optarg);
                 break;
             /* context selector option */
             case 'c':
@@ -177,15 +162,12 @@ int main(int argc, char *argv[])
                 cust_cxt = strdup(optarg);
                 if (strncmp(cust_cxt, opt_symbol, 1) == 0)
                 {
-                    if (!pmt_force_mode)
-                    {
-                        fprintf(stderr, "%s%s%s\n", ANSI_RED, common_symbol_rule, ANSI_RESET);
-                        exit(19);
-                    } else exit(19);
+                    if (!pmt_force_mode) errx(EX_USAGE, "%s", common_symbol_rule);
+                    else return EX_USAGE;
                 }
                 break;
             /* partition lister function */
-            case 'D':
+            case 'p':
                 list_partitions = true;
                 /* check combo wiewer options and progress */
                 if (wiew_version || wiew_help || wiew_licenses) combo_wiewers = true;
@@ -193,6 +175,10 @@ int main(int argc, char *argv[])
             /* force mode option */
             case 'f':
                 pmt_force_mode = true;
+                break;
+            /* silent mode option */
+            case 's':
+                pmt_silent = true;
                 break;
             /* version info option */
             case 'v':
@@ -215,185 +201,182 @@ int main(int argc, char *argv[])
             /* for invalid options */
             case '?':
                 printf("Try `%s --help' for more information.\n", argv[0]);
-                exit(43);
+                return EX_USAGE;
                 break;
             default:
-                printf("Usage: %s [-b | --backup] [-f | --flash FILE] [-r | --format FS_TYPE] [-p | --partition PARTITION] [-l | --logical] [-o | --out OUTNAME] [-d | --outdir OUTDIR] [-c | --context] [-D | --list] [-v | --version] [--help] [-L | --license]\n", argv[0]);
-                exit(44);
+                printf("Usage: %s [backup] flash] [format] [-l | --logical] [-c | --context] [-D | --list] [-v | --version] [--help] [-L | --license]\n", argv[0]);
+                exit(EX_USAGE);
         }
     }
 
     /* stop the program if multiple viewer is used */
-    if (combo_wiewers)
-    {
-        fprintf(stderr, "%s: Multiple wiewers cannot be used at the same line.\n", argv[0]);
-        exit(81);
-    }
+    if (combo_wiewers) errx(EX_USAGE, "multiple wiewers cannot be used at the same line.");
 
     /* controller to handle viewer */
     if (wiew_help)
     {
         help();
-        exit(EXIT_SUCCESS);
-    } else if (wiew_version)
+        return EX_OK;
+    }
+    else if (wiew_version)
     {
         version();
-        exit(EXIT_SUCCESS);
-    } else if (wiew_licenses)
+        return EX_OK;
+    }
+    else if (wiew_licenses)
     {
         licenses();
-        exit(EXIT_SUCCESS);
-    } else if (list_partitions)
+        return EX_OK;
+    }
+    else if (list_partitions)
     {
         check_root();
-        listpart();
-        exit(EXIT_SUCCESS);
+        return listpart();
+    }
+
+    /* detect target mode */
+    static char arg1[20];
+    sprintf(arg1, "%s", argv[1]);
+
+    if (strcmp(arg1, "backup") == 0)
+    {
+        if (argc == 2)
+        {
+            if (!pmt_force_mode) errx(EX_USAGE, "expected backup argument 2, retrieved 0.");
+            else return EX_USAGE;
+        }
+
+        target_partition = argv[2];
+        if (argc != 4) out = target_partition;
+        else out = argv[3];
+        check_optsym(target_partition);
+        check_optsym(out);
+
+        pmt_backup = true;
+    }
+    else if (strcmp(arg1, "flash") == 0)
+    {
+        if (argc == 2)
+        {
+            if (!pmt_force_mode) errx(EX_USAGE, "expected flash argument 2, retrieved 0.");
+            else return EX_USAGE;
+        }
+
+        if (argc == 3)
+        {
+            if (!pmt_force_mode) errx(EX_USAGE, "expected flash argument 2, retrieved 0.");
+            else return EX_USAGE;
+        }
+
+        target_flash_file = argv[2];
+        target_partition = argv[3];
+        check_optsym(target_flash_file);
+        check_optsym(target_partition);
+
+        pmt_flash = true;
+    }
+    else if (strcmp(arg1, "format") == 0)
+    {
+        if (argc == 2)
+        {
+            if (!pmt_force_mode) errx(EX_USAGE, "expected format argument 2, retrieved 0.");
+            else return EX_USAGE;
+        }
+
+        if (argc == 3)
+        {
+            if (!pmt_force_mode) errx(EX_USAGE, "expected format argument 2, retrieved 1.");
+            else return EX_USAGE;
+        }
+
+        format_fs = argv[2];
+        target_partition = argv[3];
+        check_optsym(format_fs);
+        check_optsym(target_partition);
+
+        pmt_format = true;
     }
 
     /* target control is done */
-    if (!pmt_backup && !pmt_flash && !pmt_format)
-    {
-        fprintf(stderr, "%s: missing operand.\nTry `%s --help` for more information.\n", argv[0], argv[0]);
-        exit(3);
-    }
+    if (!pmt_backup && !pmt_flash && !pmt_format && !pmt_silent) errx(EX_USAGE, "missing operand.\nTry `%s --help` for more information.", argv[0]);
+    else return EX_USAGE;
 
     /* prevent multiple mode use */
-    if (pmt_backup && pmt_flash)
+    if (pmt_backup && pmt_flash && pmt_format)
     {
-        if (!pmt_force_mode)
-        {
-            fprintf(stderr, "Backup and flash functions cannot be used in the same command.\n");
-            exit(9);
-        } else exit(9);
+        if (!pmt_force_mode) errx(EX_USAGE, "multi functions cannot be used in the same command.");
+        else return EX_USAGE;
     }
 
     /* checks */
     check_root();
-    check_psf();
+    check_dev_point();
 
     if (pmt_format)
     {
         if (strcmp(format_fs, "ext4") != 0 || strcmp(format_fs, "ext3") != 0 || strcmp(format_fs, "ext2") != 0)
         {
-            if (!pmt_force_mode)
-            {
-                fprintf(stderr, "%s: formatter: unsupported filesystem: %s", argv[0], format_fs);
-                exit(41);
-            } else exit(41);
-        }
-    }
-
-    if (use_cust_outdir)
-    {
-        if (strncmp(outdir, opt_symbol, 1) == 0)
-        {
-            if (!pmt_force_mode)
-            {
-                fprintf(stderr, "%s\n", common_symbol_rule);
-                exit(19);
-            } else exit(19);
-        }
-        struct stat out_info;
-        if (stat(outdir, &out_info) != 0)
-        {
-            if (!pmt_force_mode)
-            {
-                fprintf(stderr, "%s: cannot stat '%s': %s\n", argv[0], outdir, strerror(errno));
-                exit(18);
-            } else exit(18);
-        } else {
-            if (!S_ISDIR(out_info.st_mode))
-            {
-                if (!pmt_force_mode)
-                {
-                    fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], outdir);
-                    exit(20);
-                } else exit(20);
-            }
+            if (!pmt_force_mode) errx(EX_USAGE, "formatter: unsupported filesystem: %s", format_fs);
+            else return EX_USAGE;
         }
     }
 
     if (pmt_flash)
     {
-        struct stat flashf_info;
-        if (stat(target_flash_file, &flashf_info) != 0)
+        search_result = search_stat(target_flash_file, "file");
+
+        if (search_result == 1)
         {
-            if (!pmt_force_mode)
-            {
-                fprintf(stderr, "%s: cannot stat '%s': %s\n", argv[0], target_flash_file, strerror(errno));
-                exit(15);
-            } else exit(15);
-        } else {
-            if (!S_ISREG(flashf_info.st_mode))
-            {
-                if (!pmt_force_mode)
-                {
-                    fprintf(stderr, "%s: %s: is a not file.\n", argv[0], target_flash_file);
-                    exit(16);
-                } else exit(16);
-            }
+            if (!pmt_silent) errx(EX_UNAVAILABLE, "cannot stat `%s': %s", target_flash_file, strerror(errno));
+            else return EX_UNAVAILABLE;
+        }
+        else if (search_result == -1)
+        {
+            if (!pmt_silent) errx(EX_USAGE, "`%s': is a not file.", target_flash_file);
+            else return EX_USAGE;
         }
     }
 
     /* custom context checker */
     if (pmt_use_cust_cxt)
     {
-        struct stat cxtinfo;
-        if (stat(cust_cxt, &cxtinfo) == 0)
+        search_result = search_stat(cust_cxt, "dir");
+
+        if (search_result == 1)
         {
-            if (!S_ISREG(cxtinfo.st_mode))
-            {
-                if (!pmt_force_mode)
-                {
-                    fprintf(stderr, "%s: %s: is a not directory.\n", argv[0], cust_cxt);
-                    exit(8);
-                } else exit(8);
-            }
-        } else {
-            if (!pmt_force_mode)
-            {
-                fprintf(stderr, "%s: %s: %s\n", argv[0], cust_cxt, strerror(errno));
-                exit(6);
-            } else exit(6);
+            if (!pmt_silent) errx(EX_UNAVAILABLE, "cannot stat `%s': %s", cust_cxt, strerror(errno));
+            else return EX_UNAVAILABLE;
         }
-        if (strstr(cust_cxt, "/dev") == NULL && !pmt_force_mode)
+        else if (search_result == -1)
         {
-            fprintf(stderr, "%sYou're going through my wave? There's nothing about this /dev. Use force mode if you don't want this error%s\n", ANSI_YELLOW, ANSI_RESET);
-            exit(81);
-        } 
+            if (!pmt_silent) errx(EX_USAGE, "`%s': is a not directory.", cust_cxt);
+            else return EX_USAGE;
+        }
+
+        if (strstr(cust_cxt, "/dev") == NULL && !pmt_force_mode) errx(EX_USAGE, ANSI_YELLOW "you're going through my wave? There's nothing about this /dev. Use force mode if you don't want this error." ANSI_RESET);
     }
 
     if (target_partition == NULL)
     {
         if (!pmt_force_mode)
         {
-            fprintf(stderr, "%s: required partition name.\nTry `%s --help' for more information.\n", argv[0], argv[0]);
-            exit(5);
-        } else exit(5);
-    } else {
+            if (!pmt_silent) errx(EX_USAGE, "required partition name.\nTry `%s --help' for more information.\n", argv[0]);
+        }
+        else return EX_USAGE;
+    }
+    else
+    {
         /**
-         * 
          * 1 = backup mode 
          * 
          * 2 = flash mode 
          * 
          * 3 = format
          */
-        if (pmt_backup)
-        {
-            pmt(1);
-            exit(EXIT_SUCCESS);
-        } else if (pmt_flash)
-        {
-            pmt(2);
-            exit(EXIT_SUCCESS);
-        } else if (pmt_format)
-        {
-            pmt(3);
-        } else {
-            fprintf(stderr, "%s: no target (backup or flash).\nTry `%s --help` for more information.\n", argv[0], argv[0]);
-            exit(3);
-        }
+        if (pmt_backup) return pmt(1);
+        else if (pmt_flash) return pmt(2);
+        else if (pmt_format) return pmt(3);
+        else if (!pmt_silent) errx(EX_USAGE, "no target (backup or flash).\nTry `%s --help` for more information.\n", argv[0]);
     }
 }
 

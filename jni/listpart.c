@@ -25,6 +25,8 @@ extern "C" {
 #include <unistd.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <err.h>
+#include <sysexits.h>
 #include <dirent.h>
 #include <string.h>
 #include <pmt.h>
@@ -32,11 +34,13 @@ extern "C" {
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
 extern bool pmt_logical;
+extern bool pmt_silent;
 extern bool pmt_force_mode;
-extern char *cust_cxt;
+extern char* cust_cxt;
+extern char* bin_name;
 
 /* list existing partitions */
-void listpart() {
+int listpart() {
     DIR *dir;
     struct dirent *entry;
 
@@ -45,42 +49,45 @@ void listpart() {
         dir = opendir(cust_cxt);
         if (dir == NULL)
         {
-            if (!pmt_force_mode) {
-                fprintf(stderr, "Could not open: `%s`. Error reason: %s\n", cust_cxt, strerror(errno));
-                exit(62);
-            } else exit(62);
+            if (!pmt_force_mode) errx(EX_OSFILE, "could not open: `%s': %s", cust_cxt, strerror(errno));
+            else return EX_OSFILE;
         }
-    } else {
+    }
+    else
+    {
         dir = opendir("/dev/block/by-name");
         if (dir == NULL)
         {
-            if (!pmt_force_mode)
-            {
-                fprintf(stderr, "Could not open: `/dev/block/by-name`. Error reason: %s\n", strerror(errno));
-                exit(63);
-            } else exit(63);
+            if (!pmt_force_mode) errx(EX_OSFILE, "could not open: `/dev/block/by-name': %s", strerror(errno));
+            else return EX_OSFILE;
         }
     }
 
-    while ((entry = readdir(dir)) != NULL) {
-        printf("%s\n", entry->d_name);
-    }
+    while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
 
     closedir(dir);
 
     if (pmt_logical)
     {
-        printf("List of logical partitions (/dev/block/mapper): \n");
-        if (system("ls /dev/block/mapper") != 0 && !pmt_force_mode)
+        dir = opendir("/dev/block/mapper");
+
+        if (dir == NULL) 
         {
-            fprintf(stderr, "%sAn error occurred when the logical partition list appears!%s\n", ANSI_RED, ANSI_RESET);
-            exit(64);
+            if (!pmt_silent) errx(EX_OSFILE, "could not open: `/dev/block/mapper': %s", strerror(errno));
+            else return EX_OSFILE;
         }
+        else printf("List of logical partitions (`/dev/block/mapper'):\n");
     }
 
-    if (pmt_ab && !pmt_force_mode) printf("%sWarning: device using A/B partition style.%s\n", ANSI_YELLOW, ANSI_RESET);
+    while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
 
-    if (pmt_logical && !pmt_force_mode) printf("%sWarning: device using logical partition type.%s\n", ANSI_YELLOW, ANSI_RESET);
+    closedir(dir);
+
+    if (pmt_ab && !pmt_silent) warnx(ANSI_YELLOW "warning: device using A/B partition style." ANSI_RESET);
+
+    if (pmt_logical && !pmt_silent) warnx(ANSI_YELLOW "warning: device using logical partition type." ANSI_RESET);
+
+    return EX_OK;
 }
 
 #if defined(__cplusplus)

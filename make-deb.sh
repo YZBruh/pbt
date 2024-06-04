@@ -15,39 +15,65 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ANSI color codes
 RED='\e[31m'
 NC='\e[0m'
 
+# error messages
 abort() {
-    printf "${RED}$1${NC}"
+    if [ ! "$1" = "" ]; then
+        printf "${RED}${1}${NC}\n"
+    fi
+    if [ -d ${DEBUTILS_DIR}/temp ]; then
+        rm -rf ${DEB_DIR}/temp
+    fi
     exit 1
 }
 
-case $1 in
+# detect arch flag
+case "$1" in
     arm64-v8a)
         PREFIX="64"
+        ARM_PREFIX="-v8a"
     ;;
     armeabi-v7a)
         PREFIX="32"
+        ARM_PREFIX=""
     ;;
     *)
-        abort " - Error: unknown architecture flag: $1. Avaiable: arm64-v8a & armeabi-v7a\n"
+        abort " - Error: unknown architecture flag: $1. Avaiable: arm64-v8a & armeabi-v7a.\n"
 esac
 
-VERSION="2.0.0"
+case "$2" in
+    sudo)
+        SUDO="sudo"
+    ;;
+    no-sudo)
+        SUDO=""
+    ;;
+    *)
+        SUDO=""
+esac
+
+# variables
+VERSION="2.1.0"
 CUR_DIR=$(pwd)
 LIB_DIR=${CUR_DIR}/libs
-ARMV8A_DIR=${OUT_DIR}/arm64-v8a
-ARMV7A_DIR=${OUT_DIR}/armeabi-v7a
-DEB_DIR=${OUT_DIR}/deb
+ARMV8A_DIR=${LIB_DIR}/arm64-v8a
+ARMV7A_DIR=${LIB_DIR}/armeabi-v7a
+DEB_DIR=${CUR_DIR}/deb
 DEBUTILS_DIR=${CUR_DIR}/debutils
 DEBTERMUX_USR=${DEBUTILS_DIR}/data/data/com.termux/files/usr
 
-chmod -R 755 *
+# set file modes (all) to 755
+${SUDO} chmod -R 755 *
 
-printf " --------- Making pmt deb package ---------\n"; 
+# start
+printf " --------- pmt deb package maker ---------\n"; 
 printf " - Checking all files and directories (only
 eededs)...\n"; 
+
+# check all important files
 if [ ! -d ${DEBUTILS_DIR} ]; then 
     abort " - Not found: ${DEBUTILS_DIR}\n"
 fi
@@ -80,37 +106,49 @@ if [ ! -f ${DEBUTILS_DIR}/DEBIAN/control_64 ]; then
 fi
 if [ ! -f ${ARMV8A_DIR}/pmt ]; then 
     abort " - Package not comptely builded! Please build package and try again\n"
-elif [ ! -f ${ARMV7A_DIR}/pmt ]; then
+elif [ ! -f ${ARMV7A_DIR}/pmt ]; then 
     abort " - Package not comptely builded! Please build package and try again\n"
 fi
 
+# generate template dir
 printf " - Generating template dir...\n"
-mkdir -p ${DEBUTILS_DIR}/temp
+${SUDO} mkdir -p ${DEBUTILS_DIR}/temp || abort
 
+# generate out dir
 printf " - Generating out dir...\n"
-mkdir -p ${DEB_DIR}
+${SUDO} mkdir -p ${DEB_DIR} || abort
 
+# copy files
 printf " - Copying files...\n"
-cp -r ${DEBUTILS_DIR}/data ${DEBUTILS_DIR}/temp || exit 1
-rm -f ${DEBTERMUX_USR}/share/man/man1/dummy
-rm -f ${DEBTERMUX_USR}/bin/dummy
-mkdir -p ${DEBUTILS_DIR}/temp/DEBIAN
+${SUDO} cp -r ${DEBUTILS_DIR}/data ${DEBUTILS_DIR}/temp || abort
+${SUDO} rm -f ${DEBTERMUX_USR}/share/man/man1/dummy
+${SUDO} rm -f ${DEBTERMUX_USR}/bin/dummy
+${SUDO} mkdir -p ${DEBUTILS_DIR}/temp/DEBIAN || abort
 
+# select control file
 printf " - Selected arm-${PREFIX} package control file.\n"
-cp ${DEBUTILS_DIR}/DEBIAN/control_${PREFIX} ${DEBUTILS_DIR}/temp/DEBIAN/control || exit 1
-cp ${DEBUTILS_DIR}/mandoc/pmt.1 ${DEBTERMUX_USR}/share/man/man1 || exit 1
-if [ "${PREFIX}" = "64" ]; then
-    cp ${ARMV8A_DIR}/pmt ${DEBTERMUX_USR}/bin || exit 1
-elif [ "${PREFIX}" = "32" ]; then
-    cp ${ARMV7A_DIR}/pmt ${DEBTERMUX_USR}/bin || exit 1
+${SUDO} cp ${DEBUTILS_DIR}/DEBIAN/control_${PREFIX} ${DEBUTILS_DIR}/temp/DEBIAN/control || exit 1
+${SUDO} cp ${DEBUTILS_DIR}/mandoc/pmt.1.gz ${DEBTERMUX_USR}/share/man/man1 || abort
+if [ "${PREFIX}" = "64" ]; then 
+    ${SUDO} cp ${ARMV8A_DIR}/pmt ${DEBTERMUX_USR}/bin || abort
+elif [ "${PREFIX}" = "32" ]; then 
+    ${SUDO} cp ${ARMV7A_DIR}/pmt ${DEBTERMUX_USR}/bin || abort
 fi
 
+# start dpkg-deb
 printf " - Starting dpkg-deb...\n"
 sleep 2
-chmod -R 755 *
-dpkg-deb -b ${DEBUTILS_DIR}/temp ${DEB_DIR}/pmt-${VERSION}-arm${PREFIX}.deb || exit 1; 
-rm -rf ${DEBUTILS_DIR}/temp || exit 1;
+${SUDO} chmod -R 755 *
 
-printf " - Done! Package: ${DEB_DIR}/pmt-${VERSION}.deb\n"
+# if ARM_PREFIX is '-v7a', unset ARM_PREFIX and PREFIX. Re set PREFIX
+if [ "${PREFIX}" = "32" ]; then 
+    unset PREFIX
+    PREFIX="eabi-v7a"
+fi
+
+${SUDO} dpkg-deb -b ${DEBUTILS_DIR}/temp ${DEB_DIR}/pmt-${VERSION}-arm${PREFIX}${ARM_PREFIX}.deb || abort
+${SUDO} rm -rf ${DEBUTILS_DIR}/temp
+
+printf " - Done! Package: ${DEB_DIR}/pmt-${VERSION}-arm${PREFIX}${ARM_PREFIX}.deb\n"
 
 # end of script

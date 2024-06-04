@@ -23,6 +23,8 @@ extern "C" {
 #include <stdio.h>
 #include <pmt-docs.h>
 
+extern char* bin_name;
+
 void licenses()
 {
     printf("Copyright 2024 Partition Manager\n");
@@ -39,23 +41,23 @@ void licenses()
 void help()
 {
     printf("Usage: \n");
-    printf("   -b | --backup      backup mode\n");
-    printf("   -F | --flash       flash mode\n");
-    printf("   -r | --format      format mode (only ext2/3/4 file systems)\n");
-    printf("   -p | --partition   name of the partition to be backed up\n");
-    printf("   -l | --logical     know that the partition that will be backed up is logical\n");
-    printf("   -o | --out         (only backups) the output name of the backed-up partition (default: partition name)\n");
-    printf("   -d | --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)\n");
+    printf("   %s backup PARTITION [OUTPUT] [OPTIONS]...\n", bin_name);
+    printf("   %s flash FILE PARTITION [OPTIONS]...\n", bin_name);
+    printf("   %s format FILE_SYSTEM[ext/2/3/4] PARTITION [OPTIONS]...\n\n", bin_name);
+    printf("Options: \n");
+    printf("   -l | --logical     it is meant to determine whether the target partition is logical\n");
     printf("   -c | --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)\n");
-    printf("   -D | --list        list partitions\n");
-    printf("   -f | --force       force mode. Output is not produced. Even if it's a mistake. But if the target is not a mode, the error is given. If you want to work stable, it is important to specify this option first.\n");
+    printf("   -p | --list        list partitions\n");
+    printf("   -s | --silent      information and warning messages are silenced in normal work.\n");
+    printf("   -f | --force       force mode. Error messages are silenced and some things are ignored.\n");
     printf("   -v | --version     see version\n");
     printf("        --help        see help message\n");
     printf("   -L | --license     see license\n\n");
     printf("Examples:\n");
-    printf("   -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name\n");
-    printf("   --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name\n");
-    printf("   -c /dev/block/platform/bootdevice/by-name --list\n\n");
+    printf("   %s backup boot_a -c /dev/block/platform/bootdevice/by-name\n", bin_name);
+    printf("   %s flash /sdcard/twrp/boot.img boot_a -c /dev/block/platform/bootdevice/by-name\n", bin_name);
+    printf("   %s format ext4 system_a --logical\n", bin_name);
+    printf("   %s -c /dev/block/platform/bootdevice/by-name --list\n\n", bin_name);
     printf("Report bugs to <t.me/YZBruh>\n");
 }
 

@@ -3,34 +3,29 @@
 This binary C is for manage partitions of android devices.
 It offers a lot of options. I will place these below. But first let me talk about the operation...
 
-```
-1. The partition name is obtained (with the -p or --partition argument)
-2. Other arguments (if used) are processed.
-3. The backup and flashing processes were written according to DD's code. So there is a piece of toybox code
-```
-
 #### Presented arguments (options)
 
 ```
 Usage:
-   -b | --backup      backup mode
-   -F | --flash       flash mode
-   -r | --format      format mode (only ext2/3/4 file systems)
-   -p | --partition   name of the partition to be backed up
-   -l | --logical     know that the partition that will be backed up is logical
-   -o | --out         (only backups) the output name of the backed-up partition (default: partition name)
-   -d | --outdir      (only backups) directory where the backup partition will be saved (default: /storage/emulated/0)
+   pmt backup PARTITION [OUTPUT] [OPTIONS]...
+   pmt flash FILE PARTITION [OPTIONS]...
+   pmt format FILE_SYSTEM[ext/2/3/4] PARTITION [OPTIONS]...
+
+Options:
+   -l | --logical     it is meant to determine whether the target partition is logical
    -c | --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)
-   -D | --list        list partitions
-   -f | --force       force mode. Output is not produced. Even if it's a mistake. But if the target is not a mode, the error is given. If you want to work stable, it is important to specify this option first.
+   -p | --list        list partitions
+   -s | --silent      information and warning messages are silenced in normal work.
+   -f | --force       force mode. Error messages are silenced and some things are ignored.
    -v | --version     see version
         --help        see help message
    -L | --license     see license
 
 Examples:
-   -b --partition boot_a -o boot_slot_a_image -d /sdcard/backup -c /dev/block/platform/bootdevice/by-name
-   --flash /sdcard/twrp/boot.img -p boot_a -c /dev/block/platform/bootdevice/by-name
-   -c /dev/block/platform/bootdevice/by-name --list
+   pmt backup boot_a -c /dev/block/platform/bootdevice/by-name
+   pmt flash /sdcard/twrp/boot.img boot_a -c /dev/block/platform/bootdevice/by-name
+   pmt format ext4 system_a --logical
+   pmt -c /dev/block/platform/bootdevice/by-name --list
 
 Report bugs to <t.me/YZBruh>
 ```
@@ -39,9 +34,8 @@ Report bugs to <t.me/YZBruh>
 
 - Feel free to ask any questions you want.
 - Packages are available in publications.
-- İt is mandatory to use the `-b` | `--backup` or `-f` | `--flash` and `-p` | `--partition` argument. After all, a partition name and progress type is required to be progress.
 - If the logical partition flag is not used, a classic partition is tried to be processing by default.
-- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/2.0.0-en/CHANGELOG.md)
+- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/2.1.0-en/CHANGELOG.md)
 - Let me know your suggestions!
 
 ### How is it built?
@@ -49,7 +43,7 @@ Android NDK is required to build.
  - [Download](https://developer.android.com/ndk/downloads) and extract the NDK package.
  - Clone this repository. And get access to it.
 ```
-git clone https://github.com/YZBruh/pbt -b 2.0.0 ./pmt
+git clone https://github.com/YZBruh/pbt -b 2.1.0 ./pmt
 cd pmt
 ```
  - Set the NDK working directory variable.

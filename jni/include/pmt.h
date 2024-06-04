@@ -32,27 +32,28 @@ extern "C" {
 #define PMT_PACKAGE_NAME     "Partition Manager"
 
 /* variable definations */
-extern char *out;
-extern char *outdir;
-extern char *cust_cxt;
-extern char *target_partition;
-extern char *target_flash_file;
-extern char *format_fs;
-extern char *partition_type;
+extern char* out;
+extern char* cust_cxt;
+extern char* target_partition;
+extern char* target_flash_file;
+extern char* format_fs;
+extern char* partition_type;
+extern char* bin_name;
 extern bool pmt_use_logical;
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
 extern bool pmt_logical;
+extern bool pmt_silent;
 extern bool pmt_flash;
 extern bool pmt_backup;
 extern bool pmt_format;
 extern bool pmt_force_mode;
 
 /* function definations */
-void listpart();
-void check_psf();
+int listpart();
+void check_dev_point();
 void check_root();
-void pmt(unsigned short progress_code);
+int pmt(unsigned short progress_code);
 void version();
 
 #endif /* __PMT_H_ */

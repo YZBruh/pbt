@@ -21,24 +21,25 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <android/ndk-version.h>
 #include <pmt-versioning.h>
+
+extern char* bin_name;
 
 void version()
 {
-    printf("Version: %d.%d.%d (code %d%d%d) ", PMT_MAJOR, PMT_LEVEL, PMT_PATCH, PMT_MAJOR, PMT_LEVEL, PMT_PATCH);
+    printf("%s version %d.%d.%d (code %d%d%d) ", bin_name, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL);
 
     #if __SIZEOF_POINTER__ == 4
         printf("32-bit binary\n");
     #elif __SIZEOF_POINTER__ == 8
         printf("64-bit binary\n");
     #else
-        printf("\n");
+        printf("<unknown> binary\n");
     #endif
 
     #if defined(__clang__)
-        printf("Compiler: clang %s\n", __clang_version__);
-    #elif defined(__gcc__)
-        printf("Compiler: gcc %s\n", __gcc_version__)
+        printf("Compiler: clang %d.%d.%d (NDK major r%d)\n", __clang_major__, __clang_minor__, __clang_patchlevel__, __NDK_MAJOR__);
     #endif
 
     printf("See licenses with -L argument.\n");
