@@ -84,7 +84,7 @@ calc_flsz(const char* _Nonnull filepath)
  * It's for quick action.
  */
 static int
-partition_not_found()
+partition_not_found(void)
 {
     if (!pmt_silent) errx(EX_OSFILE, "partition not found!");
     else return EX_OSFILE;
@@ -95,7 +95,7 @@ partition_not_found()
  * It's for quick action.
  */
 static int
-invalid_partition_type()
+invalid_partition_type(void)
 {
     if (!pmt_silent) errx(EX_USAGE, "invalid partition type!");
     else exit(EX_USAGE);
@@ -142,7 +142,7 @@ search_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
         else return -1;
     }
 
-    return 0;
+    return 2;
 }
 
 /* the partitions are meant to quickly find. */

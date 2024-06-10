@@ -19,13 +19,23 @@
 RED='\e[31m'
 NC='\e[0m'
 
+# needed variables
+VERSION="2.1.0"
+CUR_DIR=$(pwd)
+LIB_DIR=${CUR_DIR}/libs
+ARMV8A_DIR=${LIB_DIR}/arm64-v8a
+ARMV7A_DIR=${LIB_DIR}/armeabi-v7a
+DEB_DIR=${CUR_DIR}/deb
+DEBUTILS_DIR=${CUR_DIR}/debutils
+DEBTERMUX_USR=${DEBUTILS_DIR}/data/data/com.termux/files/usr
+
 # error messages
 abort() {
     if [ ! "$1" = "" ]; then
         printf "${RED}${1}${NC}\n"
     fi
     if [ -d ${DEBUTILS_DIR}/temp ]; then
-        rm -rf ${DEB_DIR}/temp
+        rm -rf ${DEBUTILS_DIR}/temp
     fi
     exit 1
 }
@@ -55,16 +65,6 @@ case "$2" in
         SUDO=""
 esac
 
-# variables
-VERSION="2.1.0"
-CUR_DIR=$(pwd)
-LIB_DIR=${CUR_DIR}/libs
-ARMV8A_DIR=${LIB_DIR}/arm64-v8a
-ARMV7A_DIR=${LIB_DIR}/armeabi-v7a
-DEB_DIR=${CUR_DIR}/deb
-DEBUTILS_DIR=${CUR_DIR}/debutils
-DEBTERMUX_USR=${DEBUTILS_DIR}/data/data/com.termux/files/usr
-
 # set file modes (all) to 755
 ${SUDO} chmod -R 755 *
 
@@ -92,11 +92,11 @@ fi
 if [ ! -d ${DEBUTILS_DIR}/data/data/com.termux/files/usr/bin ]; then 
     abort " - Not found: ${DEBUTILS_DIR}/data/data/com.termux/files/usr/bin\n"
 fi
-if [ ! -d ${DEBUTILS_DIR}/data/data/com.termux/files/usr/share/man/man1 ]; then 
-    abort " - Not found: ${DEBUTILS_DIR}/data/data/com.termux/files/usr/share/man/man1\n"
+if [ ! -d ${DEBUTILS_DIR}/data/data/com.termux/files/usr/share/man/man8 ]; then 
+    abort " - Not found: ${DEBUTILS_DIR}/data/data/com.termux/files/usr/share/man/man8\n"
 fi
-if [ ! -f ${DEBUTILS_DIR}/mandoc/pmt.1 ]; then 
-    abort " - Not found: ${DEBUTILS_DIR}/mandoc/pmt.1\n"
+if [ ! -f ${DEBUTILS_DIR}/mandoc/pmt.8.gz ]; then 
+    abort " - Not found: ${DEBUTILS_DIR}/mandoc/pmt.8.gz\n"
 fi
 if [ ! -f ${DEBUTILS_DIR}/DEBIAN/control_32 ]; then 
     abort " - Not found: ${DEBUTILS_DIR}/DEBIAN/control_32\n"
@@ -121,14 +121,14 @@ ${SUDO} mkdir -p ${DEB_DIR} || abort
 # copy files
 printf " - Copying files...\n"
 ${SUDO} cp -r ${DEBUTILS_DIR}/data ${DEBUTILS_DIR}/temp || abort
-${SUDO} rm -f ${DEBTERMUX_USR}/share/man/man1/dummy
+${SUDO} rm -f ${DEBTERMUX_USR}/share/man/man8/dummy
 ${SUDO} rm -f ${DEBTERMUX_USR}/bin/dummy
 ${SUDO} mkdir -p ${DEBUTILS_DIR}/temp/DEBIAN || abort
 
 # select control file
 printf " - Selected arm-${PREFIX} package control file.\n"
 ${SUDO} cp ${DEBUTILS_DIR}/DEBIAN/control_${PREFIX} ${DEBUTILS_DIR}/temp/DEBIAN/control || exit 1
-${SUDO} cp ${DEBUTILS_DIR}/mandoc/pmt.1.gz ${DEBTERMUX_USR}/share/man/man1 || abort
+${SUDO} cp ${DEBUTILS_DIR}/mandoc/pmt.8.gz ${DEBTERMUX_USR}/share/man/man8 || abort
 if [ "${PREFIX}" = "64" ]; then 
     ${SUDO} cp ${ARMV8A_DIR}/pmt ${DEBTERMUX_USR}/bin || abort
 elif [ "${PREFIX}" = "32" ]; then 

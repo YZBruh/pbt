@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+__BEGIN_DECLS
 
 #if !defined(__PMT_H_)
 #define __PMT_H_
@@ -50,16 +48,14 @@ extern bool pmt_format;
 extern bool pmt_force_mode;
 
 /* function definations */
-int listpart();
-void check_dev_point();
-void check_root();
+int listpart(void);
+void check_dev_point(void);
+void check_root(void);
 int pmt(unsigned short progress_code);
-void version();
+void version(void);
 
 #endif /* __PMT_H_ */
 
-#if defined(__cplusplus)
-}
-#endif /* __cplusplus */
+__END_DECLS
 
 /* end of code */

@@ -29,7 +29,7 @@ extern "C" {
 #include <pmt.h>
 
 /* root checker function */
-void check_root()
+void check_root(void)
 {
     /* a quick, easy method to verify root */
     if (getuid() != 0)

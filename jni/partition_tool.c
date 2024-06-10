@@ -69,3 +69,5 @@ void check_dev_point()
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
+
+/* end */

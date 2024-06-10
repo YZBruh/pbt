@@ -26,7 +26,7 @@ extern "C" {
 
 extern char* bin_name;
 
-void version()
+void version(void)
 {
     printf("%s version %d.%d.%d (code %d%d%d) ", bin_name, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL);
 

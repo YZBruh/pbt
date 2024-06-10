@@ -16,15 +16,11 @@
  * limitations under the License.
  */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif /* __cplusplus */
+__BEGIN_DECLS
 
-void help();
-void licenses();
+void help(void);
+void licenses(void);
 
-#if defined(__cplusplus)
-}
-#endif /* __cplusplus */
+__END_DECLS
 
 /* end */

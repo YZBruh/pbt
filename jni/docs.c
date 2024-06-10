@@ -25,7 +25,7 @@ extern "C" {
 
 extern char* bin_name;
 
-void licenses()
+void licenses(void)
 {
     printf("Copyright 2024 Partition Manager\n");
     printf("Licensed under the Apache License, Version 2.0 (the \"License\");\n");
@@ -38,7 +38,7 @@ void licenses()
     printf("See the License for the specific language governing permissions and limitations under the License.\n");
 }
 
-void help()
+void help(void)
 {
     printf("Usage: \n");
     printf("   %s backup PARTITION [OUTPUT] [OPTIONS]...\n", bin_name);

@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
                 break;
             default:
                 printf("Usage: %s [backup] flash] [format] [-l | --logical] [-c | --context] [-D | --list] [-v | --version] [--help] [-L | --license]\n", argv[0]);
-                exit(EX_USAGE);
+                return EX_USAGE;
         }
     }
 

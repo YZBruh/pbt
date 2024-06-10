@@ -16,17 +16,13 @@
  * limitations under the License.
  */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif /* __cplusplus */
+__BEGIN_DECLS
 
 /* versioning */
 #define PMT_MAJOR            2
 #define PMT_MINOR            1
 #define PMT_PATCHLEVEL       0
 
-#if defined(__cplusplus)
-}
-#endif /* __cplusplus */
+__END_DECLS
 
 /* end */

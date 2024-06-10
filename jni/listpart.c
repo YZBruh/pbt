@@ -40,7 +40,7 @@ extern char* cust_cxt;
 extern char* bin_name;
 
 /* list existing partitions */
-int listpart() {
+int listpart(void) {
     DIR *dir;
     struct dirent *entry;
 
