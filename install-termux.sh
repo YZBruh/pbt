@@ -53,7 +53,6 @@ echo "  - Extracting downloaded package..."
 
 cd "${TMP_DIR}"
 xz -d *.xz
-rm *.xz
 cd "${CUR_DIR}"
 
 echo "  - Installing..."
