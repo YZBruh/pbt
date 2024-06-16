@@ -89,7 +89,7 @@ chmod 777 make-deb.sh
 ### Easy install on termux
  - Just execute this command in termux:
 ```shell
-curl -LSs "https://raw.githubusercontent.com/YZBruh/pbt/2.1.0-ndk/install-termux.sh" | bash -
+curl -LSs "https://raw.githubusercontent.com/YZBruh/pbt/2.1.0/install-termux.sh" | bash -
 ```
 
 ### Notes
