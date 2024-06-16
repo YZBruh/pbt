@@ -59,6 +59,7 @@ echo "  - Installing..."
 
 cp "${TMP_DIR}/*" "${TERMUX_BIN_PREFIX}/pmt"
 chmod 777 "${TERMUX_BIN_PREFIX}/pmt"
+rm -rf "${TMP_DIR}"
 
 echo -e "  - Success.\n"
 
