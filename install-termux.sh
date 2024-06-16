@@ -9,7 +9,7 @@ UNAME="$(uname -m)"
 
 if [[ "${UNAME}" = "aarch64" ]] || [[ "${UNAME}" = "armv8a" ]] || [[ "${UNAME}" = "armv8" ]]; then
     ARCH="aarch64"
-else if [[ "${UNAME}" = "aarch32" ]] || [[ "${UNAME}" = "armv7a" ]] || [[ "${UNAME}" = "armv7" ]]; then
+elif [[ "${UNAME}" = "aarch32" ]] || [[ "${UNAME}" = "armv7a" ]] || [[ "${UNAME}" = "armv7" ]]; then
     ARCH="armv7a"
 else
     echo "  - Unsupported arch: ${UNAME}!"
