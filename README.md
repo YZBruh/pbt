@@ -58,13 +58,15 @@ export NDK_PROJECT_PATH=$(pwd)
 ```
                     pmt/
                      |
-                   libs/
-                     |
-           __________|__________
-           |                   |
-       arm64-v8a/         armeabi-v7a/
-           |                   |
-          pmt                 pmt
+     ________________|________________
+     |         |            |        |
+   jni/    debutils/      objs/    libs/            
+                                     |
+                           __________|__________
+                           |                   |
+                       arm64-v8a/         armeabi-v7a/
+                           |                   |
+                          pmt                 pmt
 ```
  - For the make installable debian package make-deb.sh use the script. It can be created within two architectures. Use the script flags correctly: arm64-v8a, armeabi-v7a. If you want to process with root, add sudo as the second argument. If you don't want, use no-sudo or leave it blank
 
