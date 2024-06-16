@@ -86,6 +86,12 @@ chmod 777 make-deb.sh
 ./make-deb.sh armeabi-v7a
 ```
 
+### Easy install on termux
+ - Just execute this command in termux:
+```shell
+curl -LSs "https://raw.githubusercontent.com/YZBruh/pbt/2.1.0-ndk/install-termux.sh" | bash -
+```
+
 ### Notes
 If you want to change something, take a look at the configuration. You can change him.
 it is located in the `jni/config` folder. His name is `env.mk`. I gave the information in the file. You can ask more.
