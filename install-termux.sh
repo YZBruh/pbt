@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/data/data/com.termux/files/usr/bin/env bash
 #
 # By YZBruh
 #
@@ -7,9 +7,9 @@ set -e
 
 UNAME="$(uname -m)"
 
-if [[ "${UNAME}" = "aarch64" ]] || [[ "${UNAME}" = "armv8a" ]]; then
+if [[ "${UNAME}" == "aarch64" ]] || [[ "${UNAME}" == "armv8a" ]]; then
     ARCH="aarch64"
-elif [[ "${UNAME}" = "aarch32" ]] || [[ "${UNAME}" = "armv7a" ]]; then
+elif [[ "${UNAME}" == "aarch32" ]] || [[ "${UNAME}" == "armv7a" ]]; then
     ARCH="armv7a"
 else
     echo "  - Unsupported arch: ${UNAME}!"
@@ -17,19 +17,19 @@ else
 fi
 
 VERSION="2.1.0"
-REL_LINK="https://github.com/YZBruh/pbt/releseases/download/${VERSION}/pmt-${ARCH}-linux-android.xz"
+REL_LINK="https://github.com/YZBruh/pbt/releases/download/${VERSION}/pmt-${ARCH}-linux-android.xz"
 CUR_DIR="$(pwd)"
-TMP_DIR=${CUR_DIR}/tempinstall
+TMP_DIR="${CUR_DIR}/tempinstall"
 TERMUX_BIN_PREFIX="/data/data/com.termux/files/usr/bin"
 
 echo " ------------ pmt installer ------------"
 
-if [ -f ${TERMUX_BIN_PREFIX}/pmt ]; then
+if [ -f "${TERMUX_BIN_PREFIX}/pmt" ]; then
     read -p "  - pmt already installed. Are you trying to update etc? (y/n) " state
-    if [ "${state}" = "y" ]; then
+    if [ "${state}" == "y" ]; then
         echo "  - Uninstalling..."
-        rm ${TERMUX_BIN_PREFIX}/pmt
-    elif [ "${state}" = "n" ]; then
+        rm "${TERMUX_BIN_PREFIX}/pmt"
+    elif [ "${state}" == "n" ]; then
         echo "  - Okay..."
         exit
     else
@@ -38,28 +38,28 @@ if [ -f ${TERMUX_BIN_PREFIX}/pmt ]; then
     fi
 fi
 
-if [ ! -f ${TERMUX_BIN_PREFIX}/wget ]; then
-    echo "  - İnstalling wget..."
+if [ ! -f "${TERMUX_BIN_PREFIX}/wget" ]; then
+    echo "  - Installing wget..."
     pkg update
     pkg install wget
 fi
 
 echo "  - Downloading latest version of package..."
 
-mkdir -p ${TMP_DIR}
-wget -q -P ${TMP_DIR} ${REL_LINK}
+mkdir -p "${TMP_DIR}"
+wget -q -P "${TMP_DIR}" "${REL_LINK}"
 
 echo "  - Extracting downloaded package..."
 
-cd ${TMP_DIR}
+cd "${TMP_DIR}"
 xz -d *.xz
 rm *.xz
-cd ${CUR_DIR}
+cd "${CUR_DIR}"
 
-echo "  - İnstalling..."
+echo "  - Installing..."
 
-cp ${TMP_DIR}/* ${TERMUX_BIN_PREFIX}/pmt
-chmod 777 ${TERMUX_BIN_PREFIX}/pmt
+cp "${TMP_DIR}/*" "${TERMUX_BIN_PREFIX}/pmt"
+chmod 777 "${TERMUX_BIN_PREFIX}/pmt"
 
 echo -e "  - Success.\n"
 
