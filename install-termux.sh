@@ -6,7 +6,6 @@
 set -e
 
 VERSION="2.1.0"
-REL_LINK="https://github.com/YZBruh/pbt/releases/download/${VERSION}/pmt-${ARCH}-linux-android.xz"
 CUR_DIR="$(pwd)"
 TMP_DIR="${CUR_DIR}/tempinstall"
 TERMUX_BIN_PREFIX="/data/data/com.termux/files/usr/bin"
@@ -14,9 +13,11 @@ UNAME="$(uname -m)"
 
 abort()
 {
-    rm -rf ${TMP_DIR}
-    exit 1;
+    rm -rf "${TMP_DIR}"
+    exit 1
 }
+
+echo " ------------ pmt installer ------------"
 
 if [[ "${UNAME}" == "aarch64" ]] || [[ "${UNAME}" == "armv8a" ]]; then
     ARCH="aarch64"
@@ -27,7 +28,8 @@ else
     abort
 fi
 
-echo " ------------ pmt installer ------------"
+REL_LINK="https://github.com/YZBruh/pbt/releases/download/${VERSION}/pmt-${ARCH}-linux-android.xz"
+
 
 if [ -f "${TERMUX_BIN_PREFIX}/pmt" ]; then
     read -p "  - pmt already installed. Are you trying to update etc? (y/n) " state
