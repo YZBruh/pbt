@@ -3,8 +3,6 @@
 # By YZBruh
 #
 
-set -e
-
 VERSION="2.1.0"
 CUR_DIR="$(pwd)"
 TMP_DIR="${CUR_DIR}/tempinstall"
@@ -47,26 +45,26 @@ fi
 
 if [ ! -f "${TERMUX_BIN_PREFIX}/wget" ]; then
     echo "  - Installing wget..."
-    pkg update
-    pkg install wget
+    pkg update || abort
+    pkg install wget || abort
 fi
 
 echo "  - Downloading latest version of package..."
 
-mkdir -p "${TMP_DIR}"
-wget -q -P "${TMP_DIR}" "${REL_LINK}"
+mkdir -p "${TMP_DIR}" || abort
+wget -q -P "${TMP_DIR}" "${REL_LINK}" || abort
 
 echo "  - Extracting downloaded package..."
 
-cd "${TMP_DIR}"
-xz -d *.xz
-cd "${CUR_DIR}"
+cd "${TMP_DIR}" || abort
+xz -d *.xz || abort
+cd "${CUR_DIR}" || abort
 
 echo "  - Installing..."
 
-cp "${TMP_DIR}/*" "${TERMUX_BIN_PREFIX}/pmt"
-chmod 777 "${TERMUX_BIN_PREFIX}/pmt"
-rm -rf "${TMP_DIR}"
+cp "${TMP_DIR}/*" "${TERMUX_BIN_PREFIX}/pmt" || abort
+chmod 777 "${TERMUX_BIN_PREFIX}/pmt" || abort
+rm -rf "${TMP_DIR}" || abort
 
 echo -e "  - Success.\n"
 
