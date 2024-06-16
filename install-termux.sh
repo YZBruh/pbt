@@ -58,12 +58,11 @@ echo "  - Extracting downloaded package..."
 
 cd "${TMP_DIR}" || abort
 xz -d *.xz || abort
-ls
 cd "${CUR_DIR}" || abort
 
 echo "  - Installing..."
 
-cp "${TMP_DIR}/*" "${TERMUX_BIN_PREFIX}/pmt" || abort
+cp "${TMP_DIR}/pmt-${ARCH}-linux-android${SUB_PREF}" "${TERMUX_BIN_PREFIX}/pmt" || abort
 chmod 777 "${TERMUX_BIN_PREFIX}/pmt" || abort
 rm -rf "${TMP_DIR}" || abort
 
