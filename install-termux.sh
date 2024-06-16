@@ -30,17 +30,8 @@ fi
 REL_LINK="https://github.com/YZBruh/pbt/releases/download/${VERSION}/pmt-${ARCH}-linux-android${SUB_PREF}.xz"
 
 if [ -f "${TERMUX_BIN_PREFIX}/pmt" ]; then
-    read -p "  - pmt already installed. Are you trying to update etc? (y/n) " state
-    if [ "${state}" == "y" ]; then
-        echo "  - Uninstalling..."
-        rm "${TERMUX_BIN_PREFIX}/pmt"
-    elif [ "${state}" == "n" ]; then
-        echo "  - Okay..."
-        exit
-    else
-        echo "${0}: unexpected: ${state}"
-        abort
-    fi
+    echo "  - pmt already installed."
+    exit
 fi
 
 if [ ! -f "${TERMUX_BIN_PREFIX}/wget" ]; then
