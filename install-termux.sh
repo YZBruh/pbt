@@ -3,7 +3,7 @@
 # By YZBruh
 #
 
-set -e
+set -ex
 
 VERSION="2.1.0"
 CUR_DIR="$(pwd)"
@@ -23,13 +23,13 @@ if [[ "${UNAME}" == "aarch64" ]] || [[ "${UNAME}" == "armv8a" ]]; then
     ARCH="aarch64"
 elif [[ "${UNAME}" == "aarch32" ]] || [[ "${UNAME}" == "armv7a" ]]; then
     ARCH="armv7a"
+    SUB_PREF="eabi"
 else
     echo "  - Unsupported arch: ${UNAME}!"
     abort
 fi
 
-REL_LINK="https://github.com/YZBruh/pbt/releases/download/${VERSION}/pmt-${ARCH}-linux-android.xz"
-
+REL_LINK="https://github.com/YZBruh/pbt/releases/download/${VERSION}/pmt-${ARCH}-linux-android${SUB_PREF}.xz"
 
 if [ -f "${TERMUX_BIN_PREFIX}/pmt" ]; then
     read -p "  - pmt already installed. Are you trying to update etc? (y/n) " state
