@@ -58,6 +58,7 @@ echo "  - Extracting downloaded package..."
 
 cd "${TMP_DIR}" || abort
 xz -d *.xz || abort
+ls
 cd "${CUR_DIR}" || abort
 
 echo "  - Installing..."
