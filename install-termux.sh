@@ -3,7 +3,7 @@
 # By YZBruh
 #
 
-set -ex
+set -e
 
 VERSION="2.1.0"
 CUR_DIR="$(pwd)"
