@@ -29,7 +29,7 @@ if [ -f ${TERMUX_BIN_PREFIX}/pmt ]; then
     if [ "${state}" = "y" ]; then
         echo "  - Uninstalling..."
         rm ${TERMUX_BIN_PREFIX}/pmt
-    else if [ "${state}" = "n" ]; then
+    elif [ "${state}" = "n" ]; then
         echo "  - Okay..."
         exit
     else
