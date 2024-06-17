@@ -60,7 +60,7 @@ export NDK_PROJECT_PATH=$(pwd)
                      |
      ________________|________________
      |         |            |        |
-   jni/    debutils/      objs/    libs/            
+   jni/    debutils/       obj/    libs/            
                                      |
                            __________|__________
                            |                   |
