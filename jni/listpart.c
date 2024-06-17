@@ -66,6 +66,7 @@ int listpart(void) {
     while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
 
     closedir(dir);
+    dir = NULL;
 
     if (pmt_logical)
     {
@@ -82,6 +83,7 @@ int listpart(void) {
     while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
 
     closedir(dir);
+    dir = NULL;
 
     if (pmt_ab && !pmt_silent) warnx(ANSI_YELLOW "warning: device using A/B partition style." ANSI_RESET);
 
