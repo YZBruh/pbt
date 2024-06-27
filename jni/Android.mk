@@ -15,34 +15,62 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
-ENVCONF := $(LOCAL_PATH)/config/env.mk
+
+include $(LOCAL_PATH)/config/env.mk
+
+ifeq ($(ENABLE_DEBUGGING), true)
+    PMT_CFLAGS := -O3 -g -Wall -Wextra $(EXTRA_COMPILER_FLAGS)
+else ifeq ($(ENABLE_DEBUGGING), false)
+    PMT_CFLAGS := -O3 -Wall $(EXTRA_COMPILER_FLAGS)
+else
+    $(warning Unknown debugging flag: $(ENABLE_DEBUGGING). Please see: $(PREDIR)/config/env.mk. Using non-debugging flags)
+    PMT_CFLAGS := -O3 -Wall $(EXTRA_COMPILER_FLAGS)
+endif
 
 include $(CLEAR_VARS)
-include $(ENVCONF)
 
-# configration
-LOCAL_MODULE = pmt
-LOCAL_SRC_FILES = \
+LOCAL_MODULE := libpmt_root
+LOCAL_SRC_FILES := root.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_CFLAGS := $(PMT_CFLAGS)
+
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := libpmt_partitiontool
+LOCAL_SRC_FILES := partition_tool.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_CFLAGS := $(PMT_CFLAGS)
+
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := libpmt_list
+LOCAL_SRC_FILES := listpart.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_CFLAGS := $(PMT_CFLAGS)
+
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := pmt
+LOCAL_SRC_FILES := \
     pmt.c \
     versioner.c \
     tools.c \
-    partition_tool.c \
-    root.c \
-    listpart.c \
+    error.c \
+    lang_tools.c \
+    languages.c \
     docs.c
-
-# include dirs
-LOCAL_C_INCLUDES = $(LOCAL_PATH)/include
-
-# compiler flags settings
-ifeq ($(ENABLE_DEBUGGING), true)
-    LOCAL_CFLAGS = -O3 -g -Wall -Wextra $(EXTRA_COMPILER_FLAGS)
-else ifeq ($(ENABLE_DEBUGGING), false)
-    LOCAL_CFLAGS = -O3 -Wall $(EXTRA_COMPILER_FLAGS)
-else
-    $(warning Unknown debugging flag: $(ENABLE_DEBUGGING). Please see: $(PREDIR)/config/env.mk. Using non-debugging flags)
-    LOCAL_CFLAGS = -O3 -Wall $(EXTRA_COMPILER_FLAGS)
-endif
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_STATIC_LIBRARIES := \
+    libpmt_root \
+    libpmt_partitiontool \
+    libpmt_list
+LOCAL_CFLAGS := $(PMT_CFLAGS)
 
 include $(BUILD_EXECUTABLE)
 

@@ -18,30 +18,25 @@
 
 #if defined(__cplusplus)
 extern "C" {
-#endif
+#endif /* __cplusplus */
 
 #define INC_MAIN_LIBS
-#define INC_DEBUGERS
 
 #include <pmt.h>
 
-extern struct pmt_langdb_general* current;
-extern struct pmt_langdb_general en;
-extern struct pmt_langdb_general tr;
-
-/* root checker function */
-void check_root(void)
+__noreturn void error(int __status, const char* _Nullable __fmt, ...)
 {
-    /* a quick, easy method for verifying root */
-    if (getuid() != 0)
-    {
-        if (!pmt_force_mode) error(1, "%s", current->no_root);
-        else exit(1);
-    }
+    if (__fmt == NULL) exit(__status);
+
+    va_list err_args;
+    va_start(err_args, __fmt);
+    fprintf(stderr, "%s: ", bin_name);
+    vfprintf(stderr, __fmt, err_args);
+    fprintf(stderr, "\n");
+    va_end(err_args);
+    exit(__status);
 }
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
-
-/* end of code */

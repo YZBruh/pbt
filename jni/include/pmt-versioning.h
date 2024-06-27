@@ -20,7 +20,7 @@ __BEGIN_DECLS
 
 /* versioning */
 #define PMT_MAJOR            2
-#define PMT_MINOR            1
+#define PMT_MINOR            3
 #define PMT_PATCHLEVEL       0
 
 __END_DECLS

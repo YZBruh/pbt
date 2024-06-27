@@ -20,10 +20,8 @@
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
+#define INC_MAIN_LIBS
+
 #include <pmt.h>
 
 extern bool pmt_use_cust_cxt;

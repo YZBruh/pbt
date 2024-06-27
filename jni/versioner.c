@@ -20,33 +20,38 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <android/ndk-version.h>
-#include <pmt-versioning.h>
+#define INC_MAIN_LIBS
+#define INC_VERSIONER_REQS
+
+#include <pmt.h>
 
 extern char* bin_name;
 
+extern struct pmt_langdb_general* current;
+extern struct pmt_langdb_general en;
+extern struct pmt_langdb_general tr;
+
 void version(void)
 {
-    printf("%s version %d.%d.%d (code %d%d%d) ", bin_name, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL);
+    printf("%s %s %d.%d.%d (%d%d%d) ", bin_name, current->version_str, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL);
 
     #if __SIZEOF_POINTER__ == 4
-        printf("32-bit binary\n");
+        printf("32-bit %s\n", current->bin_str);
     #elif __SIZEOF_POINTER__ == 8
-        printf("64-bit binary\n");
+        printf("64-bit %s\n", current->bin_str);
     #else
-        printf("<unknown> binary\n");
+        printf("<%s> %s\n", current->unknw_str, current->bin_str);
     #endif
 
     #if defined(__clang__)
-        printf("Compiler: clang %d.%d.%d (NDK major r%d)\n", __clang_major__, __clang_minor__, __clang_patchlevel__, __NDK_MAJOR__);
+        printf("%s: clang %d.%d.%d\n", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__);
     #endif
 
-    printf("See licenses with -L argument.\n");
+    printf("%s\n", current->see_license);
 }
 
 #if defined(__cplusplus)
 }
-#endif /* __cplusplus */
+#endif
 
 /* end of code */

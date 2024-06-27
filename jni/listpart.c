@@ -20,16 +20,17 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <errno.h>
-#include <err.h>
-#include <sysexits.h>
-#include <dirent.h>
-#include <string.h>
+#define INC_MAIN_LIBS
+#define INC_DEBUGERS
+#define INC_DIRENT
+
 #include <pmt.h>
+
+/* current /dev context */
+#define CUR_DEV_CNTX "/dev/block/by-name"
+
+/* for logical partitions */
+#define LGC_DEV_CNTX "/dev/block/mapper"
 
 extern bool pmt_use_cust_cxt;
 extern bool pmt_ab;
@@ -39,57 +40,80 @@ extern bool pmt_force_mode;
 extern char* cust_cxt;
 extern char* bin_name;
 
+extern struct pmt_langdb_general* current;
+extern struct pmt_langdb_general en;
+extern struct pmt_langdb_general tr;
+
+DIR *dir;
+
+static int
+list(const char* operation, const char* target_dir)
+{
+    static bool list = false;
+    struct dirent *entry;
+    dir = NULL;
+
+    if (strcmp(operation, "access") == 0) list = false;
+    else if (strcmp(operation, "print") == 0) list = true;
+    else return -1;
+
+    dir = opendir(target_dir);
+    if (dir != NULL)
+    {
+        if (!list)
+        {
+            closedir(dir);
+            return 0;
+        }
+        else
+        {
+            printf("%s: `%s'\n", current->list_of_dir, target_dir);
+            while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
+            closedir(dir);
+            return 0;
+        }
+    }
+    else return -1;
+
+    return 2;
+}
+
 /* list existing partitions */
 int listpart(void) {
-    DIR *dir;
-    struct dirent *entry;
-
     if (pmt_use_cust_cxt)
     {
-        dir = opendir(cust_cxt);
-        if (dir == NULL)
+        if (list("access", cust_cxt) != 0)
         {
-            if (!pmt_force_mode) errx(EX_OSFILE, "could not open: `%s': %s", cust_cxt, strerror(errno));
-            else return EX_OSFILE;
+            if (!pmt_force_mode) error(1, "%s: `%s': %s", current->not_open, cust_cxt, strerror(errno));
+            else return 1;
         }
+        else list("print", cust_cxt);
     }
     else
     {
-        dir = opendir("/dev/block/by-name");
-        if (dir == NULL)
+        if (list("access", CUR_DEV_CNTX) != 0)
         {
-            if (!pmt_force_mode) errx(EX_OSFILE, "could not open: `/dev/block/by-name': %s", strerror(errno));
-            else return EX_OSFILE;
+            if (!pmt_force_mode) error(1, "%s: `%s': %s", current->not_open, CUR_DEV_CNTX, strerror(errno));
+            else return 1;
         }
+        else list("print", CUR_DEV_CNTX);
     }
-
-    while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
-
-    closedir(dir);
-    dir = NULL;
 
     if (pmt_logical)
     {
-        dir = opendir("/dev/block/mapper");
-
-        if (dir == NULL) 
+        if (list("access", LGC_DEV_CNTX) != 0) 
         {
-            if (!pmt_silent) errx(EX_OSFILE, "could not open: `/dev/block/mapper': %s", strerror(errno));
-            else return EX_OSFILE;
+            if (!pmt_silent) error(1, "%s: `%s': %s", current->not_open, LGC_DEV_CNTX, strerror(errno));
+            else return 1;
         }
-        else printf("List of logical partitions (`/dev/block/mapper'):\n");
+        else list("print", LGC_DEV_CNTX);
     }
 
-    while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
+    if (pmt_ab && !pmt_silent) printf("%s: %s\n", bin_name, current->ab_warn);
 
-    closedir(dir);
-    dir = NULL;
+    if (pmt_logical && !pmt_silent) printf("%s: %s\n", bin_name, current->logical_warn);
 
-    if (pmt_ab && !pmt_silent) warnx(ANSI_YELLOW "warning: device using A/B partition style." ANSI_RESET);
-
-    if (pmt_logical && !pmt_silent) warnx(ANSI_YELLOW "warning: device using logical partition type." ANSI_RESET);
-
-    return EX_OK;
+    return 0;
 }
 
 #if defined(__cplusplus)

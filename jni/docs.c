@@ -20,10 +20,27 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <pmt-docs.h>
+#define INC_MAIN_LIBS
+#define INC_DOCS_REQS
+
+#include <pmt.h>
 
 extern char* bin_name;
+extern char* pmt_langdb_langs_docs[];
+
+struct pmt_langdb_docs* curr_docs = NULL;
+extern struct pmt_langdb_docs en_docs;
+extern struct pmt_langdb_docs tr_docs;
+
+static void
+prepare_langconf_docs(void)
+{
+    static char* langctrl_str;
+    langctrl_str = loadlang();
+
+    if (strcmp(langctrl_str, "en") == 0) curr_docs = &en_docs;
+    else if (strcmp(langctrl_str, "tr") == 0) curr_docs = &tr_docs;
+}
 
 void licenses(void)
 {
@@ -40,25 +57,26 @@ void licenses(void)
 
 void help(void)
 {
-    printf("Usage: \n");
-    printf("   %s backup PARTITION [OUTPUT] [OPTIONS]...\n", bin_name);
-    printf("   %s flash FILE PARTITION [OPTIONS]...\n", bin_name);
-    printf("   %s format FILE_SYSTEM[ext/2/3/4] PARTITION [OPTIONS]...\n\n", bin_name);
-    printf("Options: \n");
-    printf("   -l | --logical     it is meant to determine whether the target partition is logical\n");
-    printf("   -c | --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)\n");
-    printf("   -p | --list        list partitions\n");
-    printf("   -s | --silent      information and warning messages are silenced in normal work.\n");
-    printf("   -f | --force       force mode. Error messages are silenced and some things are ignored.\n");
-    printf("   -v | --version     see version\n");
-    printf("        --help        see help message\n");
-    printf("   -L | --license     see license\n\n");
-    printf("Examples:\n");
+    prepare_langconf_docs();
+    printf("%s:  %s %s\n", curr_docs->usage_docstr, bin_name, curr_docs->docs_strs_l1);
+    printf("  %s:   %s %s\n", curr_docs->or_str, bin_name, curr_docs->docs_strs_l2);
+    printf("  %s:   %s %s\n\n", curr_docs->or_str, bin_name, curr_docs->docs_strs_l3);
+    printf("%s: \n", curr_docs->docs_strs_l4);
+    printf("   -l, --logical     %s\n", curr_docs->docs_strs_l5);
+    printf("   -c, --context     %s\n", curr_docs->docs_strs_l6);
+    printf("   -p, --list        %s\n", curr_docs->docs_strs_l7);
+    printf("   -s, --silent      %s\n", curr_docs->docs_strs_l8);
+    printf("   -f, --force       %s\n", curr_docs->docs_strs_l9);
+    printf("   -S, --set-lang    %s\n", curr_docs->docs_strs_l10);
+    printf("   -v, --version     %s\n", curr_docs->docs_strs_l11);
+    printf("       --help        %s\n", curr_docs->docs_strs_l12);
+    printf("   -L, --license     %s\n\n", curr_docs->docs_strs_l13);
+    printf("%s:\n", curr_docs->docs_strs_l14);
     printf("   %s backup boot_a -c /dev/block/platform/bootdevice/by-name\n", bin_name);
     printf("   %s flash /sdcard/twrp/boot.img boot_a -c /dev/block/platform/bootdevice/by-name\n", bin_name);
     printf("   %s format ext4 system_a --logical\n", bin_name);
     printf("   %s -c /dev/block/platform/bootdevice/by-name --list\n\n", bin_name);
-    printf("Report bugs to <t.me/YZBruh>\n");
+    printf("%s <t.me/YZBruh>\n", curr_docs->docs_strs_l15);
 }
 
 #if defined(__cplusplus)

@@ -20,21 +20,13 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/statvfs.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <errno.h>
-#include <err.h>
-#include <sysexits.h>
-#include <fcntl.h>
-#include <pmt.h>
-
 #define BFSIZE 1024
+#define INC_MAIN_LIBS
+#define INC_STAT
+#define INC_DEBUGERS
+#define INC_TOOLS_REQS
+
+#include <pmt.h>
 
 extern char* out;
 extern char* format_fs;
@@ -50,14 +42,9 @@ extern bool pmt_backup;
 extern bool pmt_silent;
 extern bool pmt_force_mode;
 
-/**
- *    if progress_code is a
- * 1 = backup mode 
- * 
- * 2 = flash mode 
- * 
- * 3 = format mode
- */
+extern struct pmt_langdb_general* current;
+extern struct pmt_langdb_general en;
+extern struct pmt_langdb_general tr;
 
 /**
  * it is meant to calculate the size of the quickly given file. 
@@ -86,26 +73,12 @@ calc_flsz(const char* _Nonnull filepath)
 static int
 partition_not_found(void)
 {
-    if (!pmt_silent) errx(EX_OSFILE, "partition not found!");
-    else return EX_OSFILE;
-}
-
-/**
- * unknown partition type error. 
- * It's for quick action.
- */
-static int
-invalid_partition_type(void)
-{
-    if (!pmt_silent) errx(EX_USAGE, "invalid partition type!");
-    else exit(EX_USAGE);
-
-    return 0;
+    if (!pmt_silent) error(1, "%s", current->part_not_found);
+    else return 1;
 }
 
 /* to stop use of function type */
 #define partition_not_found partition_not_found()
-#define invalid_partition_type invalid_partition_type()
 
 /**
  * The target file is controlled by the stat function. 
@@ -153,8 +126,8 @@ search_partition(const char* _Nonnull partition)
     partition_results = search_stat(partition, "blk");
 
     if (partition_results == 1) partition_not_found;
-    else if (partition_results == -1 && !pmt_silent) errx(EX_OSFILE, "the specified partition is not the block. I mean, it's not actually an episode (disc). I'm sure it needs to applaud those mistakes.");
-    else exit(EX_OSFILE);
+    else if (partition_results == -1 && !pmt_silent) error(1, "%s", current->not_block);
+    else exit(1);
 }
 
 int pmt(unsigned short progress_code)
@@ -179,33 +152,32 @@ int pmt(unsigned short progress_code)
             else sprintf(backupper_path, "/dev/block/by-name/%s", target_partition);
         }
         else if (pmt_use_logical) sprintf(backupper_path, "/dev/block/mapper/%s", target_partition);
-        else return invalid_partition_type;
 
         search_partition(backupper_path);
 
-        if (calc_flsz(backupper_path) != -1 && !pmt_silent) printf("Disk size of the partition to be backed up: %.2f\n", calc_flsz(backupper_path));
-        else warnx(ANSI_YELLOW "failed to get target partition disk size" ANSI_RESET);
+        if (calc_flsz(backupper_path) != -1 && !pmt_silent) printf("%s: %.2f\n", current->part_disk_sz, calc_flsz(backupper_path));
+        else if (!pmt_silent) warning("%s", current->part_disk_sz_fail);
 
         srcf = open(backupper_path, O_RDONLY);
         if (srcf == -1)
         {
-            if (!pmt_silent) errx(EX_OSFILE, "couldn't read: %s: %s", backupper_path, strerror(errno));
-            else return EX_IOERR;
+            if (!pmt_silent) error(1, "%s: %s: %s", current->not_read, backupper_path, strerror(errno));
+            else return 1;
         }
 
         /* determine output */
         if (strcmp(out, target_partition) == 0)
         {
             sprintf(outf, "%s.img", target_partition);
-            if (!pmt_silent) warnx(ANSI_YELLOW "warning: The output file name was not specified. The output file name will be: %s" ANSI_RESET, outf);
+            if (!pmt_silent) warning("%s: %s", current->out_not_spec, outf);
         }
         else sprintf(outf, "%s", target_partition);
 
         targetf = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0666);
         if (targetf == -1)
         {
-            if (!pmt_silent) errx(EX_CANTCREAT, "couldn't generate: %s: %s", outf, strerror(errno));
-            else return EX_CANTCREAT;
+            if (!pmt_silent) error(1, "%s: %s: %s", current->not_gen, outf, strerror(errno));
+            else return 1;
         }
 
         /* start writing */
@@ -214,11 +186,11 @@ int pmt(unsigned short progress_code)
             ssize_t writed_data = write(targetf, buffer, readed_data);
             if (writed_data != readed_data)
             {
-                if (!pmt_silent) warnx("couldn't write: %s: %s", backupper_path, strerror(errno));
+                if (!pmt_silent) warning("%s: %s: %s", current->not_write, backupper_path, strerror(errno));
                 close(srcf);
                 close(targetf);
                 if (search_stat(outf, "file") == 0) remove(outf);
-                return EX_IOERR;
+                return 1;
             }
 
             copied_data += writed_data;
@@ -228,7 +200,7 @@ int pmt(unsigned short progress_code)
         close(srcf);
         close(targetf);
 
-        if (!pmt_silent) printf("%sSuccess. Output: %s%s\n", ANSI_GREEN, outf, ANSI_RESET);
+        if (!pmt_silent) printf("%s: %s\n", current->success_backup, outf);
     }
     else if (progress_code == 2)
     {
@@ -241,32 +213,31 @@ int pmt(unsigned short progress_code)
         /* for logical */
         }
         else if (pmt_use_logical) sprintf(flasher_path, "/dev/block/mapper/%s", target_partition);
-        else return invalid_partition_type;
 
         /* check partition */
         search_partition(flasher_path);
 
-        if (calc_flsz(target_flash_file) != -1 && !pmt_force_mode) printf("Size of flash file: %.2f\n", calc_flsz(target_flash_file));
-        else warnx(ANSI_YELLOW "failed to get flash file size" ANSI_RESET);
+        if (calc_flsz(target_flash_file) != -1 && !pmt_force_mode) printf("%s: %.2f\n", current->flash_file_sz, calc_flsz(target_flash_file));
+        else warning("%s", current->flash_file_sz_fail);
 
-        if (calc_flsz(target_partition) != -1 && !pmt_force_mode) printf("Disk size of the target partition: %.2f\n", calc_flsz(target_partition));
-        else warnx(ANSI_YELLOW "failed to get target partition disk size" ANSI_RESET);
+        if (calc_flsz(target_partition) != -1 && !pmt_force_mode) printf("%s: %.2f\n", current->part_disk_sz, calc_flsz(target_partition));
+        else warning("%s", current->part_disk_sz_fail);
 
-        if (calc_flsz(target_flash_file) > calc_flsz(target_partition) && !pmt_silent) errx(EX__BASE, "size of the file to flash more than the partition size.");
-        else return EX__BASE;
+        if (calc_flsz(target_flash_file) > calc_flsz(target_partition) && !pmt_silent) error(1, "%s", current->ffile_more_part);
+        else return 1;
 
         srcf = open(target_flash_file, O_RDONLY);
         if (srcf == -1)
         {
-            if (!pmt_force_mode) errx(EX_NOINPUT, "couldn't read: %s: %s", target_flash_file, strerror(errno));
-            else return EX_IOERR;
+            if (!pmt_force_mode) error(1, "%s: %s: %s", current->not_read, target_flash_file, strerror(errno));
+            else return 1;
         }
 
         targetf = open(target_partition, O_WRONLY | O_CREAT | O_TRUNC, 0666);
         if (targetf == -1)
         {
-            if (!pmt_force_mode) errx(EX_OSFILE, "couldn't read: %s: %s", target_partition, strerror(errno));
-            else return EX_IOERR;
+            if (!pmt_force_mode) error(1, "%s: %s: %s", current->not_read, target_partition, strerror(errno));
+            else return 1;
         }
 
         /* start writing */
@@ -275,10 +246,10 @@ int pmt(unsigned short progress_code)
             ssize_t writed_data = write(targetf, buffer, readed_data);
             if (writed_data != readed_data)
             {
-                warnx("couldn't write: %s: %s", backupper_path, strerror(errno));
+                warning("%s: %s: %s", current->not_write, backupper_path, strerror(errno));
                 close(srcf);
                 close(targetf);
-                return EX_IOERR;
+                return 1;
             }
 
             copied_data += writed_data;
@@ -287,7 +258,7 @@ int pmt(unsigned short progress_code)
         close(srcf);
         close(targetf);
 
-        if (!pmt_force_mode) printf("%sSuccess.%s\n", ANSI_GREEN, ANSI_RESET);
+        if (!pmt_force_mode) printf("%s.\n", current->success_flash);
     }
     else if (progress_code == 3)
     {
@@ -299,7 +270,6 @@ int pmt(unsigned short progress_code)
         /* for logical */
         }
         else if (pmt_use_logical) sprintf(ppath, "/dev/block/mapper/%s", target_partition);
-        else return invalid_partition_type;
 
         /* check partition */
         search_partition(ppath);
@@ -308,8 +278,8 @@ int pmt(unsigned short progress_code)
         struct statvfs file_sys_inf;
         if (statvfs(ppath, &file_sys_inf) != 0)
         {
-            if (!pmt_force_mode) errx(EX_TEMPFAIL, "the partition block size could not be obtained!");
-            else return EX_TEMPFAIL;
+            if (!pmt_force_mode) error(1, "%s", current->cannot_get_bsz);
+            else return 1;
         }
 
         /* generate mke2fs command */
@@ -318,10 +288,11 @@ int pmt(unsigned short progress_code)
         /* run command */
         if (system(formatter_cmd) != 0)
         {
-            if (!pmt_force_mode) errx(EX_TEMPFAIL, "formatting failed! There may be a chance that something has been damaged!");
-            else return EX_TEMPFAIL;
+            if (!pmt_force_mode) error(1, "%s", current->format_fail);
+            else return 1;
         }
     }
+
     return 0;
 }
 
