@@ -38,8 +38,17 @@ include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 
+LOCAL_MODULE := libpmt_error
+LOCAL_SRC_FILES := error.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_CFLAGS := $(PMT_CFLAGS)
+
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+
 LOCAL_MODULE := libpmt_partitiontool
-LOCAL_SRC_FILES := partition_tool.c
+LOCAL_SRC_FILES := partitiontool.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_CFLAGS := $(PMT_CFLAGS)
 
@@ -61,13 +70,13 @@ LOCAL_SRC_FILES := \
     pmt.c \
     versioner.c \
     tools.c \
-    error.c \
     lang_tools.c \
     languages.c \
     docs.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_STATIC_LIBRARIES := \
     libpmt_root \
+    libpmt_error \
     libpmt_partitiontool \
     libpmt_list
 LOCAL_CFLAGS := $(PMT_CFLAGS)

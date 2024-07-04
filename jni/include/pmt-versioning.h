@@ -18,6 +18,20 @@
 
 __BEGIN_DECLS
 
+#include <android/ndk-version.h>
+
+#if __NDK_MINOR__ == 1
+#define __NDK_MINOR_STATUS__   "b"
+#else
+#define __NDK_MINOR_STATUS__   ""
+#endif
+
+#if __NDK_BETA__ == 1 || __NDK_BETA__ == 2
+#define __NDK_BETA_STATUS__    "beta"
+#else
+#define __NDK_BETA_STATUS__    ""
+#endif
+
 /* versioning */
 #define PMT_MAJOR            2
 #define PMT_MINOR            3

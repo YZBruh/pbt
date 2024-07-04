@@ -44,7 +44,7 @@ void version(void)
     #endif
 
     #if defined(__clang__)
-        printf("%s: clang %d.%d.%d\n", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__);
+        printf("%s: clang %d.%d.%d (NDK r%d%s %s)\n", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__, __NDK_MAJOR__, __NDK_MINOR_STATUS__, __NDK_BETA_STATUS__);
     #endif
 
     printf("%s\n", current->see_license);

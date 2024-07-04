@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
                 return 1;
                 break;
             default:
-                printf("%s: %s [backup] flash] [format] [-l | --logical] [-c | --context] [-D | --list] [-v | --version] [--help] [-L | --license]\n", current->usage_head, argv[0]);
+                printf("%s: %s [backup] [flash] [format] [-l | --logical] [-c | --context] [-D | --list] [-v | --version] [--help] [-L | --license]\n", current->usage_head, argv[0]);
                 return 1;
         }
     }
