@@ -33,6 +33,7 @@ Report bugs to <t.me/YZBruh>
 #### Some notes
 
 - pmt supports multiple languages. [See languages.](https://github.com/YZBruh/pbt/blob/2.4.0/LANGUAGES.md)
+- [Add language.](https://github.com/YZBruh/pbt/blob/2.4.0/ADD-LANGUAGES.md)
 - Feel free to ask any questions you want.
 - Packages are available in publications.
 - If the logical partition flag is not used, a classic partition is tried to be processing by default.
