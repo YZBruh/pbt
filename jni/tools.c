@@ -34,6 +34,7 @@ extern char* cust_cxt;
 extern char* target_partition;
 extern char* target_flash_file;
 extern char* partition_type;
+extern char* bin_name;
 extern bool pmt_use_logical;
 extern bool pmt_use_cust_cxt;
 extern bool pmt_logical;
@@ -55,13 +56,16 @@ calc_flsz(const char* _Nonnull filepath)
 {
     static int calc_flsz_file;
     calc_flsz_file = open(filepath, O_RDONLY);
-    if (calc_flsz_file == -1) return calc_flsz_file;
+
+    if (calc_flsz_file == -1)
+        return calc_flsz_file;
 
     static off_t flsz;
     flsz = lseek(calc_flsz_file, 0, SEEK_END);
     close(calc_flsz_file);
 
-    if (flsz == (off_t)-1) return -1;
+    if (flsz == (off_t)-1)
+        return -1;
 
     return (double)flsz / (1024 * 1024);
 }
@@ -70,12 +74,8 @@ calc_flsz(const char* _Nonnull filepath)
  * error that the partition is not found. 
  * It's for quick action.
  */
-static int
-partition_not_found(void)
-{
-    if (!pmt_silent) error(1, "%s", current->part_not_found);
-    else return 1;
-}
+static void
+partition_not_found(void) { LOGE("%s\n", current->part_not_found); }
 
 /* to stop use of function type */
 #define partition_not_found partition_not_found()
@@ -88,31 +88,40 @@ partition_not_found(void)
  * If the desired type is not in -1 value is returned.
  */
 static int
-search_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
+get_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
 {
-    struct stat search_stat;
+    struct stat get_stat;
 
-    if (stat(filepath, &search_stat) != 0) return 1;
+    if (stat(filepath, &get_stat) != 0)
+        return 1;
 
     if (strcmp(stype, "dir") == 0) 
     {
-        if (S_ISDIR(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISDIR(get_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
     else if (strcmp(stype, "file") == 0)
     {
-        if (S_ISREG(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISREG(get_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
     else if (strcmp(stype, "blk") == 0)
     {
-        if (S_ISBLK(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISBLK(get_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
     else if (strcmp(stype, "link") == 0)
     {
-        if (S_ISLNK(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISLNK(get_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
 
     return 2;
@@ -123,11 +132,12 @@ static void
 search_partition(const char* _Nonnull partition)
 {
     static int partition_results = 0;
-    partition_results = search_stat(partition, "blk");
+    partition_results = get_stat(partition, "blk");
 
-    if (partition_results == 1) partition_not_found;
-    else if (partition_results == -1 && !pmt_silent) error(1, "%s", current->not_block);
-    else exit(1);
+    if (partition_results == 1)
+        partition_not_found;
+    else if (partition_results == -1)
+        LOGE("%s\n", current->not_block);
 }
 
 int pmt(unsigned short progress_code)
@@ -148,37 +158,37 @@ int pmt(unsigned short progress_code)
     {
         if (!pmt_use_logical)
         {
-            if (pmt_use_cust_cxt) sprintf(backupper_path, "%s/%s", cust_cxt, target_partition);
-            else sprintf(backupper_path, "/dev/block/by-name/%s", target_partition);
+            if (pmt_use_cust_cxt)
+                sprintf(backupper_path, "%s/%s", cust_cxt, target_partition);
+            else
+                sprintf(backupper_path, "/dev/block/by-name/%s", target_partition);
         }
-        else if (pmt_use_logical) sprintf(backupper_path, "/dev/block/mapper/%s", target_partition);
+        else
+            sprintf(backupper_path, "/dev/block/mapper/%s", target_partition);
 
         search_partition(backupper_path);
 
-        if (calc_flsz(backupper_path) != -1 && !pmt_silent) printf("%s: %.2f\n", current->part_disk_sz, calc_flsz(backupper_path));
-        else if (!pmt_silent) warning("%s", current->part_disk_sz_fail);
+        if (calc_flsz(backupper_path) != -1)
+            LOGD("%s: %.2f\n", current->part_disk_sz, calc_flsz(backupper_path));
+        else
+            LOGW("%s\n", current->part_disk_sz_fail);
 
         srcf = open(backupper_path, O_RDONLY);
         if (srcf == -1)
-        {
-            if (!pmt_silent) error(1, "%s: %s: %s", current->not_read, backupper_path, strerror(errno));
-            else return 1;
-        }
+            LOGE("%s: %s: %s\n", current->not_read, backupper_path, strerror(errno));
 
         /* determine output */
         if (strcmp(out, target_partition) == 0)
         {
             sprintf(outf, "%s.img", target_partition);
-            if (!pmt_silent) warning("%s: %s", current->out_not_spec, outf);
+            LOGW("%s: %s\n", current->out_not_spec, outf);
         }
-        else sprintf(outf, "%s", target_partition);
+        else
+            sprintf(outf, "%s", target_partition);
 
         targetf = open(outf, O_WRONLY | O_CREAT | O_TRUNC, 0666);
         if (targetf == -1)
-        {
-            if (!pmt_silent) error(1, "%s: %s: %s", current->not_gen, outf, strerror(errno));
-            else return 1;
-        }
+            LOGE("%s: %s: %s\n", current->not_gen, outf, strerror(errno));
 
         /* start writing */
         while ((readed_data = read(srcf, buffer, BFSIZE)) > 0 && copied_data < count)
@@ -186,11 +196,9 @@ int pmt(unsigned short progress_code)
             ssize_t writed_data = write(targetf, buffer, readed_data);
             if (writed_data != readed_data)
             {
-                if (!pmt_silent) warning("%s: %s: %s", current->not_write, backupper_path, strerror(errno));
-                close(srcf);
-                close(targetf);
-                if (search_stat(outf, "file") == 0) remove(outf);
-                return 1;
+                if (get_stat(outf, "file") == 0)
+                    remove(outf);
+                LOGF("%s: %s: %s\n", current->not_write, backupper_path, strerror(errno));
             }
 
             copied_data += writed_data;
@@ -200,7 +208,7 @@ int pmt(unsigned short progress_code)
         close(srcf);
         close(targetf);
 
-        if (!pmt_silent) printf("%s: %s\n", current->success_backup, outf);
+        LOGD("%s: %s\n", current->success_backup, outf);
     }
     else if (progress_code == 2)
     {
@@ -208,49 +216,45 @@ int pmt(unsigned short progress_code)
         /* for classic */
         if (!pmt_use_logical)
         {
-            if (pmt_use_cust_cxt) sprintf(flasher_path, "%s/%s", cust_cxt, target_partition);
-            else sprintf(flasher_path, "/dev/block/by-name/%s", target_partition);
+            if (pmt_use_cust_cxt)
+                sprintf(flasher_path, "%s/%s", cust_cxt, target_partition);
+            else
+                sprintf(flasher_path, "/dev/block/by-name/%s", target_partition);
         /* for logical */
         }
-        else if (pmt_use_logical) sprintf(flasher_path, "/dev/block/mapper/%s", target_partition);
+        else
+            sprintf(flasher_path, "/dev/block/mapper/%s", target_partition);
 
         /* check partition */
         search_partition(flasher_path);
 
-        if (calc_flsz(target_flash_file) != -1 && !pmt_force_mode) printf("%s: %.2f\n", current->flash_file_sz, calc_flsz(target_flash_file));
-        else warning("%s", current->flash_file_sz_fail);
+        if (calc_flsz(target_flash_file) != -1)
+            LOGD("%s: %.2f\n", current->flash_file_sz, calc_flsz(target_flash_file));
+        else
+            LOGW("%s\n", current->flash_file_sz_fail);
 
-        if (calc_flsz(target_partition) != -1 && !pmt_force_mode) printf("%s: %.2f\n", current->part_disk_sz, calc_flsz(target_partition));
-        else warning("%s", current->part_disk_sz_fail);
+        if (calc_flsz(target_partition) != -1)
+            LOGD("%s: %.2f\n", current->part_disk_sz, calc_flsz(target_partition));
+        else
+            LOGW("%s\n", current->part_disk_sz_fail);
 
-        if (calc_flsz(target_flash_file) > calc_flsz(target_partition) && !pmt_silent) error(1, "%s", current->ffile_more_part);
-        else return 1;
+        if (calc_flsz(target_flash_file) > calc_flsz(target_partition))
+            LOGE("%s\n", current->ffile_more_part);
 
         srcf = open(target_flash_file, O_RDONLY);
         if (srcf == -1)
-        {
-            if (!pmt_force_mode) error(1, "%s: %s: %s", current->not_read, target_flash_file, strerror(errno));
-            else return 1;
-        }
+            LOGF("%s: %s: %s\n", current->not_read, target_flash_file, strerror(errno));
 
         targetf = open(target_partition, O_WRONLY | O_CREAT | O_TRUNC, 0666);
         if (targetf == -1)
-        {
-            if (!pmt_force_mode) error(1, "%s: %s: %s", current->not_read, target_partition, strerror(errno));
-            else return 1;
-        }
+            LOGF("%s: %s: %s\n", current->not_read, target_partition, strerror(errno));
 
         /* start writing */
         while ((readed_data = read(srcf, buffer, BFSIZE)) > 0 && copied_data < count)
         {
             ssize_t writed_data = write(targetf, buffer, readed_data);
             if (writed_data != readed_data)
-            {
-                warning("%s: %s: %s", current->not_write, backupper_path, strerror(errno));
-                close(srcf);
-                close(targetf);
-                return 1;
-            }
+                LOGF("%s: %s: %s\n", current->not_write, backupper_path, strerror(errno));
 
             copied_data += writed_data;
         }
@@ -258,18 +262,21 @@ int pmt(unsigned short progress_code)
         close(srcf);
         close(targetf);
 
-        if (!pmt_force_mode) printf("%s.\n", current->success_flash);
+        LOGD("%s.\n", current->success_flash);
     }
     else if (progress_code == 3)
     {
         /* generate partition extn */
         if (!pmt_use_logical)
         {
-            if (pmt_use_cust_cxt) sprintf(ppath, "%s/%s", cust_cxt, target_partition);
-            else sprintf(ppath, "/dev/block/by-name/%s", target_partition);
+            if (pmt_use_cust_cxt)
+                sprintf(ppath, "%s/%s", cust_cxt, target_partition);
+            else
+                sprintf(ppath, "/dev/block/by-name/%s", target_partition);
         /* for logical */
         }
-        else if (pmt_use_logical) sprintf(ppath, "/dev/block/mapper/%s", target_partition);
+        else
+            sprintf(ppath, "/dev/block/mapper/%s", target_partition);
 
         /* check partition */
         search_partition(ppath);
@@ -277,20 +284,14 @@ int pmt(unsigned short progress_code)
         /* get target partition block size */
         struct statvfs file_sys_inf;
         if (statvfs(ppath, &file_sys_inf) != 0)
-        {
-            if (!pmt_force_mode) error(1, "%s", current->cannot_get_bsz);
-            else return 1;
-        }
+            LOGE("%s\n", current->cannot_get_bsz);
 
         /* generate mke2fs command */
         sprintf(formatter_cmd, "mke2fs -Fq -t %s -b %lu %s", format_fs, file_sys_inf.f_bsize, ppath);
 
         /* run command */
         if (system(formatter_cmd) != 0)
-        {
-            if (!pmt_force_mode) error(1, "%s", current->format_fail);
-            else return 1;
-        }
+            LOGF("%s\n", current->format_fail);
     }
 
     return 0;

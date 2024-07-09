@@ -49,11 +49,6 @@ __BEGIN_DECLS
 
 #if defined(INC_DEBUGERS)
 #include <errno.h>
-
-/* from <err.h>. Modified. */
-__noreturn void error(int __status, const char* _Nullable __fmt, ...);
-void warning(const char* _Nullable __fmt, ...) __printflike(1, 2);
-
 #endif
 
 #if defined(INC_PMT_LANGS)
@@ -100,6 +95,14 @@ extern struct pmt_langdb_general tr;
 extern struct pmt_langdb_docs en_docs;
 extern struct pmt_langdb_docs tr_docs;
 
+/* logging levels */
+typedef enum {
+    LOG_LEVEL_FATAL,
+    LOG_LEVEL_ERR,
+    LOG_LEVEL_WARN,
+    LOG_LEVEL_DEBUG
+} LogLevel;
+
 /* function definations */
 int listpart(void);
 void check_dev_point(void);
@@ -109,6 +112,13 @@ void version(void);
 void setlang(const char* _Nonnull lang);
 int search_sls(void);
 char* _Nonnull loadlang(void);
+void debug(LogLevel status, const char* _Nullable fmt, ...);
+
+/* logging macros */
+#define LOGF(fmt, ...) debug(LOG_LEVEL_FATAL, fmt, ##__VA_ARGS__)
+#define LOGE(fmt, ...) debug(LOG_LEVEL_ERR, fmt, ##__VA_ARGS__)
+#define LOGW(fmt, ...) debug(LOG_LEVEL_WARN, fmt, ##__VA_ARGS__)
+#define LOGD(fmt, ...) debug(LOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
 
 #endif
 

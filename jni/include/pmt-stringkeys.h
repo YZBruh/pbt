@@ -62,6 +62,8 @@ struct pmt_langdb_general {
     const char* _Nonnull see_license;
     const char* _Nonnull success_backup;
     const char* _Nonnull success_flash;
+    const char* _Nonnull warn;
+    const char* _Nonnull fatal;
     const char* _Nonnull switching_lang;
     const char* _Nonnull welcome;
     const char* _Nullable welcome_;

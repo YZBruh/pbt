@@ -30,7 +30,7 @@ extern bool pmt_logical;
 extern char* cust_cxt;
 
 static int
-search(const char* _Nonnull target) { return access(target, F_OK); }
+accf(const char* _Nonnull target) { return access(target, F_OK); }
 
 /* check parts */
 void check_dev_point()
@@ -40,13 +40,18 @@ void check_dev_point()
     {
         static char cust_cxt_ck_path[150];
         sprintf(cust_cxt_ck_path, "%s/boot_a", cust_cxt);
-        if (search(cust_cxt_ck_path) != 0) pmt_ab = false;
-        else pmt_ab = true;
+
+        if (accf(cust_cxt_ck_path) != 0)
+            pmt_ab = false;
+        else
+            pmt_ab = true;
     }
     else
     {
-        if (search("/dev/block/by-name/boot_a") != 0) pmt_ab = false;
-        else pmt_ab = true;
+        if (accf("/dev/block/by-name/boot_a") != 0)
+            pmt_ab = false;
+        else
+            pmt_ab = true;
     }
 
     /* true = logical | false = classic */
@@ -54,13 +59,18 @@ void check_dev_point()
     {
         static char cust_cxt_ckl_path[150];
         sprintf(cust_cxt_ckl_path, "%s/super", cust_cxt);
-        if (search(cust_cxt_ckl_path) != 0) pmt_logical = false;
-        else pmt_logical = true;
+
+        if (accf(cust_cxt_ckl_path) != 0)
+            pmt_logical = false;
+        else
+            pmt_logical = true;
     }
     else
     {
-        if (search("/dev/block/by-name/super") != 0) pmt_logical = false;
-        else pmt_logical = true;
+        if (accf("/dev/block/by-name/super") != 0)
+            pmt_logical = false;
+        else
+            pmt_logical = true;
     }
 }
 

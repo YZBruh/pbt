@@ -53,11 +53,15 @@ list(const char* operation, const char* target_dir)
     struct dirent *entry;
     dir = NULL;
 
-    if (strcmp(operation, "access") == 0) list = false;
-    else if (strcmp(operation, "print") == 0) list = true;
-    else return -1;
+    if (strcmp(operation, "access") == 0)
+        list = false;
+    else if (strcmp(operation, "print") == 0)
+        list = true;
+    else
+        return -1;
 
     dir = opendir(target_dir);
+
     if (dir != NULL)
     {
         if (!list)
@@ -67,51 +71,62 @@ list(const char* operation, const char* target_dir)
         }
         else
         {
-            printf("%s: `%s'\n", current->list_of_dir, target_dir);
-            while ((entry = readdir(dir)) != NULL) printf("%s\n", entry->d_name);
+            LOGD("%s: `%s'\n", current->list_of_dir, target_dir);
+            while ((entry = readdir(dir)) != NULL)
+            {
+                LOGD("%s\n", entry->d_name);
+            }
             closedir(dir);
             return 0;
         }
     }
-    else return -1;
+    else
+        return -1;
 
     return 2;
 }
 
 /* list existing partitions */
-int listpart(void) {
+int listpart(void)
+{
     if (pmt_use_cust_cxt)
     {
         if (list("access", cust_cxt) != 0)
         {
-            if (!pmt_force_mode) error(1, "%s: `%s': %s", current->not_open, cust_cxt, strerror(errno));
-            else return 1;
+            if (!pmt_force_mode)
+                LOGE("%s: `%s': %s\n", current->not_open, cust_cxt, strerror(errno));
+            else
+                return 1;
         }
-        else list("print", cust_cxt);
+        else
+            list("print", cust_cxt);
     }
     else
     {
         if (list("access", CUR_DEV_CNTX) != 0)
         {
-            if (!pmt_force_mode) error(1, "%s: `%s': %s", current->not_open, CUR_DEV_CNTX, strerror(errno));
-            else return 1;
+            if (!pmt_force_mode)
+                LOGE("%s: `%s': %s\n", current->not_open, CUR_DEV_CNTX, strerror(errno));
+            else
+                return 1;
         }
-        else list("print", CUR_DEV_CNTX);
+        else
+            list("print", CUR_DEV_CNTX);
     }
 
     if (pmt_logical)
     {
         if (list("access", LGC_DEV_CNTX) != 0) 
-        {
-            if (!pmt_silent) error(1, "%s: `%s': %s", current->not_open, LGC_DEV_CNTX, strerror(errno));
-            else return 1;
-        }
-        else list("print", LGC_DEV_CNTX);
+            LOGE("%s: `%s': %s\n", current->not_open, LGC_DEV_CNTX, strerror(errno));
+        else
+            list("print", LGC_DEV_CNTX);
     }
 
-    if (pmt_ab && !pmt_silent) printf("%s: %s\n", bin_name, current->ab_warn);
+    if (pmt_ab)
+        LOGD("%s: %s\n", bin_name, current->ab_warn);
 
-    if (pmt_logical && !pmt_silent) printf("%s: %s\n", bin_name, current->logical_warn);
+    if (pmt_logical)
+        LOGD("%s: %s\n", bin_name, current->logical_warn);
 
     return 0;
 }

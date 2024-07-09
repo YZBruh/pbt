@@ -34,10 +34,7 @@ void check_root(void)
 {
     /* a quick, easy method for verifying root */
     if (getuid() != 0)
-    {
-        if (!pmt_force_mode) error(1, "%s", current->no_root);
-        else exit(1);
-    }
+        LOGE("%s\n", current->no_root);
 }
 
 #if defined(__cplusplus)

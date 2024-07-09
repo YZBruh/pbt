@@ -6,20 +6,20 @@ It offers a lot of options. I will place these below. But first let me talk abou
 #### Presented arguments (options)
 
 ```
-Usage:  pmt [OPTIONS] backup PARTITION [OUTPUT] [OPTIONS]...
-  or:   pmt [OPTIONS] flash FILE PARTITION [OPTIONS]...
-  or:   pmt [OPTIONS] format FILE_SYSTEM[ext/2/3/4] PARTITION [OPTIONS]...
+Usage:
+   pmt backup PARTITION [OUTPUT] [OPTIONS]...
+   pmt flash FILE PARTITION [OPTIONS]...
+   pmt format FILE_SYSTEM[ext/2/3/4] PARTITION [OPTIONS]...
 
 Options:
-   -l, --logical     It is meant to determine whether the target partition is logical.
-   -c, --context     It is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name).
-   -p, --list        List partitions.
-   -s, --silent      Information and warning messages are silenced in normal work.
-   -f, --force       Force mode. Some things are ignored.
-   -S, --set-lang    Set current language.
-   -v, --version     See version.
-       --help        See this help message.
-   -L, --license     See license.
+   -l | --logical     it is meant to determine whether the target partition is logical
+   -c | --context     it is meant to specify a custom /dev context. Only classic partitions (default: /dev/block/by-name)
+   -p | --list        list partitions
+   -s | --silent      information and warning messages are silenced in normal work.
+   -f | --force       force mode. Error messages are silenced and some things are ignored.
+   -v | --version     see version
+        --help        see help message
+   -L | --license     see license
 
 Examples:
    pmt backup boot_a -c /dev/block/platform/bootdevice/by-name
@@ -35,7 +35,7 @@ Report bugs to <t.me/YZBruh>
 - Feel free to ask any questions you want.
 - Packages are available in publications.
 - If the logical partition flag is not used, a classic partition is tried to be processing by default.
-- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/2.3.0/CHANGELOG.md)
+- [Click to see special version changes](https://github.com/YZBruh/pbt/blob/2.1.0-en/CHANGELOG.md)
 - Let me know your suggestions!
 
 ### How is it built?
@@ -43,7 +43,7 @@ Android NDK is required to build.
  - [Download](https://developer.android.com/ndk/downloads) and extract the NDK package.
  - Clone this repository. And get access to it.
 ```
-git clone https://github.com/YZBruh/pbt -b 2.3.0 ./pmt
+git clone https://github.com/YZBruh/pbt -b 2.1.0 ./pmt
 cd pmt
 ```
  - Set the NDK working directory variable.
@@ -77,13 +77,19 @@ export NDK_PROJECT_PATH=$(pwd)
 ```
  
 ```
-chmod 777 utils.sh
+chmod 777 make-deb.sh
 
 # for making 64-bit package
-./utils.sh make-deb arm64-v8a 
+./make-deb.sh arm64-v8a 
 
 # for making 32-bit package
-./utils.sh make-deb armeabi-v7a
+./make-deb.sh armeabi-v7a
+```
+
+### Easy install on termux
+ - Just execute this command in termux:
+```shell
+curl -LSs "https://raw.githubusercontent.com/YZBruh/pbt/2.1.0/install-termux.sh" | bash -
 ```
 
 ### Notes

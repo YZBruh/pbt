@@ -33,21 +33,21 @@ extern struct pmt_langdb_general tr;
 
 void version(void)
 {
-    printf("%s %s %d.%d.%d (%d%d%d) ", bin_name, current->version_str, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL);
+    LOGD("%s %s %d.%d.%d (%d%d%d) ", bin_name, current->version_str, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL, PMT_MAJOR, PMT_MINOR, PMT_PATCHLEVEL);
 
     #if __SIZEOF_POINTER__ == 4
-        printf("32-bit %s\n", current->bin_str);
+        LOGD("32-bit %s\n", current->bin_str);
     #elif __SIZEOF_POINTER__ == 8
-        printf("64-bit %s\n", current->bin_str);
+        LOGD("64-bit %s\n", current->bin_str);
     #else
-        printf("<%s> %s\n", current->unknw_str, current->bin_str);
+        LOGD("<%s> %s\n", current->unknw_str, current->bin_str);
     #endif
 
     #if defined(__clang__)
-        printf("%s: clang %d.%d.%d (NDK r%d%s %s)\n", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__, __NDK_MAJOR__, __NDK_MINOR_STATUS__, __NDK_BETA_STATUS__);
+        LOGD("%s: clang %d.%d.%d (NDK r%d%s %s)\n", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__, __NDK_MAJOR__, __NDK_MINOR_STATUS__, __NDK_BETA_STATUS__);
     #endif
 
-    printf("%s\n", current->see_license);
+    LOGD("%s\n", current->see_license);
 }
 
 #if defined(__cplusplus)

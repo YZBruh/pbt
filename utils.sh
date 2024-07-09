@@ -20,7 +20,7 @@ RED='\e[31m'
 NC='\e[0m'
 
 # needed variables
-VERSION="2.3.0"
+VERSION="2.4.0"
 CUR_DIR=$(pwd)
 LIB_DIR=${CUR_DIR}/libs
 ARMV8A_DIR=${LIB_DIR}/arm64-v8a

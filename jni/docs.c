@@ -38,8 +38,10 @@ prepare_langconf_docs(void)
     static char* langctrl_str;
     langctrl_str = loadlang();
 
-    if (strcmp(langctrl_str, "en") == 0) curr_docs = &en_docs;
-    else if (strcmp(langctrl_str, "tr") == 0) curr_docs = &tr_docs;
+    if (strcmp(langctrl_str, "en") == 0)
+        curr_docs = &en_docs;
+    else if (strcmp(langctrl_str, "tr") == 0)
+        curr_docs = &tr_docs;
 }
 
 void licenses(void)

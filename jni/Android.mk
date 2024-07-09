@@ -18,13 +18,12 @@ LOCAL_PATH := $(call my-dir)
 
 include $(LOCAL_PATH)/config/env.mk
 
+PMT_CFLAGS = -O3 -std=c11 -Wall $(EXTRA_COMPILER_FLAGS)
+
 ifeq ($(ENABLE_DEBUGGING), true)
-    PMT_CFLAGS := -O3 -g -Wall -Wextra $(EXTRA_COMPILER_FLAGS)
-else ifeq ($(ENABLE_DEBUGGING), false)
-    PMT_CFLAGS := -O3 -Wall $(EXTRA_COMPILER_FLAGS)
+    PMT_CFLAGS += -g -Wextra
 else
-    $(warning Unknown debugging flag: $(ENABLE_DEBUGGING). Please see: $(PREDIR)/config/env.mk. Using non-debugging flags)
-    PMT_CFLAGS := -O3 -Wall $(EXTRA_COMPILER_FLAGS)
+    $(warning Unknown debugging flag: $(ENABLE_DEBUGGING). Please see: src/config/env.mk. Using non-debugging flags)
 endif
 
 include $(CLEAR_VARS)
@@ -38,8 +37,8 @@ include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := libpmt_error
-LOCAL_SRC_FILES := error.c
+LOCAL_MODULE := libpmt_debugging
+LOCAL_SRC_FILES := debugging.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_CFLAGS := $(PMT_CFLAGS)
 
@@ -69,6 +68,7 @@ LOCAL_MODULE := pmt
 LOCAL_SRC_FILES := \
     pmt.c \
     versioner.c \
+    get_stat.c \
     tools.c \
     lang_tools.c \
     languages.c \
@@ -76,7 +76,7 @@ LOCAL_SRC_FILES := \
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_STATIC_LIBRARIES := \
     libpmt_root \
-    libpmt_error \
+    libpmt_debugging \
     libpmt_partitiontool \
     libpmt_list
 LOCAL_CFLAGS := $(PMT_CFLAGS)

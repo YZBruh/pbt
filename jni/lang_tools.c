@@ -65,27 +65,36 @@ search_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
 {
     struct stat search_stat;
 
-    if (stat(filepath, &search_stat) != 0) return 1;
+    if (stat(filepath, &search_stat) != 0)
+        return 1;
 
     if (strcmp(stype, "dir") == 0) 
     {
-        if (S_ISDIR(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISDIR(search_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
     else if (strcmp(stype, "file") == 0)
     {
-        if (S_ISREG(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISREG(search_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
     else if (strcmp(stype, "blk") == 0)
     {
-        if (S_ISBLK(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISBLK(search_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
     else if (strcmp(stype, "link") == 0)
     {
-        if (S_ISLNK(search_stat.st_mode)) return 0;
-        else return -1;
+        if (S_ISLNK(search_stat.st_mode))
+            return 0;
+        else
+            return -1;
     }
 
     return 2;
@@ -94,7 +103,8 @@ search_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
 static int
 langctrl(const char* _Nonnull lang_)
 {
-    if (strcmp(lang_, "en") == 0 || strcmp(lang_, "tr") == 0) return 0;
+    if (strcmp(lang_, "en") == 0 || strcmp(lang_, "tr") == 0)
+        return 0;
 
     return 1;
 }
@@ -104,7 +114,8 @@ char* loadlang(void)
     static char lang_fpr[10] = "en";
     langconf = NULL;
 
-    if (search_stat(TERMUX_PMT_MANDOC, "file") == 0) pmt_inst_on_termux = true;
+    if (search_stat(TERMUX_PMT_MANDOC, "file") == 0)
+        pmt_inst_on_termux = true;
 
     if (pmt_inst_on_termux)
     {
@@ -187,35 +198,47 @@ void setlang(const char* _Nonnull lang)
 {
     static char* lcf_path;
 
-    if (pmt_inst_on_termux) lcf_path = TERMUX_PMTLANG_CONF;
-    else lcf_path = INTRNL_PMTLANG_CONF;
+    if (pmt_inst_on_termux)
+        lcf_path = TERMUX_PMTLANG_CONF;
+    else
+        lcf_path = INTRNL_PMTLANG_CONF;
 
-    if (search_stat(lcf_path, "file") == 0) remove(lcf_path);
+    if (search_stat(lcf_path, "file") == 0)
+        remove(lcf_path);
 
     langconf = NULL;
-    if (pmt_inst_on_termux) langconf = fopen(TERMUX_PMTLANG_CONF, "w");
-    else langconf = fopen(INTRNL_PMTLANG_CONF, "w");
 
-    if (langconf == NULL) error(1, "%s: Failed!!! Cannot open/write config file.\n", bin_name);
+    if (pmt_inst_on_termux)
+        langconf = fopen(TERMUX_PMTLANG_CONF, "w");
+    else
+        langconf = fopen(INTRNL_PMTLANG_CONF, "w");
+
+    if (langconf == NULL)
+        LOGE("Failed!!! Cannot open/write config file.\n");
 
     if (langctrl(lang) == 0)
     {
-        if (fprintf(langconf, "%s", lang) < 2) error(1, "Failed!!! Couldn't write config!\n");
-        else fclose(langconf);
+        if (fprintf(langconf, "%s", lang) < 2)
+            LOGE("Failed!!! Couldn't write config!\n");
+        else
+            fclose(langconf);
     }
-    else error(1, "Unknown language: %s.", bin_name, lang);
+    else
+        LOGE("Unknown language: %s.\n", lang);
 
     static int status;
 
     if (pmt_inst_on_termux)
     {
         status = open(TERMUX_PMT_SW_POINT, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-        if (status == 0) close(status);
+        if (status == 0)
+            close(status);
     }
     else
     {
         status = open(INTRNL_PMT_SW_POINT, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-        if (status == 0) close(status);
+        if (status == 0)
+            close(status);
     }
 }
 
@@ -223,15 +246,18 @@ int search_sls(void)
 {
     static char* sw_point_path;
 
-    if (pmt_inst_on_termux) sw_point_path = TERMUX_PMT_SW_POINT;
-    else sw_point_path = INTRNL_PMT_SW_POINT;
+    if (pmt_inst_on_termux)
+        sw_point_path = TERMUX_PMT_SW_POINT;
+    else
+        sw_point_path = INTRNL_PMT_SW_POINT;
 
     if (search_stat(sw_point_path, "file") == 0)
     {
         remove(sw_point_path);
         return 0;
     }
-    else return 1;
+    else
+        return 1;
 }
 
 #if defined(__cplusplus)
