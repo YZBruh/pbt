@@ -4,6 +4,7 @@ On this page, I will tell you how to add languages to pmt. This is not a difficu
 
 ##### Send ready stuff
  - Send ready translations via pull requests. After making the necessary checks, if there is no problem, I will accept it.
+ - Proper commit messages are required.
  - If there is an error, I will mention it in the pull request comments.
  - Once you accept it, I (YZBruh) will implement the rest of the necessary things.
  - It may take 5 days for me to notice :P
