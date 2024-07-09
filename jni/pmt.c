@@ -75,53 +75,6 @@ check_optsym(const char* _Nonnull mystring)
     }
 }
 
-/**
- * The target file is controlled by the stat function. 
- * Files, directories, links and blocks (disks) are for. 
- * If it is never found, it returns 1 value.
- * If he finds 0 value is returned. 
- * If the desired type is not in -1 value is returned.
- */
-static int
-get_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
-{
-    struct stat get_stat;
-
-    if (stat(filepath, &get_stat) != 0)
-        return 0;
-
-    if (strcmp(stype, "dir") == 0) 
-    {
-        if (S_ISDIR(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "file") == 0)
-    {
-        if (S_ISREG(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "blk") == 0)
-    {
-        if (S_ISBLK(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "link") == 0)
-    {
-        if (S_ISLNK(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-
-    return 0;
-}
-
 /* classic main function (C binary here xd) */
 int main(int argc, char* argv[])
 {
@@ -141,7 +94,7 @@ int main(int argc, char* argv[])
     if (search_sls() == 0)
     {
         if (current->welcome_ != NULL)
-            LOGD("%s\n", current->welcome_);
+            LOGD("%s", current->welcome_);
 
         LOGD("%s %s %s %s.\n", current->language, current->welcome, current->by_str, current->lang_by_s);
     }

@@ -80,52 +80,7 @@ partition_not_found(void) { LOGE("%s\n", current->part_not_found); }
 /* to stop use of function type */
 #define partition_not_found partition_not_found()
 
-/**
- * The target file is controlled by the stat function. 
- * Files, directories, links and blocks (disks) are for. 
- * If it is never found, it returns 1 value.
- * If he finds 0 value is returned. 
- * If the desired type is not in -1 value is returned.
- */
-static int
-get_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
-{
-    struct stat get_stat;
 
-    if (stat(filepath, &get_stat) != 0)
-        return 1;
-
-    if (strcmp(stype, "dir") == 0) 
-    {
-        if (S_ISDIR(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "file") == 0)
-    {
-        if (S_ISREG(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "blk") == 0)
-    {
-        if (S_ISBLK(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "link") == 0)
-    {
-        if (S_ISLNK(get_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-
-    return 2;
-}
 
 /* the partitions are meant to quickly find. */
 static void

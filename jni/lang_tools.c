@@ -53,53 +53,6 @@ extern int pmt_langdb_ctrl;
 
 FILE *langconf;
 
-/**
- * The target file is controlled by the stat function. 
- * Files, directories, links and blocks (disks) are for. 
- * If it is never found, it returns 1 value.
- * If he finds 0 value is returned. 
- * If the desired type is not in -1 value is returned.
- */
-static int
-search_stat(const char* _Nonnull filepath, const char* _Nonnull stype)
-{
-    struct stat search_stat;
-
-    if (stat(filepath, &search_stat) != 0)
-        return 1;
-
-    if (strcmp(stype, "dir") == 0) 
-    {
-        if (S_ISDIR(search_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "file") == 0)
-    {
-        if (S_ISREG(search_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "blk") == 0)
-    {
-        if (S_ISBLK(search_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-    else if (strcmp(stype, "link") == 0)
-    {
-        if (S_ISLNK(search_stat.st_mode))
-            return 0;
-        else
-            return -1;
-    }
-
-    return 2;
-}
-
 static int
 langctrl(const char* _Nonnull lang_)
 {
@@ -114,12 +67,12 @@ char* loadlang(void)
     static char lang_fpr[10] = "en";
     langconf = NULL;
 
-    if (search_stat(TERMUX_PMT_MANDOC, "file") == 0)
+    if (get_stat(TERMUX_PMT_MANDOC, "file") == 0)
         pmt_inst_on_termux = true;
 
     if (pmt_inst_on_termux)
     {
-        if (search_stat(TERMUX_PMTLANG_CONF, "file") == 0)
+        if (get_stat(TERMUX_PMTLANG_CONF, "file") == 0)
         {
             langconf = fopen(TERMUX_PMTLANG_CONF, "r+");
 
@@ -155,7 +108,7 @@ char* loadlang(void)
     }
     else
     {
-        if (search_stat(INTRNL_PMTLANG_CONF, "file") == 0)
+        if (get_stat(INTRNL_PMTLANG_CONF, "file") == 0)
         {
             langconf = fopen(INTRNL_PMTLANG_CONF, "r");
 
@@ -203,7 +156,7 @@ void setlang(const char* _Nonnull lang)
     else
         lcf_path = INTRNL_PMTLANG_CONF;
 
-    if (search_stat(lcf_path, "file") == 0)
+    if (get_stat(lcf_path, "file") == 0)
         remove(lcf_path);
 
     langconf = NULL;
@@ -251,7 +204,7 @@ int search_sls(void)
     else
         sw_point_path = INTRNL_PMT_SW_POINT;
 
-    if (search_stat(sw_point_path, "file") == 0)
+    if (get(sw_point_path, "file") == 0)
     {
         remove(sw_point_path);
         return 0;
