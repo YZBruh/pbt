@@ -94,8 +94,8 @@ jobs:
         if: env.build_and_release == 'true'
         run: |
           export COMPILER="${PWD}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
-          echo -e "CC_VERSION=$(${COMPILER} --version | grep '^clang version ' | awk '{print $3}')" >> $GITHUB_ENV
-          echo "REL_NOTE=$(. build/workflow/relnotes)" >> $GITHUB_ENV
+          echo "CC_VERSION=$(${COMPILER} --version | grep '^clang version ' | awk '{print $3}')" >> $GITHUB_ENV
+          echo "REL_NOTE=$(bash /home/pmt/build/workflow/relnotes)" >> $GITHUB_ENV
           cd ${{ env.PMT_SRCDIR }}
           zip -r pmt-objs-local.zip obj/local/arm64-v8a obj/local/armeabi-v7a
           xz libs/arm64-v8a/pmt
