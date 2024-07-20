@@ -76,7 +76,7 @@ jobs:
           unzip *.zip && rm *.zip
           mv * "${{ env.NDK_IS }}"
           sudo chmod -R 777 *
-        working-directory: ${{ env.NDK_DIR }}
+        working-directory: ${{ env.NDK_IN_DIR }}
 
       - name: Build pmt
         id: build-pmt
