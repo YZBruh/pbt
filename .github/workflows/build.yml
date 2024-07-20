@@ -84,11 +84,9 @@ jobs:
         run: |
           cd ${{ env.PMT_SRCDIR }}
           make gen-ndk-makefiles
-          export NDK_PROJECT_PATH=${PWD}
-          export APP_BUILD_SCRIPT="${PWD}/src/Android.mk"
-          export APP_APPLICATION_MK="${PWD}/src/Application.mk"
+          export NDK_PROJECT_PATH=${PWD} 
           cd ${{ env.NDK_DIR }}
-          ./ndk-build
+          ./ndk-build APP_BUILD_SCRIPT="${PWD}/src/Android.mk" APP_APPLICATION_MK="${PWD}/src/Application.mk"
         working-directory: /home
 
       - name: Last small transactions
