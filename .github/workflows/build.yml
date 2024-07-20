@@ -7,7 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
+ 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -95,7 +97,7 @@ jobs:
         run: |
           export COMPILER="${PWD}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
           echo "CC_VERSION=$(${COMPILER} --version | grep '^clang version ' | awk '{print $3}')" >> $GITHUB_ENV
-          echo "REL_NOTE=$(bash /home/pmt/build/workflow/relnotes)" >> $GITHUB_ENV
+          echo "REL_NOTE=$(bash /home/pmt/build/workflow/relnotes)" > /home/pmt/release_body.txt
           cd ${{ env.PMT_SRCDIR }}
           zip -r pmt-objs-local.zip obj/local/arm64-v8a obj/local/armeabi-v7a
           xz libs/arm64-v8a/pmt
@@ -107,12 +109,14 @@ jobs:
       - name: Upload to release
         id: upload-to-rels
         if: env.build_and_release == 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             /home/pmt/pmt-arm64-v8a.xz
             /home/pmt/pmt-armeabi-v7a.xz
             /home/pmt/pmt-objs-local.zip
           name: Partition Manager ${{ env.PMT_VERSION }} Release
-          tag_name: ${{ env.PMT_VERSION_CODE }}
-          body: ${{ env.REL_NOTE }}
+          tag_name: ${{ env.PMT_VERSION }}
+          body_path: /home/pmt/release_body.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
