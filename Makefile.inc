@@ -25,7 +25,7 @@ ARCH := $(shell uname -m)
 # current directory
 CUR_DIR = $(shell pwd)
 OUT_DIRNAME ?= out
-SOURCE_DIRNAME ?= src
+SOURCE_DIRNAME ?= jni
 
 # others needed important variables
 ifeq ($(THIS_IS),src)

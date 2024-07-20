@@ -57,9 +57,9 @@ endef
 # controls the presence of source file. usage: $(call check_cfile,<SOURCE_FILE>)
 define check_cfile
 	# the first argument is taken and controlled by the file with -f option
-	printf "   CHK src/`basename $1`\n"; \
+	printf "   CHK $(SOURCE_DIRNAME)/`basename $1`\n"; \
 	if [ ! -f $1 ]; then \
-		printf "   ==> Couldn't found required source file: src/`basename $1`\n"; \
+		printf "   ==> Couldn't found required source file: $(SOURCE_DIRNAME)/`basename $1`\n"; \
 		if [ -d "$(TEMP_DIR)" ]; then \
 			rm -rf $(TEMP_DIR); \
 		fi; \

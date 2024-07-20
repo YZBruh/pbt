@@ -53,8 +53,6 @@ cd pmt
 ```
 make gen-ndk-makefiles
 export NDK_PROJECT_PATH="${PWD}"
-export APP_BUILD_SCRIPT="${PWD}/src/Android.mk"
-export APP_APPLICATION_MK="${PWD}/src/Application.mk"
 ```
  - Go to the NDK directory and start the build
 ```
