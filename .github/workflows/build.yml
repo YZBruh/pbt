@@ -66,7 +66,7 @@ jobs:
           echo "PMT_SRCDIR=/home/pmt" >> $GITHUB_ENV
           echo "NDK_DIR=/home/ndk/android-ndk" >> $GITHUB_ENV
           echo "NDK_IN_DIR=/home/ndk" >> $GITHUB_ENV
-          sudo mkdir -p "${{ env.NDK_IN_DIR }}" && cd "${{ env.NDK_IN_DIR }}" && sudo chmod 777 "${{ env.NDK_IN_DIR }}"
+          sudo mkdir -p "/home/ndk" && cd "/home/ndk" && sudo chmod 777 "/home/ndk"
 
       - name: Download and extract NDK
         id: setup-ndk
