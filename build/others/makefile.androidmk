@@ -21,9 +21,18 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(LOCAL_PATH)/../build/config/env.mk
-include Application.mk
 
-PMT_CFLAGS = -O3 -std=c11 -pedantic -Wall -Wextra -Werror -Wno-nullability-extension -Wno-gnu-zero-variadic-macro-arguments -D__NDK_BUILD $(EXTRA_COMPILER_FLAGS)
+PMT_CFLAGS = \
+    -O3 \
+    -std=c11 \
+    -pedantic \
+    -Wall \
+    -Wextra \
+    -Werror \
+    -Wno-nullability-extension \
+    -Wno-gnu-zero-variadic-macro-arguments \
+    -D__NDK_BUILD \
+    $(EXTRA_COMPILER_FLAGS)
 
 ifneq ($(PMT_ENABLE_DEBUG),)
     PMT_CFLAGS += -gdwarf-5 -fsanitize=address
