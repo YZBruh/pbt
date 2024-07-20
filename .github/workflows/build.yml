@@ -60,7 +60,7 @@ jobs:
           echo "NDK_LINK=${NDK_LINK}" >> $GITHUB_ENV
           echo "NDK_IS=${NDK_IS}" >> $GITHUB_ENV
           cd /home
-          sudo git clone https://github.com/ShawkTeam/pmt -b ${PMT_VERSION}
+          sudo git clone https://github.com/YZBruh/pbt -b ${PMT_VERSION} ./pmt
           sudo chmod 777 pmt
           echo "PMT_SRCDIR=/home/pmt" >> $GITHUB_ENV
           echo "NDK_DIR=/home/ndk/android-ndk" >> $GITHUB_ENV
