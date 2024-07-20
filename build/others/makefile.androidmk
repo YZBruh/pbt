@@ -33,7 +33,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libpmt_root
 LOCAL_SRC_FILES := root.c
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include
 LOCAL_CFLAGS := $(PMT_CFLAGS)
 
 include $(BUILD_STATIC_LIBRARY)
