@@ -24,4 +24,4 @@ CC_IS="${NDK_ROOT_DIR}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-a
 CC_VERS=$(${CC_IS} --version | head -n 1)
 
 mkdir -p ../include/pmt/generated
-echo -e "#define __NDK_CC_VERSION__ \"${CC_VERS}\"" > include/pmt/generated/clang-version.h
+echo -e "#define __NDK_CC_VERSION__ \"${CC_VERS}\"" > ../pmt/include/pmt/generated/clang-version.h
