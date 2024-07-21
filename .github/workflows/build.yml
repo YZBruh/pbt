@@ -46,9 +46,9 @@ jobs:
         id: setup-packages
         if: env.build_and_release == 'true'
         run: |
-          sudo apt update
-          sudo apt upgrade -y
-          sudo apt install make xz-utils aria2 gawk -y
+          sudo apt update \
+          && sudo apt upgrade -y \
+          && sudo apt install make xz-utils aria2 gawk -y
 
       - name: Save spefic version variables
         id: save-vars
@@ -84,13 +84,13 @@ jobs:
         id: build-pmt
         if: env.build_and_release == 'true'
         run: |
-          cd ${{ env.PMT_SRCDIR }}
           make gen-ndk-makefiles
           export NDK_PROJECT_PATH=${PWD}
+          export NDK_ROOT_DIR=${{ env.NDK_DIR }}
+          bash build/bash/gen-header
           cd ${{ env.NDK_DIR }}
-          export NDK_ROOT_DIR="${PWD}"
           ./ndk-build
-        working-directory: /home
+        working-directory: ${{ env.PMT_SRCDIR }}
 
       - name: Last small transactions
         id: small-transactions
