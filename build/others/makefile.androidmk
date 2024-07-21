@@ -32,15 +32,13 @@ PMT_CFLAGS = \
     -Wno-nullability-extension \
     -Wno-gnu-zero-variadic-macro-arguments \
     -D__NDK_BUILD \
-    $(EXTRA_COMPILER_FLAGS)
-
-NDK_ROOT_DIR := $(shell echo $NDK_ROOT_DIR)
+    $(PMT_EXTRA_CFLAGS)
 
 ifneq ($(PMT_ENABLE_DEBUG),)
     PMT_CFLAGS += -gdwarf-5 -fsanitize=address
 endif
 
-$(shell cat $(LOCAL_PATH)/../build/bash/clang-version-detect | bash)
+$(shell $(LOCAL_PATH)/../build/bash/clang-version-detect)
 
 include $(CLEAR_VARS)
 
