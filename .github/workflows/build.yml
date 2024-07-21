@@ -96,7 +96,7 @@ jobs:
         if: env.build_and_release == 'true'
         run: |
           export COMPILER="${PWD}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
-          export CC_VERSION=$(${COMPILER} --version | grep '^clang version ' | awk '{print $3}')
+          export CC_VERSION=$(${COMPILER} --version | head -n 1)
           echo "CC_VERSION=${CC_VERSION}" >> $GITHUB_ENV
           . ${{ env.PMT_SRCDIR }}/build/workflow/build.config
           . ${{ env.PMT_SRCDIR }}/build/workflow/relnotes > /home/pmt/release_body.txt
