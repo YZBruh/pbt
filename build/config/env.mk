@@ -29,7 +29,7 @@ PMT_CC ?=
 PMT_AR ?= 
 
 # addionital compiler flags
-PMT_EXTRA_CFLAGS ?= -g 
+PMT_EXTRA_CFLAGS ?= 
 
 # debugging mode (binary). it's enabling address sanitizer and source level debug information with dwarf version 5
 PMT_ENABLE_DEBUG ?= 
