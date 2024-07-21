@@ -56,6 +56,10 @@ export NDK_PROJECT_PATH="${PWD}"
 ```
  - Go to the NDK directory and start the build
 ```
+# Required by pmt's Android.mk
+export NDK_ROOT_DIR="${PWD}"
+
+# Start build
 ./ndk-build
 ```
  - The output files will be inside the `pmt` folder. Binaries are available in two architectures within the `libs` folder. `arm64-v8a` (64-bit) and `armeabi-v7a` (32-bit).
@@ -77,6 +81,8 @@ export NDK_PROJECT_PATH="${PWD}"
 
 ```
 make
+
+# Use termux :D
 ```
  - For the make installable debian package:
 

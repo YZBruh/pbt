@@ -38,15 +38,11 @@ void version(void)
         LOGD("<%s> %s\n", current->unknw_str, current->bin_str);
     #endif
 
-    #ifdef __clang__
-        LOGD("%s: clang %d.%d.%d", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__);
+    #if defined(__clang__) && !defined(__NDK_BUILD)
+        LOGD("%s: clang %d.%d.%d\n", current->compiler_str, __clang_major__, __clang_minor__, __clang_patchlevel__);
+    #elif defined(__clang__) && defined(__NDK_BUILD)
+        LOGD("%s\n", __NDK_CC_VERSION__);
     #endif
-
-    #ifdef __NDK_BUILD
-        LOGD(" (NDK r%d%s%s)", __NDK_MAJOR__, __NDK_MINOR_STATUS__, __NDK_BETA_STATUS__);
-    #endif
-
-    LOGD("\n");
 }
 
 #ifdef __cplusplus
