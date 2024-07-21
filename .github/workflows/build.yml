@@ -5,11 +5,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
- 
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -74,8 +72,10 @@ jobs:
         id: setup-ndk
         if: env.build_and_release == 'true'
         run: |
+          echo "Downloading NDK ${{ env.NDK_VERSION }}..."
           aria2c "${{ env.NDK_LINK }}"
-          unzip *.zip && rm *.zip
+          echo "Extracting..."
+          unzip -q *.zip && rm *.zip
           mv * "${{ env.NDK_IS }}"
           sudo chmod -R 777 *
         working-directory: ${{ env.NDK_IN_DIR }}
@@ -88,6 +88,7 @@ jobs:
           make gen-ndk-makefiles
           export NDK_PROJECT_PATH=${PWD}
           cd ${{ env.NDK_DIR }}
+          export NDK_ROOT_DIR="${PWD}"
           ./ndk-build
         working-directory: /home
 
