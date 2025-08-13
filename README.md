@@ -1,3 +1,3 @@
 ## Partition Manager Project
 
-Switched to [ShawkTeam/pmt](https://github.com/ShawkTeam/pmt)
+Switched to [ShawkTeam/pmt-renovated](https://github.com/ShawkTeam/pmt-renovated)
